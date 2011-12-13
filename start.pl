@@ -57,3 +57,49 @@ for (my $i = 0; $i < 10; $i++) {
 }
 print "---------------\n";
 #print Dumper($deck->{cards});
+
+
+print "Mana probability in first 7 cards:\n";
+print "  white: " . "\n";
+print "  green: " . "\n";
+print "  red: " . "\n";
+print "  black: " . "\n";
+print "  blue: " . "\n";
+print "  colorless: " . "\n";
+
+my $deckCount = 60.0;
+my $redCount = 23.0;
+my $whiteCount = 0.0;
+
+# at least 1 out of 7 - I am pretty sure that this one is right
+my $one = 1 - ((($deckCount - $redCount) / $deckCount)
+			   * (($deckCount - $redCount -1) / ($deckCount-1))
+			   * (($deckCount - $redCount -2) / ($deckCount-2))
+			   * (($deckCount - $redCount -3) / ($deckCount-3))
+			   * (($deckCount - $redCount -4) / ($deckCount-4))
+			   * (($deckCount - $redCount -5) / ($deckCount-5))
+			   * (($deckCount - $redCount -6) / ($deckCount-6)));
+printf("At least 1 red: %.2f%%\n", 100*$one);
+
+# at least 2 out of 7 - I am 60% sure that this one is right
+my $two = 1 - (1 - $one)
+            - (($redCount / $deckCount)
+			   * (($deckCount - $redCount -1) / ($deckCount-1))
+			   * (($deckCount - $redCount -2) / ($deckCount-2))
+			   * (($deckCount - $redCount -3) / ($deckCount-3))
+			   * (($deckCount - $redCount -4) / ($deckCount-4))
+			   * (($deckCount - $redCount -5) / ($deckCount-5))
+			   * (($deckCount - $redCount -6) / ($deckCount-6)));
+printf("At least 2 red: %.2f%%\n", 100*$two);
+
+# at least 3 out of 7 - I am pretty sure that this one is wrong.
+my $three = 1 - (1 - $two)
+            - (($redCount / $deckCount)
+			   * (($redCount -1) / ($deckCount-1))
+			   * (($deckCount - $redCount -2) / ($deckCount-2))
+			   * (($deckCount - $redCount -3) / ($deckCount-3))
+			   * (($deckCount - $redCount -4) / ($deckCount-4))
+			   * (($deckCount - $redCount -5) / ($deckCount-5))
+			   * (($deckCount - $redCount -6) / ($deckCount-6)));
+printf("At least 3 red: %.2f%%\n", 100*$three);
+
