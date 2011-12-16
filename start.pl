@@ -5,7 +5,8 @@ use Data::Dumper;
 use MTG::Database;
 use MTG::Card;
 use MTG::Deck;
-
+use MTG::ProbUtil;
+if (0) {
 my $db = MTG::Database->new();
 
 my $deck = MTG::Deck->new($db);
@@ -66,40 +67,77 @@ print "  red: " . "\n";
 print "  black: " . "\n";
 print "  blue: " . "\n";
 print "  colorless: " . "\n";
+}
+my $pu = MTG::ProbUtil->new();
 
-my $deckCount = 60.0;
+if (1) {
+	my $redCount = 2;
+	my $cardCount = 4;
+	print "2 matching cards in a stack of 4\n";
+	print "pull one chances: " . $pu->probability($redCount, $cardCount, 1, 1) . "\n";
+	print "-----\n";
+	print "pull one for 2 chances: " . $pu->probability($redCount, $cardCount, 1, 2) . "\n";
+	print "-----\n";
+	print "pull one for 3 chances: " . $pu->probability($redCount, $cardCount, 1, 3) . "\n";
+	print "-----\n";
+	print "pull one for 4 chances: " . $pu->probability($redCount, $cardCount, 1, 4) . "\n";
+	print "-----\n";
+	
+	print "pull two for 2 chances: " . $pu->probability($redCount, $cardCount, 2, 2) . "\n";
+	print "-----\n";
+	print "pull two for 3 chances: " . $pu->probability($redCount, $cardCount, 2, 3) . "\n";
+	print "-----\n";
+	print "pull two for 4 chances: " . $pu->probability($redCount, $cardCount, 2, 4) . "\n";
+	print "----------\n";
+}
+if (1) {
+	my $redCount = 2;
+	my $cardCount = 5;
+	print "2 matching cards in a stack of 5\n";
+	print "pull 0 in 1 chance: " . $pu->probability($redCount, $cardCount, 0, 1) . "\n";
+	print "pull 0 in 2 chances: " . $pu->probability($redCount, $cardCount, 0, 2) . "\n";
+	print "pull 0 in 3 chances: " . $pu->probability($redCount, $cardCount, 0, 3) . "\n";
+	print "pull 0 in 4 chances: " . $pu->probability($redCount, $cardCount, 0, 4) . "\n";
+	print "pull 0 in 5 chances: " . $pu->probability($redCount, $cardCount, 0, 5) . "\n";
+	print "-----\n";
+	print "pull one in 1 chance: " . $pu->probability($redCount, $cardCount, 1, 1) . "\n";
+	print "pull one for 2 chances: " . $pu->probability($redCount, $cardCount, 1, 2) . "\n";
+	print "pull one for 3 chances: " . $pu->probability($redCount, $cardCount, 1, 3) . "\n";
+	print "pull one for 4 chances: " . $pu->probability($redCount, $cardCount, 1, 4) . "\n";
+	print "pull one for 5 chances: " . $pu->probability($redCount, $cardCount, 1, 5) . "\n";
+	print "------------------\n";
+	print "pull 2 for 1 chances: " . $pu->probability($redCount, $cardCount, 2, 1) . "\n";
+	print "pull 2 for 2 chances: " . $pu->probability($redCount, $cardCount, 2, 2) . "\n";
+	print "pull 2 for 3 chances: " . $pu->probability($redCount, $cardCount, 2, 3) . "\n";
+	print "pull 2 for 4 chances: " . $pu->probability($redCount, $cardCount, 2, 4) . "\n";
+	print "pull 2 for 5 chances: " . $pu->probability($redCount, $cardCount, 2, 5) . "\n";
+
+}
+#my $redCount = 23.0;
+#my $deckCount = 60.0;
 my $redCount = 23.0;
-my $whiteCount = 0.0;
+my $deckCount = 60.0;
 
-# at least 1 out of 7 - I am pretty sure that this one is right
-my $one = 1 - ((($deckCount - $redCount) / $deckCount)
-			   * (($deckCount - $redCount -1) / ($deckCount-1))
-			   * (($deckCount - $redCount -2) / ($deckCount-2))
-			   * (($deckCount - $redCount -3) / ($deckCount-3))
-			   * (($deckCount - $redCount -4) / ($deckCount-4))
-			   * (($deckCount - $redCount -5) / ($deckCount-5))
-			   * (($deckCount - $redCount -6) / ($deckCount-6)));
-printf("At least 1 red: %.2f%%\n", 100*$one);
+my $onDraw = $pu->probability($redCount, $deckCount, 1, 1);
+print "probability of pulling a mountain on 1 draw: " . $onDraw . "\n";
 
-# at least 2 out of 7 - I am 60% sure that this one is right
-my $two = 1 - (1 - $one)
-            - (($redCount / $deckCount)
-			   * (($deckCount - $redCount -1) / ($deckCount-1))
-			   * (($deckCount - $redCount -2) / ($deckCount-2))
-			   * (($deckCount - $redCount -3) / ($deckCount-3))
-			   * (($deckCount - $redCount -4) / ($deckCount-4))
-			   * (($deckCount - $redCount -5) / ($deckCount-5))
-			   * (($deckCount - $redCount -6) / ($deckCount-6)));
-printf("At least 2 red: %.2f%%\n", 100*$two);
+my $zero = $pu->probability($redCount, $deckCount, 0, 7);
+printf("0 reds in 7: %.2f%%\n", 100*$zero);
 
-# at least 3 out of 7 - I am pretty sure that this one is wrong.
-my $three = 1 - (1 - $two)
-            - (($redCount / $deckCount)
-			   * (($redCount -1) / ($deckCount-1))
-			   * (($deckCount - $redCount -2) / ($deckCount-2))
-			   * (($deckCount - $redCount -3) / ($deckCount-3))
-			   * (($deckCount - $redCount -4) / ($deckCount-4))
-			   * (($deckCount - $redCount -5) / ($deckCount-5))
-			   * (($deckCount - $redCount -6) / ($deckCount-6)));
-printf("At least 3 red: %.2f%%\n", 100*$three);
+my $one = $pu->probability($redCount, $deckCount, 1, 7);
+printf("1 red in 7: %.2f%%\n", 100*$one);
 
+my $two = $pu->probability($redCount, $deckCount, 2, 7);
+printf("2 reds in 7: %.2f%%\n", 100 * $two);
+
+my $three = $pu->probability($redCount, $deckCount, 3, 7);
+printf("3 reds in 7: %.2f%%\n", 100*$three);
+
+my $four = $pu->probability($redCount, $deckCount, 4, 7);
+printf("4 reds in 7: %.2f%%\n", 100*$four);
+
+my $five = $pu->probability($redCount, $deckCount, 5, 7);
+printf("5 reds in 7: %.2f%%\n", 100*$five);
+
+
+#print "4! is " . $pu->factorial(60) . "\n";
