@@ -55,7 +55,7 @@ $card = MTG::Card->new({multiverseid=>291,
 						affinity_colors=>{},
 						type=>'Land',
 						rarity=>'Common',
-						tags=>{land=>1},
+						tags=>{land=>1,basic_land=>1,generate_red_mana=>1},
 					});
 $dbl->add($card);
 

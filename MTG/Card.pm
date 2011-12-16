@@ -61,5 +61,16 @@ sub getName {
 	return $self->{fields}->{name};
 }
 
+# returns a reference to an array of tags
+sub getTags {
+	my $self = shift;
+	return $self->{fields}->{tags};
+}
+
+# returns a string
+sub getType {
+	my $self = shift;
+	return $self->{fields}->{type};
+}
 
 1;

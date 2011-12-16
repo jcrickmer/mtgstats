@@ -64,4 +64,24 @@ sub shuffle {
 	$self->{cards} = \@newOrder;
 }
 
+sub cardsByTag {
+	my $self = shift;
+	my $tag = shift;
+	my @result = ();
+	foreach my $card (@{$self->{cards}}) {
+		push(@result, $card) if (grep(/^$tag$/,@{$card->getTags()}));
+	}
+	return \@result;
+}
+
+sub cardsByType {
+	my $self = shift;
+	my $type = shift;
+	my @result = ();
+	foreach my $card (@{$self->{cards}}) {
+		push(@result, $card) if ($card->getType() eq $type);
+	}
+	return \@result;
+}
+
 1;
