@@ -1,0 +1,7 @@
+#!/usr/bin/perl
+
+use TAP::Harness;
+
+my $harness = TAP::Harness->new();
+$harness->runtests(('t/probabilities.t', 't/cardfilter.t'));
+
