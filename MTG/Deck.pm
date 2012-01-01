@@ -1,12 +1,19 @@
 package MTG::Deck;
 
+use base qw(MTG::MongoObject);
 use strict;
+use MTG::MongoObject;
 
 sub new {
 	my $class = shift;
 	my $self = {db => shift,
 				cards=>[],
+				name=>undef,
+				format=>undef,
+				owner=>undef,
+				ownerId=>undef,
 			};
+	push(@{$self->{serializable}}, {name=>'cards', by_ref=>1}, 'name', 'format', 'ownerId');
 	bless($self, $class);
 	return $self;
 }
@@ -21,11 +28,11 @@ sub addCard {
 	} elsif (defined $card) {
 		my $card_o;
 		if ($card * 1 eq $card) { # number check
-			$card_o = $self->{db}->getCardById($card);
+			$card_o = $self->{db}->getCardById($card, 1);
 		} else {
 			$card_o = $self->{db}->getCardByName($card);
 		}
-		print "something... a " . $card . "\n";
+		#print "something... a " . $card . "\n";
 		if (defined $card_o) {
 			for (my $yy = 0; $yy < $count; $yy++) {
 				if ($yy == 0) {
@@ -52,6 +59,12 @@ sub getCard {
 	my $self = shift;
 	my $place = shift || 0;
 	return $self->{cards}->[$place];
+}
+
+# returns a MTG::Card, or undef
+sub getCards {
+	my $self = shift;
+	return $self->{cards};
 }
 
 sub shuffle {
@@ -82,6 +95,50 @@ sub cardsByType {
 		push(@result, $card) if ($card->getType() eq $type);
 	}
 	return \@result;
+}
+
+sub setName {
+	my $self = shift;
+	my $name = shift;
+	$self->{name} = $name;
+	return;
+}
+
+sub setOwnerId {
+	my $self = shift;
+	my $ownerId = shift;
+	$self->{ownerId} = $ownerId;
+	return;
+}
+
+sub setFormat {
+	my $self = shift;
+	my $format = shift;
+	$self->{format} = $format;
+	return;
+}
+
+# go through all of the tags on the cards, organizing them into a list
+# of tags in a hash array.  The keys are the tags, the value is a hash
+# of the number of times it appears (an integer), and the percentage
+# of the deck (a float from 0.0 to 1.0).
+sub getTags {
+	my $self = shift;
+	my $result = {};
+	my $cardCount = $self->cardCount();
+	foreach my $card (@{$self->{cards}}) {
+		my $tags = $card->getTags();
+		foreach my $tag (@$tags) {
+			my $pp = $result->{$tag};
+			if (! defined $pp) {
+				$result->{$tag} = {count=>1,percentage=>1.0/$cardCount};
+			} else {
+				$pp->{count}++;
+				$pp->{percentage} = $pp->{count} / $cardCount;
+			}
+		}
+	}
+	return $result;
 }
 
 1;

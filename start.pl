@@ -6,9 +6,10 @@ use MTG::Database;
 use MTG::Card;
 use MTG::Deck;
 use MTG::ProbUtil;
+use MTG::CardFilter;
 
 my $pu = MTG::ProbUtil->new();
-
+if (1) {
 my $db = MTG::Database->new();
 
 my $deck = MTG::Deck->new($db);
@@ -31,6 +32,13 @@ $deck->addCard("Past in Flames");
 $deck->addCard("Traitorous Blood",2);
 $deck->addCard("Rolling Tremblor",1);
 $deck->addCard("Geosurge",2);
+$deck->setOwnerId(1);
+$deck->setName("Jason Red Punishment");
+$deck->setFormat("Standard");
+#$db->insertDeck($deck);
+my $ttt = $deck->getTags();
+print Dumper($ttt);
+exit;
 
 print "card count: " . $deck->cardCount() . "\n";
 print "first card: " . $deck->getCard(0)->getName() . "\n";
@@ -71,11 +79,18 @@ print "  blue: " . "\n";
 print "  colorless: " . "\n";
 
 my $lands_a = $deck->cardsByType('Land');
+foreach my $ll (@$lands_a) {
+	print $ll->TO_JSON() . "\n";
+}
 
-my $landCount = scalar(@$lands_a);
-my $deckCount = $deck->cardCount();
+}
+#my $landCount = scalar(@$lands_a);
+#my $deckCount = $deck->cardCount();
+my $landCount = 8;
+my $deckCount = 45;
 
 for (my $w = 0; $w < 8; $w++) {
 	my $nn = $pu->probability($landCount, $deckCount, $w, 7);
 	printf("$w lands in 7: %.2f%%\n", 100*$nn);
 }
+

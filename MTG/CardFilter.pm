@@ -1,5 +1,4 @@
 # Filters cards that are within a deck.
-
 package MTG::CardFilter;
 
 use strict;
@@ -24,11 +23,17 @@ sub filter {
 		foreach my $card (@$cards) {
 			my $possible = 1;
 			foreach my $pred (@{$self->{predicates}}) {
-				my $cval = $card->{fields}->{$pred->{field}};
+				my $cval = $card->{$pred->{field}};
+				# at this time, tags are a special case.  May want to think this through more in the future.
+				if ($pred->{field} eq 'tags') {
+					$cval = $card->getTags();
+				}
 				my $r = 0;
 				if ($pred->{comp} eq '=~') {
 					# ok, it is a grep, for use on arrays ONLY at this point
 					my $t = $pred->{value};
+					#print STDERR Dumper($card);
+					#print STDERR Dumper($cval);
 					my @u = grep(/$t/, @$cval);
 					if (@u > 0) {
 						$r = 1;

@@ -5,15 +5,73 @@ use strict;
 use Data::Dumper;
 
 use MTG::Card;
-use MTG::DBLoader;
+use MTG::Deck;
+use MTG::Database;
 
 use MongoDB;
 use MongoDB::OID;
 
 
+my @cards = ();
+my $db = MTG::Database->new();
 
-my $dbl = MTG::DBLoader->new();
-my $card = MTG::Card->new({multiverseid=>213799,
+my $card = MTG::Card->new({multiverseid=>294,
+						name=>'Plains',
+						CMC=>0,
+						cost=>[],
+						affinity_colors=>{},
+						type=>'Land',
+						rarity=>'Common',
+						tags=>{land=>1,basic_land=>1,generate_white_mana=>1},
+					});
+push @cards, $card;
+
+
+$card = MTG::Card->new({multiverseid=>288,
+						name=>'Forest',
+						CMC=>0,
+						cost=>[],
+						affinity_colors=>{},
+						type=>'Land',
+						rarity=>'Common',
+						tags=>{land=>1,basic_land=>1,generate_green_mana=>1},
+					});
+push @cards, $card;
+
+$card = MTG::Card->new({multiverseid=>277,
+						name=>'Swamp',
+						CMC=>0,
+						cost=>[],
+						affinity_colors=>{},
+						type=>'Land',
+						rarity=>'Common',
+						tags=>{land=>1,basic_land=>1,generate_black_mana=>1},
+					});
+push @cards, $card;
+
+$card = MTG::Card->new({multiverseid=>292,
+						name=>'Island',
+						CMC=>0,
+						cost=>[],
+						affinity_colors=>{},
+						type=>'Land',
+						rarity=>'Common',
+						tags=>{land=>1,basic_land=>1,generate_blue_mana=>1},
+					});
+push @cards, $card;
+
+$card = MTG::Card->new({multiverseid=>290,
+						name=>'Mountain',
+						CMC=>0,
+						cost=>[],
+						affinity_colors=>{},
+						type=>'Land',
+						rarity=>'Common',
+						tags=>{land=>1,basic_land=>1,generate_red_mana=>1},
+					});
+push @cards, $card;
+
+$card = MTG::Card->new({multiverseid=>213799,
 						   name=>'Go for the Throat',
 						   CMC=>2,
 						   cost=>['any', 'black'],
@@ -22,9 +80,7 @@ my $card = MTG::Card->new({multiverseid=>213799,
 						   rarity=>'Uncommon',
 						   tags=>{destroy_creature=>1},
 					   });
-
-#print Dumper($card);
-$dbl->add($card);
+push @cards, $card;
 
 $card = MTG::Card->new({multiverseid=>194106,
 						name=>'Melt Terrain',
@@ -35,7 +91,7 @@ $card = MTG::Card->new({multiverseid=>194106,
 						rarity=>'Common',
 						tags=>{target_land=>1,target_player=>1,destroy_land=>1,opponent_player_damage=>1},
 					});
-$dbl->add($card);
+push @cards, $card;
 
 $card = MTG::Card->new({multiverseid=>220010,
 						name=>'Harvest Pyre',
@@ -46,18 +102,7 @@ $card = MTG::Card->new({multiverseid=>220010,
 						rarity=>'Common',
 						tags=>{additional_cost=>1,target_creature=>1, creature_damage=>1,exile_from_graveyard=>1},
 					});
-$dbl->add($card);
-
-$card = MTG::Card->new({multiverseid=>291,
-						name=>'Mountain',
-						CMC=>0,
-						cost=>[],
-						affinity_colors=>{},
-						type=>'Land',
-						rarity=>'Common',
-						tags=>{land=>1,basic_land=>1,generate_red_mana=>1},
-					});
-$dbl->add($card);
+push @cards, $card;
 
 $card = MTG::Card->new({multiverseid=>220294,
 						name=>'Gorehorn Minotaurs',
@@ -71,7 +116,7 @@ $card = MTG::Card->new({multiverseid=>220294,
 						toughness=>3,
 						tags=>{creature=>1,bloodthirst=>1},
 					});
-$dbl->add($card);
+push @cards, $card;
 
 $card = MTG::Card->new({multiverseid=>220959,
 						name=>'Goblin Fireslinger',
@@ -85,7 +130,7 @@ $card = MTG::Card->new({multiverseid=>220959,
 						toughness=>1,
 						tags=>{creature=>1,tap_ability=>1, target_player=>1,opponent_player_damage=>1},
 					});
-$dbl->add($card);
+push @cards, $card;
 
 $card = MTG::Card->new({multiverseid=>220277,
 						name=>'Stormblood Berserker',
@@ -99,7 +144,7 @@ $card = MTG::Card->new({multiverseid=>220277,
 						toughness=>1,
 						tags=>{creature=>1,bloodthirst=>1,only_multiple_creatures_can_block=>1},
 					});
-$dbl->add($card);
+push @cards, $card;
 
 $card = MTG::Card->new({multiverseid=>14660,
 						name=>'Volcanic Dragon',
@@ -113,7 +158,7 @@ $card = MTG::Card->new({multiverseid=>14660,
 						toughness=>4,
 						tags=>{creature=>1,flying=>1,haste=>1},
 					});
-$dbl->add($card);
+push @cards, $card;
 
 $card = MTG::Card->new({multiverseid=>230774,
 						name=>'Balefire Dragon',
@@ -127,7 +172,7 @@ $card = MTG::Card->new({multiverseid=>230774,
 						toughness=>6,
 						tags=>{creature=>1,flying=>1,affect_all_creatures=>1},
 					});
-$dbl->add($card);
+push @cards, $card;
 
 $card = MTG::Card->new({multiverseid=>234568,
 						name=>'Tectonic Rift',
@@ -138,7 +183,7 @@ $card = MTG::Card->new({multiverseid=>234568,
 						rarity=>'Uncommon',
 						tags=>{destroy_land=>1,destroy_land=>1,nonfliers_cant_block=>1},
 					});
-$dbl->add($card);
+push @cards, $card;
 
 $card = MTG::Card->new({multiverseid=>14609,
 						name=>'Shock',
@@ -149,7 +194,7 @@ $card = MTG::Card->new({multiverseid=>14609,
 						rarity=>'Common',
 						tags=>{target_player=>1,target_creature=>1, creature_damage=>1,opponent_player_damage=>1},
 					});
-$dbl->add($card);
+push @cards, $card;
 
 $card = MTG::Card->new({multiverseid=>247419,
 						name=>"Devil's Play",
@@ -160,7 +205,7 @@ $card = MTG::Card->new({multiverseid=>247419,
 						rarity=>'Rare',
 						tags=>{target_player=>1,target_creature=>1, creature_damage=>1,opponent_player_damage=>1,flashback=>1},
 					});
-$dbl->add($card);
+push @cards, $card;
 
 $card = MTG::Card->new({multiverseid=>197,
 						name=>'Fireball',
@@ -171,7 +216,7 @@ $card = MTG::Card->new({multiverseid=>197,
 						rarity=>'Uncommon',
 						tags=>{target_player=>1,target_creature=>1, creature_damage=>1,opponent_player_damage=>1},
 					});
-$dbl->add($card);
+push @cards, $card;
 
 
 $card = MTG::Card->new({multiverseid=>220273,
@@ -183,7 +228,7 @@ $card = MTG::Card->new({multiverseid=>220273,
 						rarity=>'Uncommon',
 						tags=>{creature_damage=>1,nonflier_defense=>1,},
 					});
-$dbl->add($card);
+push @cards, $card;
 
 $card = MTG::Card->new({multiverseid=>214054,
 						name=>'Slagstorm',
@@ -194,7 +239,7 @@ $card = MTG::Card->new({multiverseid=>214054,
 						rarity=>'Uncommon',
 						tags=>{creature_damage=>1,player_damage=>1,affects_all_players=>1,affect_all_creatures=>1},
 					});
-$dbl->add($card);
+push @cards, $card;
 
 $card = MTG::Card->new({multiverseid=>234438,
 						name=>'Traitorous Blood',
@@ -205,7 +250,7 @@ $card = MTG::Card->new({multiverseid=>234438,
 						rarity=>'Common',
 						tags=>{control_creature=>1,target_creature=>1,haste=>1,trample=>1,untap_creature=>1},
 					});
-$dbl->add($card);
+push @cards, $card;
 
 $card = MTG::Card->new({multiverseid=>194383,
 						name=>'Whipflare',
@@ -216,52 +261,204 @@ $card = MTG::Card->new({multiverseid=>194383,
 						rarity=>'Uncommon',
 						tags=>{affects_all_creatures=>1,pro_artifact=>1,creature_damage=>1}
 					});
-$dbl->add($card);
+push @cards, $card;
 
 
 $card = MTG::Card->new({multiverseid=>249660,
 						name=>'Rolling Tremblor',
 						CMC=>3,
 						cost=>['any','any','red'],
-						affinity_colors=>{'red'},
+						affinity_colors=>{'red'=>1},
 						type=>'Sorcery',
 						rarity=>'Uncommon',
 						tags=>{affect_all_nonflying_creatures=>1,creature_damage=>1,flashback=>1}
 					});
-$dbl->add($card);
+push @cards, $card;
 
 
 $card = MTG::Card->new({multiverseid=>245197,
 						name=>'Past in Flames',
 						CMC=>4,
 						cost=>['any','any','red','red'],
-						affinity_colors=>{'red'},
+						affinity_colors=>{'red'=>1},
 						type=>'Sorcery',
 						rarity=>'Mythic Rare',
 						tags=>{affect_graveyard=>1,flashback=>1,fetch_graveyard_instant=>1,fetch_graveyard_sorcery=>1}
 					});
-$dbl->add($card);
+push @cards, $card;
 
 $card = MTG::Card->new({multiverseid=>218004,
 						name=>'Geosurge',
 						CMC=>4,
 						cost=>['red','red','red','red'],
-						affinity_colors=>{'red'},
+						affinity_colors=>{'red'=>1},
 						type=>'Sorcery',
 						rarity=>'Uncommon',
 						tags=>{generate_mana=>1}
 					});
-$dbl->add($card);
+push @cards, $card;
+
+$card = MTG::Card->new({multiverseid=>234737,
+						name=>'Barbarian Ring',
+						affinity_colors=>{'red'=>1},
+						type=>'Land',
+						rarity=>'Uncommon',
+						tags=>{generate_mana=>1, generate_red_mana=>1, target_creature=>1, target_player=>1, creature_damage=>1, player_damage=>1, opponent_player_damage=>1}
+					});
+push @cards, $card;
+$card = MTG::Card->new({multiverseid=>234698,
+						name=>'Ghitu Encampment',
+						affinity_colors=>{'red'=>1},
+						type=>'Land',
+						rarity=>'Uncommon',
+						tags=>{generate_mana=>1, generate_red_mana=>1, land_to_creature=>1}
+					});
+push @cards, $card;
+$card = MTG::Card->new({multiverseid=>177549,
+						name=>'Teetering Peaks',
+						affinity_colors=>{'red'=>1},
+						type=>'Land',
+						rarity=>'Common',
+						tags=>{generate_mana=>1, generate_red_mana=>1, pump=>1}
+					});
+push @cards, $card;
+$card = MTG::Card->new({multiverseid=>2259,
+						name=>'Ball Lightning',
+						CMC=>3,
+						cost=>['red','red','red'],
+						affinity_colors=>{},
+						type=>'Creature',
+						subtype=>['Elemental'],
+						rarity=>'Rare',
+						power=>6,
+						toughness=>1,
+						tags=>{creature=>1,haste=>1,trample=>1, sacrifice=>1},
+					});
+push @cards, $card;
+$card = MTG::Card->new({multiverseid=>153970,
+						name=>'Boggart Ram-Gang',
+						CMC=>3,
+						cost=>['red|green','red|green','red|green'],
+						affinity_colors=>{'red'=>1, 'green'=>1},
+						type=>'Creature',
+						subtype=>['Goblin','Warrior'],
+						rarity=>'Uncommon',
+						power=>3,
+						toughness=>3,
+						tags=>{creature=>1,haste=>1,wither=>1},
+					});
+push @cards, $card;
+$card = MTG::Card->new({multiverseid=>234717,
+						name=>'Cinder Pyromancer',
+						CMC=>3,
+						cost=>['any','any','red'],
+						affinity_colors=>{'red'=>1}
+						type=>'Creature',
+						subtype=>['Elemental','Shaman'],
+						rarity=>'Common',
+						power=>0,
+						toughness=>1,
+						tags=>{creature=>1,tap_ability=>1, target_player=>1,opponent_player_damage=>1,untap_creature=>1},
+					});
+push @cards, $card;
+$card = MTG::Card->new({multiverseid=>158106,
+						name=>'Figure of Destiny',
+						CMC=>1,
+						cost=>['red|white'],
+						affinity_colors=>{'red'=>1,'white'=>1}
+						type=>'Creature',
+						subtype=>['Kithkin','Spirit','Warrior','Avatar'],
+						rarity=>'Rare',
+						power=>1,
+						toughness=>1,
+						tags=>{creature=>1,leveler=>1, flying=>1,first_strike=>1},
+					});
+push @cards, $card;
+$card = MTG::Card->new({multiverseid=>158106,
+						name=>'Fire Servant',
+						CMC=>5,
+						cost=>['any','any','any','red','red'],
+						affinity_colors=>{'red'=>1},
+						type=>'Creature',
+						subtype=>['Elemental'],
+						rarity=>'Uncommon',
+						power=>4,
+						toughness=>3,
+						tags=>{creature=>1,double_damage=>1},
+					});
+push @cards, $card;
 
 
 
+foreach my $cc (@cards) {
+	eval {
+		print "inserted " . $db->insertCard($cc) . "\n";
+	};
+	if ($@ && ref($@) eq 'MTG::Exception::Unique') {
+		print "skipped. " . $@->{message} . "\n";
+	} elsif($@) {
+		print Dumper($@);
+	}
+}
 
+my $deck = MTG::Deck->new($db);
+$deck->addCard("Harvest Pyre",2);
+$deck->addCard("Mountain", 23);
+$deck->addCard("Devil's Play",4);
+$deck->addCard("Melt Terrain");
+$deck->addCard("Balefire Dragon", 2);
+$deck->addCard("Volcanic Dragon", 2);
+$deck->addCard("Whipflare", 2);
+$deck->addCard("Gorehorn Minotaurs",2);
+$deck->addCard("Stormblood Berserker",2);
+$deck->addCard("Fireball",3);
+$deck->addCard("Shock",2);
+$deck->addCard("Tectonic Rift",2);
+$deck->addCard("Goblin Fireslinger",4);
+$deck->addCard("Circle of Flame",2);
+$deck->addCard("Slagstorm");
+$deck->addCard("Past in Flames");
+$deck->addCard("Traitorous Blood",2);
+$deck->addCard("Rolling Tremblor",1);
+$deck->addCard("Geosurge",2);
+$deck->setOwnerId(1);
+$deck->setName("Jason Red Punishment");
+$deck->setFormat("Standard");
+$db->insertDeck($deck);
 
-
-
-
-
-
-
-
-
+$deck = MTG::Deck->new($db);
+$deck->addCard("Barbarian Ring", 1);
+$deck->addCard("Ghitu Encampment", 1);
+$deck->addCard("Mountain", 21);
+$deck->addCard("Teetering Peaks", 2);
+$deck->addCard("Ball Lightning", 1);
+$deck->addCard("Boggart Ram-Gang", 1);
+$deck->addCard("Cinder Pyromancer", 1);
+$deck->addCard("Figure of Destiny", 1);
+$deck->addCard("Fire Servant", 1);
+$deck->addCard("Grim Lavamancer", 1);
+$deck->addCard("Hellspark Elemental", 1);
+$deck->addCard("Jackal Pup", 2);
+$deck->addCard("Jaya Ballard, Task Mage", 1);
+$deck->addCard("Keldon Champion", 1);
+$deck->addCard("Keldon Marauders", 2);
+$deck->addCard("Mogg Fanatic", 2);
+$deck->addCard("Mogg Flunkies", 2);
+$deck->addCard("Spark Elemental", 2);
+$deck->addCard("Vulshok Sorcerer", 1);
+$deck->addCard("Browbeat", 1);
+$deck->addCard("Chain Lightning", 1);
+$deck->addCard("Fireball", 1);
+$deck->addCard("Fireblast", 1);
+$deck->addCard("Flames of the Bloodhand", 1);
+$deck->addCard("Hammer of Bogardan", 1);
+$deck->addCard("Lightning Bolt", 4);
+$deck->addCard("Pillage", 1);
+$deck->addCard("Price of Progress", 1);
+$deck->addCard("Reverberate", 1);
+$deck->addCard("Sudden Impact", 1);
+$deck->addCard("Thunderbolt", 1);
+$deck->setOwnerId(2);
+$deck->setName("Premium Deck Series: Fire and Lightning");
+$deck->setFormat("Legacy");
+$db->insertDeck($deck);
