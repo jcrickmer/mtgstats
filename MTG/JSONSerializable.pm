@@ -2,6 +2,7 @@ package MTG::JSONSerializable;
 
 use protected qw(serializable);
 use JSON::XS;
+use Data::Dumper;
 
 sub new {
     my $class = shift;
@@ -22,18 +23,22 @@ sub toBSON {
     my $result = {};
 
     foreach my $attr (@{$self->{serializable}}) {
+		#print "serializing $attr\n";
 		# REVISIT - do something special for hash refs/objects?
 		# Doesn't seem like it, as TO_JSON's recursiveness solves the
 		# problem.  But maybe there is a performace problem here?
 		if (ref($attr) eq 'HASH' && $attr->{by_ref}) {
 			my $n = $attr->{name};
+			#print "serializing by_ref $n\n";
 			if (ref($self->{$n}) eq 'ARRAY') {
+				#print Dumper($self->{$n});
 				my @ra = ();
 				foreach my $obj (@{$self->{$n}}) {
 					push @ra, $obj->getId();
 				}
 				$result->{$n} = \@ra;
 			} elsif (ref($self->{$n}) eq 'HASH') {
+				#print "there\n";
 				my $rhr = {};
 				foreach my $obj (keys %{$self->{$n}}) {
 					$rhr->{$obj} = $self->{$n}->{$obj}->getId();

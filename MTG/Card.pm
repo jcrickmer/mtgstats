@@ -128,18 +128,25 @@ sub new {
 	my $test = shift;
 	if (defined $test && ref($test) eq 'HASH') {
         # REVISIT - we should only copy out what we need, not just assign a reference
-		foreach my $f (qw(multiverseid name CMC cost type rarity tags expansion subtype toughness power)) {
-			$self->{$f} = $test->{$f};
+		foreach my $f (qw(_id multiverseid name CMC cost type rarity tags expansion subtype toughness power)) {
+			if ($f eq 'multiverseid' && ref($test->{$f}) ne 'ARRAY') {
+				$self->{$f} = [$test->{$f}];
+			} else {
+				$self->{$f} = $test->{$f};
+			}
 		}
 	}
+	if (! defined $self->{_id}) {
+		$self->{_id} = undef;
+	}
 	if (! defined $self->{multiverseid}) {
-		$self->{multiverseid} = 1;
+		$self->{multiverseid} = [];
 	}
 	if (! defined $self->{name}) {
 		$self->{name} = '';
 	}
 	if (! defined $self->{CMC}) {
-		$self->{CMC} = 1;
+		$self->{CMC} = 0;
 	}
 	if (! defined $self->{cost}) {
 		$self->{cost} = [];
@@ -165,7 +172,7 @@ sub new {
 	if (! defined $self->{power}) {
 		$self->{power} = 0;
 	}
-	push(@{$self->{serializable}}, qw(multiverseid name CMC cost type rarity tags expansion subtype toughness power));
+	push(@{$self->{serializable}}, qw(_id multiverseid name CMC cost type rarity tags expansion subtype toughness power));
 	bless($self, $class);
 	return $self;
 }
@@ -183,7 +190,27 @@ sub getName {
 
 sub getId {
 	my $self = shift;
-	return $self->{multiverseid};
+	return $self->{_id};
+}
+
+# Returns a multiverse id number (typically the highest).
+sub getMultiverseId {
+	my $self = shift;
+	my $result = -1;
+	foreach my $mvid (@{$self->{multiverseid}}) {
+		$result = $mvid > $result ? $mvid : $result;
+	}
+	return $result;
+}
+
+# Returns an array of multiverse id numbers.
+sub getMultiverseIds {
+	my $self = shift;
+	my @result = ();
+	foreach my $id (@{$self->{multiverseid}}) {
+		push @result, $id;
+	}
+	return @result;
 }
 
 # returns a reference to an array of tags

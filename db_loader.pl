@@ -15,7 +15,7 @@ use MongoDB::OID;
 my @cards = ();
 my $db = MTG::Database->new();
 
-my $card = MTG::Card->new({multiverseid=>294,
+my $card = MTG::Card->new({multiverseid=>[294,205925],
 						name=>'Plains',
 						CMC=>0,
 						cost=>[],
@@ -352,7 +352,7 @@ $card = MTG::Card->new({multiverseid=>234717,
 						name=>'Cinder Pyromancer',
 						CMC=>3,
 						cost=>['any','any','red'],
-						affinity_colors=>{'red'=>1}
+						affinity_colors=>{'red'=>1},
 						type=>'Creature',
 						subtype=>['Elemental','Shaman'],
 						rarity=>'Common',
@@ -365,7 +365,7 @@ $card = MTG::Card->new({multiverseid=>158106,
 						name=>'Figure of Destiny',
 						CMC=>1,
 						cost=>['red|white'],
-						affinity_colors=>{'red'=>1,'white'=>1}
+						affinity_colors=>{'red'=>1,'white'=>1},
 						type=>'Creature',
 						subtype=>['Kithkin','Spirit','Warrior','Avatar'],
 						rarity=>'Rare',
@@ -374,7 +374,7 @@ $card = MTG::Card->new({multiverseid=>158106,
 						tags=>{creature=>1,leveler=>1, flying=>1,first_strike=>1},
 					});
 push @cards, $card;
-$card = MTG::Card->new({multiverseid=>158106,
+$card = MTG::Card->new({multiverseid=>234702,
 						name=>'Fire Servant',
 						CMC=>5,
 						cost=>['any','any','any','red','red'],

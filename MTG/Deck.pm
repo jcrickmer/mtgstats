@@ -23,12 +23,12 @@ sub addCard {
 	my $card = shift;
 	my $count = shift || 1;
 	if (defined $card && ref($card) && $card->isa('MTG::Card')) {
-		print "a card!\n";
+		#print "a card!\n";
 		push(@{$self->{cards}}, $card);
 	} elsif (defined $card) {
 		my $card_o;
 		if ($card * 1 eq $card) { # number check
-			$card_o = $self->{db}->getCardById($card, 1);
+			$card_o = $self->{db}->getCardByMultiverseId($card, 1);
 		} else {
 			$card_o = $self->{db}->getCardByName($card);
 		}
@@ -42,7 +42,7 @@ sub addCard {
 				}
 			}
 		} else {
-			die('Database does not contain a card with id ' . $card);
+			die('Database does not contain a card with descriptor ' . $card);
 		}
 	} else {
 		die('Cannot add card from undefined');

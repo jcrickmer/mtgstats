@@ -29,13 +29,35 @@ sub new {
 		#IdApp::Exception::DAL->throw(message => $1, show_trace => 1);
 		die($@);
     }
+	eval {
+        #db.cards.ensureIndex({multiverseid:1},{unique:true});
+        #db.cards.ensureIndex({name:1},{unique:true});
+
+		my $cards = $self->{db}->get_collection('cards');
+		$cards->ensure_index({'name' => 1},{unique => 1});
+		$cards->ensure_index({'multiverseid' => 1},{unique => 1});
+    }; if (defined $@ && $@ ne '') {
+		$@ =~ /^(.+) at (\/?\w.+)$/;
+		#IdApp::Exception::DAL->throw(message => $1, show_trace => 1);
+		die($@);
+    }
+
+	eval {
+        #db.decks.ensureIndex({name:1, ownerId:1},{unique:true});
+		my $decks = $self->{db}->get_collection('decks');
+		$decks->ensure_index({'name' => 1,'ownerId' => 1},{unique => 1});
+    }; if (defined $@ && $@ ne '') {
+		$@ =~ /^(.+) at (\/?\w.+)$/;
+		#IdApp::Exception::DAL->throw(message => $1, show_trace => 1);
+		die($@);
+    }
 
 	bless($self, $class);
 
 	return $self;
 }
 
-sub getCardById {
+sub getCardByMultiverseId {
 	my $self = shift;
 	my $id = shift;
 	my $cacheOk = shift;
@@ -51,7 +73,7 @@ sub getCardById {
 	my $cards = $self->{db}->get_collection('cards');
 	my $res_doc;
 	eval {
-		$res_doc = $cards->find_one({'_id'=>$id});
+		$res_doc = $cards->find_one({'multiverseid'=>$id});
     };
 
     if ($@) {
@@ -117,7 +139,9 @@ sub getDeckByNameAndOwnerId {
 		$res_deck->{format} = $res_doc->{format};
 		$res_deck->{ownerId} = $res_doc->{ownerId};
 		$res_deck->{name} = $res_doc->{name};
+		#print Dumper($res_doc);
 		foreach my $cid (@{$res_doc->{cards}}) {
+			#print "adding card $cid\n";
 			$res_deck->addCard($cid);
 		}
 	}
@@ -155,6 +179,7 @@ sub removeDeck {
 	my $self = shift;
 	my $deck = checkClass('MTG::Deck', shift);
 	$self->{db}->get_collection('decks')->remove({name=>$deck->{name}, ownerId=>$deck->{ownerId}});
+    # REVISIT - return real exceptions
 	return;
 }
 
@@ -176,8 +201,8 @@ sub insertCard {
 	#	}
 	#}
 	my $doc = $card->toBSON();
-	#my $id = MongoDB::OID->new;
-	$doc->{'_id'} = $doc->{multiverseid};
+	my $id = MongoDB::OID->new;
+	$doc->{'_id'} = $id->to_string;
 
 	my $id;
     eval {
