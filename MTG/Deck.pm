@@ -27,7 +27,9 @@ sub addCard {
 		push(@{$self->{cards}}, $card);
 	} elsif (defined $card) {
 		my $card_o;
-		if ($card * 1 eq $card) { # number check
+		if ($card =~ /^[0-9abcdefABCDEF]{9}/) { # looks like an OID?
+			$card_o = $self->{db}->getCardByOID($card, 1);
+		} elsif ($card * 1 eq $card) { # number check
 			$card_o = $self->{db}->getCardByMultiverseId($card, 1);
 		} else {
 			$card_o = $self->{db}->getCardByName($card);

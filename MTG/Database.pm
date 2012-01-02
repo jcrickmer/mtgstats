@@ -12,6 +12,7 @@ use MTG::Exception;
 use MTG::Util qw(checkClass);
 use MTG::CardCache;
 use MTG::Card;
+use MTG::Deck;
 
 sub new {
     my $class = shift;
@@ -55,6 +56,41 @@ sub new {
 	bless($self, $class);
 
 	return $self;
+}
+
+sub getCardByOID {
+	my $self = shift;
+	my $oid = shift;
+	my $cacheOk = shift;
+
+	my $res_card;
+	if ($cacheOk) {
+		$res_card = $self->{cardCache}->getCard($oid);
+		if (defined $res_card) {
+			return $res_card;
+		}
+	}
+
+	my $cards = $self->{db}->get_collection('cards');
+	my $res_doc;
+	eval {
+		$res_doc = $cards->find_one({'_id'=>$oid});
+    };
+
+    if ($@) {
+		# we have a duplicate key on field $1;
+		#my $ex = IdApp::Exception::Unique->new(message => $1 . ' must be unique', show_trace => 1);
+		#$ex->{field} = $1;
+		#$ex->throw();
+		die($@);
+    }
+
+	if (defined $res_doc) {
+		$res_card = MTG::Card->new($res_doc);
+		$self->{cardCache}->addCard($res_card);
+	}
+	
+	return $res_card;
 }
 
 sub getCardByMultiverseId {
@@ -135,7 +171,7 @@ sub getDeckByNameAndOwnerId {
     }
 
 	if (defined $res_doc) {
-		$res_deck = MTG::Deck->new($self->{db});
+		$res_deck = MTG::Deck->new($self);
 		$res_deck->{format} = $res_doc->{format};
 		$res_deck->{ownerId} = $res_doc->{ownerId};
 		$res_deck->{name} = $res_doc->{name};
@@ -173,6 +209,26 @@ sub insertDeck {
 		die ($@);
 	}
 	return $id;
+}
+
+# returns an array ref of MTG::Deck objects
+sub listDecks {
+	my $self = shift;
+	my @result = ();
+	my $cursor = $self->{db}->get_collection('decks')->find();
+	while (my $doc = $cursor->next()) {
+		my $res_deck = MTG::Deck->new($self);
+		$res_deck->{format} = $doc->{format};
+		$res_deck->{ownerId} = $doc->{ownerId};
+		$res_deck->{name} = $doc->{name};
+		#print Dumper($res_doc);
+		foreach my $cid (@{$doc->{cards}}) {
+			#print "adding card $cid\n";
+			$res_deck->addCard($cid);
+		}
+		push(@result, $res_deck);
+	}
+	return \@result;
 }
 
 sub removeDeck {

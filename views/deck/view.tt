@@ -1,0 +1,9 @@
+[% INCLUDE header.tt
+    title = 'Deck View',
+ %]
+
+    <div class="main">
+deck view
+    </div>
+
+[% INCLUDE footer.tt %]

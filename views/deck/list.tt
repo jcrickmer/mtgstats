@@ -1,0 +1,13 @@
+[% INCLUDE header.tt
+    title = 'Deck List',
+ %]
+
+    <div class="main">
+      <ul>
+[%  FOREACH deck IN decks %]
+        <li>[% deck.name %]</a>
+[%  END %]
+      </ul>
+    </div>
+
+[% INCLUDE footer.tt %]
