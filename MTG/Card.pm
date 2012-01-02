@@ -33,6 +33,7 @@ my $TAG_EXP = {
 	destroy_artifact => ['removal'],
 	destroy_enchantment => ['removal'],
 	land => ['generate_mana', 'permanent'],
+	legendary => [],
 	generate_mana => [],
 	generate_mana_multicolor => [],
 	generate_mana_colorless => [],
@@ -128,7 +129,7 @@ sub new {
 	my $test = shift;
 	if (defined $test && ref($test) eq 'HASH') {
         # REVISIT - we should only copy out what we need, not just assign a reference
-		foreach my $f (qw(_id multiverseid name CMC cost type rarity tags expansion subtype toughness power)) {
+		foreach my $f (qw(_id multiverseid name CMC cost type rarity tags expansion subtype toughness power card_text flavor_text card_text_html flavor_text_html)) {
 			if ($f eq 'multiverseid' && ref($test->{$f}) ne 'ARRAY') {
 				$self->{$f} = [$test->{$f}];
 			} else {
@@ -172,7 +173,7 @@ sub new {
 	if (! defined $self->{power}) {
 		$self->{power} = 0;
 	}
-	push(@{$self->{serializable}}, qw(_id multiverseid name CMC cost type rarity tags expansion subtype toughness power));
+	push(@{$self->{serializable}}, qw(_id multiverseid name CMC cost type rarity tags expansion subtype toughness power card_text flavor_text card_text_html flavor_text_html));
 	bless($self, $class);
 	return $self;
 }
@@ -239,9 +240,11 @@ sub broadenTags {
 	my $self = shift;
 
 	if ($self->{type} eq 'Enchantment') {
+		$self->addTag('permanent');
 		$self->addTag('spell');
 	}
 	if ($self->{type} eq 'Creature') {
+		$self->addTag('permanent');
 		$self->addTag('spell');
 	}
 	if ($self->{type} eq 'Artifact') {
