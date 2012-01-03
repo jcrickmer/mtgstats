@@ -7,13 +7,14 @@ use MTG::MongoObject;
 sub new {
 	my $class = shift;
 	my $self = {db => shift,
+				'_id' => undef,
 				cards=>[],
 				name=>undef,
 				format=>undef,
 				owner=>undef,
 				ownerId=>undef,
 			};
-	push(@{$self->{serializable}}, {name=>'cards', by_ref=>1}, 'name', 'format', 'ownerId');
+	push(@{$self->{serializable}}, '_id', {name=>'cards', by_ref=>1}, 'name', 'format', 'ownerId');
 	bless($self, $class);
 	return $self;
 }
@@ -54,6 +55,12 @@ sub addCard {
 sub cardCount {
 	my $self = shift;
 	return scalar(@{$self->{cards}});
+}
+
+# returns the string of the Mongo OID
+sub getId {
+	my $self = shift;
+	return $self->{'_id'};
 }
 
 # returns a MTG::Card, or undef

@@ -18,12 +18,10 @@ sub list {
 	my $env = shift;
 	my $decks = $self->{app}->{db}->listDecks();
 	my $context = {decks => $decks};
-	my $tt = Template->new({
-		INCLUDE_PATH => '/home/jason/projects/mtgstats/views',
-		INTERPOLATE  => 1,
-	}) || die "$Template::ERROR\n";
+
 	my $output = '';
-	$tt->process('deck/list.tt', $context, \$output) || die $tt->error();
+	$self->{app}->{tt}->process('deck/list.tt', $context, \$output) || die $self->{app}->{tt}->error();
+
     return [
         # HTTP Status code
         200,
@@ -33,6 +31,25 @@ sub list {
         [ $output ],
     ];
 
+}
+
+sub view {
+	my $self = shift;
+	my $env = shift;
+	my $deck = $self->{app}->{db}->getDeckById($env->{'app.qs'}->{deckid});
+	my $context = {deck => $deck};
+
+	my $output = '';
+	$self->{app}->{tt}->process('deck/view.tt', $context, \$output) || die $self->{app}->{tt}->error();
+
+    return [
+        # HTTP Status code
+        200,
+        # HTTP headers as arrayref
+        [ 'Content-type' => 'text/html' ],
+        # Response body as array ref
+        [ $output ],
+    ];
 }
 
 1;

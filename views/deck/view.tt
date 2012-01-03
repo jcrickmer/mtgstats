@@ -3,7 +3,13 @@
  %]
 
     <div class="main">
-deck view
-    </div>
+deck view - [% deck.name %]
+
+	  <ul>
+[% FOREACH card IN deck.cards %]
+<li>[% card.getName %]</li>
+[% END %]
+      </ul>
+	</div>
 
 [% INCLUDE footer.tt %]

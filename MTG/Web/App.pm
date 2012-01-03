@@ -11,8 +11,15 @@ sub new {
 	my $class = shift;
 	my $self = {}; #$class->SUPER::new();
 	$self->{db} = MTG::Database->new();
+
+	$self->{tt} = Template->new({
+		INCLUDE_PATH => '/home/jason/projects/mtgstats/views',
+		INTERPOLATE  => 1,
+	}) || die "$Template::ERROR\n";
+
 	$self->{deck_controller} = MTG::Web::DeckController->new($self);
 	$self->{card_controller} = MTG::Web::CardController->new($self);
+
 	bless($self, $class);
 	return $self;
 }
@@ -20,6 +27,12 @@ sub new {
 sub call {
     # $env is the full PSGI environment
     my ($self, $env) = @_;
+
+	my @qsp = split(/&/, $env->{QUERY_STRING});
+	foreach my $part (@qsp) {
+		$part =~ /^([^=]+)=?(.*)$/;
+		$env->{'app.qs'}->{$1} = $2;
+	}
 
 	$env->{PATH_INFO} =~ /^\/([^\/]+)\/([^\/]+)/;
 	my $contName = $1;
