@@ -37,7 +37,14 @@ sub view {
 	my $self = shift;
 	my $env = shift;
 	my $deck = $self->{app}->{db}->getDeckById($env->{'app.qs'}->{deckid});
-	my $context = {deck => $deck};
+	my $landCards = $deck->cardsByType('Land');
+	my $creatureCards = $deck->cardsByType('Creature');
+	my $spellCards = $deck->cardsByType({'Land' => 'ne', 'Creature' => 'ne'});
+	my $context = {deck => $deck,
+				   landCards => $landCards,
+				   creatureCards => $creatureCards,
+				   spellCards => $spellCards,
+			   };
 
 	my $output = '';
 	$self->{app}->{tt}->process('deck/view.tt', $context, \$output) || die $self->{app}->{tt}->error();

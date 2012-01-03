@@ -5,11 +5,27 @@
     <div class="main">
 deck view - [% deck.name %]
 
+<h3>Lands</h3>
 	  <ul>
-[% FOREACH card IN deck.cards %]
+[% FOREACH card IN landCards %]
 <li>[% card.getName %]</li>
 [% END %]
       </ul>
+
+	  <h3>Creatures</h3>
+	  <ul>
+[% FOREACH card IN creatureCards %]
+<li>[% card.getName %]</li>
+[% END %]
+      </ul>
+
+	  <h3>Other Spells</h3>
+	  <ul>
+[% FOREACH card IN spellCards %]
+<li>[% card.getName %]</li>
+[% END %]
+      </ul>
+
 	</div>
 
 [% INCLUDE footer.tt %]

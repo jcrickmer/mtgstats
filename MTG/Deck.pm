@@ -101,7 +101,18 @@ sub cardsByType {
 	my $type = shift;
 	my @result = ();
 	foreach my $card (@{$self->{cards}}) {
-		push(@result, $card) if ($card->getType() eq $type);
+		if (ref($type) eq 'HASH') {
+			my $incl = 1;
+			my @vals = keys(%$type);
+			foreach my $val (@vals) {
+				# expecting something like 'Land' => 'ne'
+				print STDERR $card->getType() . ' ' . $type->{$val} . ' ' . $val . "\n";
+				$incl = $incl && eval('$card->getType() ' . $type->{$val} . ' $val;');
+			}
+			push(@result, $card) if $incl;
+		} else {
+			push(@result, $card) if ($card->getType() eq $type);
+		}
 	}
 	return \@result;
 }
