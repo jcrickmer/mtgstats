@@ -3,6 +3,7 @@ package MTG::Deck;
 use base qw(MTG::MongoObject);
 use strict;
 use MTG::MongoObject;
+use Data::Dumper;
 
 sub new {
 	my $class = shift;
@@ -101,18 +102,31 @@ sub cardsByType {
 	my $type = shift;
 	my @result = ();
 	foreach my $card (@{$self->{cards}}) {
-		if (ref($type) eq 'HASH') {
-			my $incl = 1;
-			my @vals = keys(%$type);
-			foreach my $val (@vals) {
-				# expecting something like 'Land' => 'ne'
-				print STDERR $card->getType() . ' ' . $type->{$val} . ' ' . $val . "\n";
-				$incl = $incl && eval('$card->getType() ' . $type->{$val} . ' $val;');
-			}
-			push(@result, $card) if $incl;
-		} else {
-			push(@result, $card) if ($card->getType() eq $type);
+		push(@result, $card) if ($card->getType() eq $type);
+	}
+	return \@result;
+}
+
+# expects a code reference, or reference to an array of code
+# references, that will see if a card matches.  The code references
+# should take @_[0] as a MTG::Card.  If there are multiple code
+# references in the array_ref, they will be treated as an
+# intersection.  The return result of the code should be 0 or undef
+# for DO NOT includes, and 1 (or something that evals to true) for DO
+# include.
+sub cardsByCode {
+	my $self = shift;
+	my $codes = shift;
+	if (ref($codes) eq 'CODE') {
+		$codes = [$codes];
+	}
+	my @result = ();
+	foreach my $card (@{$self->{cards}}) {
+		my $incl = 1;
+		foreach my $cmp (@$codes) {
+			$incl = $incl && &$cmp($card);
 		}
+		push(@result, $card) if $incl;
 	}
 	return \@result;
 }

@@ -26,6 +26,13 @@ deck view - [% deck.name %]
 [% END %]
       </ul>
 
+	  <h3>Tags</h3>
+	  <div>
+[% FOREACH tt IN tagKeys %]
+<span style="font-size: [% 10 + (32 * tags.$tt.percentage ) %]pt;">[% tt %]</span> 
+[% END %]
+      </div>
+
 	</div>
 
 [% INCLUDE footer.tt %]
