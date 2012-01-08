@@ -15,14 +15,14 @@ deck view - [% deck.name %]
 	  <h3>Creatures</h3>
 	  <ul>
 [% FOREACH cardId IN creatureCards.keys %]
-<li>[% creatureCards.$cardId.count %] [% creatureCards.$cardId.card.getName %]</li>
+<li>[% creatureCards.$cardId.count %] <a href="/card/view?cardid=[% creatureCards.$cardId.card.getId %]">[% creatureCards.$cardId.card.getName %]</a></li>
 [% END %]
       </ul>
 
 	  <h3>Other Spells</h3>
 	  <ul>
 [% FOREACH cardId IN spellCards.keys %]
-<li>[% spellCards.$cardId.count %] [% spellCards.$cardId.card.getName %]</li>
+<li>[% spellCards.$cardId.count %] <a href="/card/view?cardid=[% spellCards.$cardId.card.getId %]">[% spellCards.$cardId.card.getName %]</a></li>
 [% END %]
       </ul>
 

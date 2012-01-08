@@ -11,3 +11,8 @@ div.header {
 
 div.globalnav {
 }
+div.card_details > img.card_image {
+	float: left;
+margin-right: 5px;
+padding-right: 5px;
+}

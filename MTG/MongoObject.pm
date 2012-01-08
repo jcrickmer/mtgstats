@@ -15,6 +15,12 @@ sub new {
     return $self;
 }
 
+sub get {
+	my $self = shift;
+	my $fieldName = shift;
+	return $self->{$fieldName};
+}
+
 # sub AUTOLOAD {
 #     my $self = shift;
 #     my $type = ref ($self) || croak "$self is not an object";

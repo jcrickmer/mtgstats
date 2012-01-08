@@ -1,9 +1,53 @@
 [% INCLUDE header.tt
-    title = 'Card View',
+    title = "Card View - $card.getName"
  %]
 
-    <div class="main">
-card view - [% card.getName %]
+    <div class="main card_details">
+      <h2>[% card.getName %]</h2>
+      <img src="http://gatherer.wizards.com/Handlers/Image.ashx?type=card&multiverseid=[% card.get('multiverseid').0 %]" class="card_image" />
+	  <table>
+<tr>
+<td class="attr_label">Name</td>
+<td class="attr_value">[% card.get('name') %]</td>
+</tr>
+<tr>
+<td class="attr_label">Cost</td>
+<td class="attr_value">[% card.get('cost').join(' ') %]</td>
+</tr>
+<tr>
+<td class="attr_label">Converted Mana Cost</td>
+<td class="attr_value">[% card.get('CMC') %]</td>
+</tr>
+<tr>
+<td class="attr_label">Type</td>
+<td class="attr_value">[% card.get('type') %]</td>
+</tr>
+<tr>
+<td class="attr_label">Subtype</td>
+<td class="attr_value">[% card.get('subtype').join %]</td>
+</tr>
+<tr>
+<td class="attr_label">Power/Toughness</td>
+<td class="attr_value">[% card.get('power') %]/[% card.get('toughness') %]</td>
+</tr>
+<tr>
+<td class="attr_label">Rarity</td>
+<td class="attr_value">[% card.get('rarity') %]</td>
+</tr>
+<tr>
+<td class="attr_label">Tags</td>
+<td class="attr_value">[% card.get('tags').keys.join(", ") %]</td>
+</tr>
+<tr>
+<td class="attr_label">Card Text</td>
+<td class="attr_value">[% card.get('card_text_html') %]</td>
+</tr>
+<tr>
+<td class="attr_label">Flavor Text</td>
+<td class="attr_value">[% card.get('flavor_text_html') %]</td>
+</tr>
+      </table>
+
     </div>
 
 
