@@ -8,7 +8,7 @@ deck view - [% deck.name %]
 <h3>Lands</h3>
 	  <ul>
 [% FOREACH cardId IN landCards.keys %]
-<li>[% landCards.$cardId.count %] [% landCards.$cardId.card.getName %]</li>
+<li>[% landCards.$cardId.count %] <a href="/card/view?cardid=[% landCards.$cardId.card.getId %]">[% landCards.$cardId.card.getName %]</a></li>
 [% END %]
       </ul>
 

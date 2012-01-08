@@ -11,6 +11,6 @@
     </div>
     <div class="globalnav">
       <ul>
-        <li>Decks</li>
+        <li><a href="/deck/list">Decks</a></li>
       </ul>
     </div>

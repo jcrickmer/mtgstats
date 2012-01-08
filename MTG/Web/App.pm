@@ -40,7 +40,7 @@ sub call {
 
 	my $controller = $self->{$contName . '_controller'} || $self->{deck_controller};
 
-	if ($env->{PATH_INFO} eq '/deck') {
+	if ($env->{PATH_INFO} eq '/deck' || $env->{PATH_INFO} eq '/') {
 		return $self->relocate($env, '/deck/');
 	}
 	if ($env->{PATH_INFO} eq '/card') {

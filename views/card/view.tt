@@ -1,0 +1,10 @@
+[% INCLUDE header.tt
+    title = 'Card View',
+ %]
+
+    <div class="main">
+card view - [% card.getName %]
+    </div>
+
+
+[% INCLUDE footer.tt %]
