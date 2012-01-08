@@ -424,7 +424,9 @@ $deck->addCard("Geosurge",2);
 $deck->setOwnerId(1);
 $deck->setName("Jason Red Punishment");
 $deck->setFormat("Standard");
-#$db->insertDeck($deck);
+eval {
+	$db->insertDeck($deck);
+}; if ($@) { print STDERR Dumper($@); }
 
 $deck = MTG::Deck->new($db);
 $deck->addCard("Barbarian Ring", 1);
@@ -461,7 +463,9 @@ $deck->addCard("Thunderbolt", 1);
 $deck->setOwnerId(2);
 $deck->setName("Premium Deck Series: Fire and Lightning");
 $deck->setFormat("Legacy");
-$db->insertDeck($deck);
+eval {
+	$db->insertDeck($deck);
+}; if ($@) { print STDERR Dumper($@); }
 
 $deck = MTG::Deck->new($db);
 $deck->setOwnerId(1);
@@ -545,5 +549,33 @@ $deck->addCard("Wall of Frost");
 $deck->addCard("Phyrexian Metamorph");
 $deck->addCard("Bringer of the Green Dawn");
 $deck->addCard("Experiment Kraj");
-$db->insertDeck($deck);
+eval {
+	$db->insertDeck($deck);
+}; if ($@) { print STDERR Dumper($@); }
 
+$deck = MTG::Deck->new($db);
+$deck->setOwnerId(4);
+$deck->setName("Green-Blue Infect");
+$deck->setFormat("Standard");
+$deck->setDate("2011-07-01");
+$deck->addCard("Forest",10);
+$deck->addCard("Inkmoth Nexus",4);
+$deck->addCard("Island",5);
+$deck->addCard("Misty Rainforest",4);
+$deck->addCard("Blighted Agent",4);
+$deck->addCard("Glistener Elf",4);
+$deck->addCard("Ichorclaw Myr",4);
+$deck->addCard("Apostle's Blessing",3);
+$deck->addCard("Distortion Strike",4);
+$deck->addCard("Gitaxian Probe",3);
+$deck->addCard("Groundswell",4);
+$deck->addCard("Livewire Lash",3);
+$deck->addCard("Mutagenic Growth",4);
+$deck->addCard("Vines of Vastwood",4);
+$deck->addCard("Nature's Claim",3,"sideboard");
+$deck->addCard("Spell Pierce",4,"sideboard");
+$deck->addCard("Spellskite",4,"sideboard");
+$deck->addCard("Viridian Corrupter",4,"sideboard");
+eval {
+	$db->insertDeck($deck);
+}; if ($@) { print STDERR Dumper($@); }

@@ -224,12 +224,12 @@ foreach my $file (@files) {
 		#print Dumper($card) if ($card->{name} =~ /Gyre/);
 		#print $card->{name} . ":  " . join(', ', @{$card->{tags}}) . "\n";
 		my $mtgCard = MTG::Card->new($card);
-		#print Dumper($mtgCard) if ($card->{name} =~ /Gyre/);
+		print $file . ":  " . Dumper($mtgCard) if ($card->{name} eq '');
 		eval {
-			print "inserted " . $db->insertCard($mtgCard) . "\n";
+			print "inserted " . $mtgCard->getName() . ": " . $db->insertCard($mtgCard) . "\n";
 		};
 		if ($@ && ref($@) eq 'MTG::Exception::Unique') {
-			print "skipped. " . $@->{message} . "\n";
+			print "skipped " . $mtgCard->getName() . ": " . $@->{message} . "\n";
 		} elsif($@) {
 			print Dumper($@);
 		}

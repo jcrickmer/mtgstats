@@ -15,12 +15,14 @@ sub new {
 sub filter {
 	my $self = shift;
 	my $deck = shift;
+	my $cardStatus = shift || "main";
 	my $result = [];
 	if (defined $deck
 		&& ref($deck)
 		&& $deck->isa('MTG::Deck')) {
-		my $cards = $deck->getCards();
-		foreach my $card (@$cards) {
+		my $cards = $deck->getCards($cardStatus);
+		foreach my $cardId (keys(%$cards)) {
+			my $card = $cards->{$cardId}->{card};
 			my $possible = 1;
 			foreach my $pred (@{$self->{predicates}}) {
 				my $cval = $card->{$pred->{field}};
@@ -46,7 +48,9 @@ sub filter {
 				$possible = $r && $possible;
 			}
 			if ($possible) {
-				push(@$result, $card);
+				for (my $pp = 0; $pp < $cards->{$cardId}->{count}; $pp++) {
+					 push(@$result, $card);
+				 }
 			}
 		}
 	} else {

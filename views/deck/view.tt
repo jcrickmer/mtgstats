@@ -7,22 +7,22 @@ deck view - [% deck.name %]
 
 <h3>Lands</h3>
 	  <ul>
-[% FOREACH card IN landCards %]
-<li>[% card.getName %]</li>
+[% FOREACH cardId IN landCards.keys %]
+<li>[% landCards.$cardId.count %] [% landCards.$cardId.card.getName %]</li>
 [% END %]
       </ul>
 
 	  <h3>Creatures</h3>
 	  <ul>
-[% FOREACH card IN creatureCards %]
-<li>[% card.getName %]</li>
+[% FOREACH cardId IN creatureCards.keys %]
+<li>[% creatureCards.$cardId.count %] [% creatureCards.$cardId.card.getName %]</li>
 [% END %]
       </ul>
 
 	  <h3>Other Spells</h3>
 	  <ul>
-[% FOREACH card IN spellCards %]
-<li>[% card.getName %]</li>
+[% FOREACH cardId IN spellCards.keys %]
+<li>[% spellCards.$cardId.count %] [% spellCards.$cardId.card.getName %]</li>
 [% END %]
       </ul>
 

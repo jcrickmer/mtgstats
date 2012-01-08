@@ -171,17 +171,7 @@ sub getDeckByNameAndOwnerId {
     }
 
 	if (defined $res_doc) {
-		# REVISIT - need to move this to Deck to make it more encapsulated and reusable.
-		$res_deck = MTG::Deck->new($self);
-		$res_deck->{'_id'} = $res_doc->{'_id'};
-		$res_deck->{format} = $res_doc->{format};
-		$res_deck->{ownerId} = $res_doc->{ownerId};
-		$res_deck->{name} = $res_doc->{name};
-		#print Dumper($res_doc);
-		foreach my $cid (@{$res_doc->{cards}}) {
-			#print "adding card $cid\n";
-			$res_deck->addCard($cid);
-		}
+		$res_deck = MTG::Deck->new($self, $res_doc);
 	}
 
 	return $res_deck;
@@ -204,16 +194,7 @@ sub getDeckById {
 
 	if (defined $res_doc) {
 		# REVISIT - need to move this to Deck to make it more encapsulated and reusable.
-		$res_deck = MTG::Deck->new($self);
-		$res_deck->{'_id'} = $res_doc->{'_id'};
-		$res_deck->{format} = $res_doc->{format};
-		$res_deck->{ownerId} = $res_doc->{ownerId};
-		$res_deck->{name} = $res_doc->{name};
-		#print Dumper($res_doc);
-		foreach my $cid (@{$res_doc->{cards}}) {
-			#print "adding card $cid\n";
-			$res_deck->addCard($cid);
-		}
+		$res_deck = MTG::Deck->new($self, $res_doc);
 	}
 
 	return $res_deck;
@@ -232,6 +213,7 @@ sub insertDeck {
 		$doc->{'_id'} = $id->to_string;
 	}
     eval {
+		#print STDERR Dumper($doc);
 		$id = $decks->insert($doc, {safe => 1});
     };
     if ($@ =~ /^E11000 duplicate key error index:\s\w+\.decks\.\$(\w+)\s+dup key/) {
@@ -251,17 +233,7 @@ sub listDecks {
 	my @result = ();
 	my $cursor = $self->{db}->get_collection('decks')->find();
 	while (my $doc = $cursor->next()) {
-		# REVISIT - need to move this to Deck to make it more encapsulated and reusable.
-		my $res_deck = MTG::Deck->new($self);
-		$res_deck->{'_id'} = $doc->{'_id'};
-		$res_deck->{format} = $doc->{format};
-		$res_deck->{ownerId} = $doc->{ownerId};
-		$res_deck->{name} = $doc->{name};
-		#print Dumper($res_doc);
-		foreach my $cid (@{$doc->{cards}}) {
-			#print "adding card $cid\n";
-			$res_deck->addCard($cid);
-		}
+		my $res_deck = MTG::Deck->new($self, $doc);
 		push(@result, $res_deck);
 	}
 	return \@result;
