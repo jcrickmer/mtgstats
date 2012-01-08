@@ -37,8 +37,8 @@ $deck->setName("Jason Red Punishment");
 $deck->setFormat("Standard");
 #$db->insertDeck($deck);
 my $ttt = $deck->getTags();
-print Dumper($ttt);
-exit;
+#print Dumper($ttt);
+#exit;
 
 print "card count: " . $deck->cardCount() . "\n";
 print "first card: " . $deck->getCard(0)->getName() . "\n";
