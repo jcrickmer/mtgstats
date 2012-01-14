@@ -5,6 +5,8 @@ use HTML::Parser;
 use Data::Dumper;
 use MTG::Database;
 use MTG::Card;
+use MTG::Util qw(trim html2Plain);
+
 my $db = MTG::Database->new();
 
 my @terms = qw(Islandwalk Forestwalk Swampwalk Plainswalk Moutainwalk indestructible Absorb Affinity Amplify Annihilator Attach Banding Bloodthirst Bury Bushido Buyback Cascade Champion Changeling Channel Chroma Clash Conspire Convoke Cycling Deathtouch Defender Delve Devour Domain Dredge Echo Enchant Entwine Epic Evoke Exalted Exile Fading Fateseal Fear Fight Flanking Flash Flashback Flip Flying Forecast Fortify Frenzy Graft Grandeur Gravestorm Haste Haunt Hellbent Hexproof Hideaway Horsemanship Imprint Infect Intimidate Kicker Kinship Landfall Landhome Landwalk Lifelink Madness Metalcraft Modular Morbid Morph Multikicker Ninjutsu Offering Persist Phasing Poisonous Protection Provoke Prowl Radiance Rampage Reach Rebound Recover Regenerate Reinforce Replicate Retrace Ripple Scry Shadow Shroud Soulshift Splice Storm Substance Sunburst Suspend Sweep Threshold Kicker Trample Transfigure Transform Transmute Unearth Vanishing Vigilance Wither);
@@ -66,7 +68,7 @@ sub end_handler {
     my $tagname = shift;
 	if ($tagname eq 'div' && $nest == 0) {
 		if ($inLabelDiv) {
-			$btext = &trim($btext);
+			$btext = trim($btext);
 			$btext =~ s/(\S):?\s*$/$1/;
 			#print "LABEL: " . $btext . "\n";
 			$lastLabel = $btext;
@@ -74,7 +76,7 @@ sub end_handler {
 			$inLabelDiv = 0;
 		}
 		if ($inValueDiv) {
-			$btext = &trim($btext);
+			$btext = trim($btext);
 			$btext =~ s/(\s)\s*/$1/gi;
 			#print "VALUE: " . $btext . "\n";
 			$result->{$lastLabel} = $btext;
@@ -112,7 +114,7 @@ foreach my $file (@files) {
 		$v =~ s/^.+>([^<]+)<.+$/$1/;
 		my @mts = split (/[-—]/, $v);
 		if (@mts > 1) {
-			my $tttt = &trim(@mts[0]);
+			my $tttt = trim(@mts[0]);
 			if ($tttt =~ /Legendary Creature/) {
 				$card->{type} = 'Creature';
 				$card->{tags}->{legendary} = 1;
@@ -121,7 +123,7 @@ foreach my $file (@files) {
 			}
 			
 			for (my $qq = 1; $qq < @mts; $qq++) {
-				my $gfd = &trim(@mts[$qq]);
+				my $gfd = trim(@mts[$qq]);
 				if (length($gfd) > 0) {
 					push @{$card->{subtype}}, split(/\s/, $gfd);
 				}
@@ -148,19 +150,19 @@ foreach my $file (@files) {
 	{
 		my $v = $result->{'Card Text'};
 		#$v =~ s/^<div.*>([^<]+)<\/div>$/$1/;
-		$card->{'card_text_html'} = &trim($v);
+		$card->{'card_text_html'} = trim($v);
 
-		$card->{'card_text'} = &html2Plain($v);
+		$card->{'card_text'} = html2Plain($v);
 	}
 	{
 		my $v = $result->{'Flavor Text'};
 		#$v =~ s/^<div.*><i>([^<]+)<\/i><\/div>$/$1/;
-		$card->{'flavor_text_html'} = &trim($v);
+		$card->{'flavor_text_html'} = trim($v);
 
 		$v =~ s/<br[^>]*>/\n/gi;
 		$v =~ s/<\/div>/\n\n/gi;
 		$v =~ s/<[^>]+>//gi;
-		$card->{'flavor_text'} = &trim($v);
+		$card->{'flavor_text'} = trim($v);
 	}
 	if ($card->{type} =~ /Creature/) {
 		my $v = $result->{'P/T'};
@@ -236,22 +238,3 @@ foreach my $file (@files) {
 	}
 }
 
-
-sub trim {
-	my $text = shift;
-	$text =~ s/^\s*(\S)/$1/;
-	$text =~ s/(\S)\s*$/$1/;
-	return $text;
-}
-
-sub html2Plain {
-	my $html = shift;
-	my $plain = $html;
-	$plain =~ s/<img src="\/Handlers\/Image\.ashx\?size=small&amp;name=([^&]+)&amp;type=symbol"[^>]*>/($1)/gi;
-	$plain =~ s/<br[^>]*>/\n/gi;
-	$plain =~ s/<\/div>/\n\n/gi;
-	$plain =~ s/<[^>]+>//gi;
-
-
-	return &trim($plain);
-}

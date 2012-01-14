@@ -7,7 +7,7 @@ use Data::Dumper;
 use MTG::Card;
 use MTG::Deck;
 use MTG::Database;
-
+use MTG::Util qw(trim html2Plain);
 use MongoDB;
 use MongoDB::OID;
 
@@ -115,6 +115,39 @@ $card = MTG::Card->new({multiverseid=>220294,
 						power=>3,
 						toughness=>3,
 						tags=>{creature=>1,bloodthirst=>1},
+					});
+push @cards, $card;
+
+$card = MTG::Card->new({multiverseid=>227061,
+						name=>'Bloodline Keeper',
+						CMC=>4,
+						cost=>['any','any','black','black'],
+						affinity_colors=>{'black'},
+						type=>'Creature',
+						subtype=>['Vampire'],
+						rarity=>'Rare',
+						power=>3,
+						toughness=>3,
+						card_text_html => '<div class="cardtextbox">Flying</div><div class="cardtextbox"><img src="/Handlers/Image.ashx?size=small&amp;name=tap&amp;type=symbol" alt="Tap" align="absbottom">: Put a 2/2 black Vampire creature token with flying onto the battlefield.</div><div class="cardtextbox"><img src="/Handlers/Image.ashx?size=small&amp;name=B&amp;type=symbol" alt="Black" align="absbottom">: Transform Bloodline Keeper. Activate this ability only if you control five or more Vampires.</div>',
+						card_text => html2Plain('<div class="cardtextbox">Flying</div><div class="cardtextbox"><img src="/Handlers/Image.ashx?size=small&amp;name=tap&amp;type=symbol" alt="Tap" align="absbottom">: Put a 2/2 black Vampire creature token with flying onto the battlefield.</div><div class="cardtextbox"><img src="/Handlers/Image.ashx?size=small&amp;name=B&amp;type=symbol" alt="Black" align="absbottom">: Transform Bloodline Keeper. Activate this ability only if you control five or more Vampires.</div>'),
+						tags=>{creature=>1,flying=>1,transformer=>1,generate_token_creatures=>1,pump_by_affinity=>1},
+					});
+push @cards, $card;
+$card = MTG::Card->new({multiverseid=>222186,
+						name=>'Tormented Pariah',
+						CMC=>4,
+						cost=>['any','any','any','red'],
+						affinity_colors=>{},
+						type=>'Creature',
+						subtype=>['Human','Warrior','Werewolf'],
+						rarity=>'Common',
+						power=>3,
+						toughness=>2,
+						card_text_html => '<div class="cardtextbox">At the beginning of each upkeep, if no spells were cast last turn, transform Tormented Pariah.</div>',
+						card_text => html2Plain('<div class="cardtextbox">At the beginning of each upkeep, if no spells were cast last turn, transform Tormented Pariah.</div>'),
+						flavor_text_html => '<div class="cardtextbox"><i>"Hey lads, the moon\'s rising. All the better to watch him beg for mercy."</i></div>',
+						flavor_text_html => html2Plain('<div class="cardtextbox"><i>"Hey lads, the moon\'s rising. All the better to watch him beg for mercy."</i></div>'),
+						tags=>{creature=>1,transformer=>1,generate_token_creatures=>1},
 					});
 push @cards, $card;
 
@@ -425,7 +458,7 @@ $deck->setOwnerId(1);
 $deck->setName("Jason Red Punishment");
 $deck->setFormat("Standard");
 eval {
-	$db->insertDeck($deck);
+	#$db->insertDeck($deck);
 }; if ($@) { print STDERR Dumper($@); }
 
 $deck = MTG::Deck->new($db);
@@ -464,7 +497,7 @@ $deck->setOwnerId(2);
 $deck->setName("Premium Deck Series: Fire and Lightning");
 $deck->setFormat("Legacy");
 eval {
-	$db->insertDeck($deck);
+	#$db->insertDeck($deck);
 }; if ($@) { print STDERR Dumper($@); }
 
 $deck = MTG::Deck->new($db);
@@ -550,7 +583,7 @@ $deck->addCard("Phyrexian Metamorph");
 $deck->addCard("Bringer of the Green Dawn");
 $deck->addCard("Experiment Kraj");
 eval {
-	$db->insertDeck($deck);
+	#$db->insertDeck($deck);
 }; if ($@) { print STDERR Dumper($@); }
 
 $deck = MTG::Deck->new($db);
@@ -576,6 +609,61 @@ $deck->addCard("Nature's Claim",3,"sideboard");
 $deck->addCard("Spell Pierce",4,"sideboard");
 $deck->addCard("Spellskite",4,"sideboard");
 $deck->addCard("Viridian Corrupter",4,"sideboard");
+eval {
+	#$db->insertDeck($deck);
+}; if ($@) { print STDERR Dumper($@); }
+
+$deck = MTG::Deck->new($db);
+$deck->setOwnerId(1);
+$deck->setName("Vamps Inastrad FNM Booster Draft January 13, 2012");
+$deck->setFormat("Standard");
+$deck->setDate("2012-01-13");
+$deck->addCard("Mountain",7);
+$deck->addCard("Swamp",9);
+$deck->addCard("Shimmering Grotto",1);
+$deck->addCard("Ghost Quarter",1);
+$deck->addCard("Liliana of the Veil");
+$deck->addCard("Bloodline Keeper");
+$deck->addCard("Victim of Night");
+$deck->addCard("Moan of the Unhallowed");
+$deck->addCard("Vampiric Fury",2);
+$deck->addCard("Galvanic Juggernaut");
+$deck->addCard("Furor of the Bitten");
+$deck->addCard("Ghoulraiser");
+$deck->addCard("Infernal Plunge");
+$deck->addCard("Feral Ridgewolf",2);
+$deck->addCard("Manor Skeleton");
+$deck->addCard("Walking Corpse");
+$deck->addCard("Night Revelers",2);
+$deck->addCard("Scourge of Geier Reach");
+$deck->addCard("Stromkirk Patrol");
+$deck->addCard("Geistflame");
+$deck->addCard("Into the Maw of Hell");
+$deck->addCard("Dead Weight");
+$deck->addCard("Tribute to Hunger");
+$deck->addCard("Manor Skeleton",);
+$deck->addCard("Spectral Flight",1,"sideboard");
+$deck->addCard("Wooden Stake",1,"sideboard");
+$deck->addCard("Corpse Lunge",1,"sideboard");
+$deck->addCard("Forbidden Alchemy",1,"sideboard");
+$deck->addCard("Tormented Pariah",1,"sideboard");
+$deck->addCard("Night Terrors",1,"sideboard");
+$deck->addCard("Curse of Oblivion",1,"sideboard");
+$deck->addCard("Gruesome Deformity",2,"sideboard");
+$deck->addCard("Moonmist",1,"sideboard");
+$deck->addCard("Cobbled Wings",1,"sideboard");
+$deck->addCard("Kindercatch",1,"sideboard");
+$deck->addCard("Past in Flames",1,"sideboard");
+$deck->addCard("Rooftop Storm",1,"sideboard");
+$deck->addCard("Heretic's Punishment",1,"sideboard");
+$deck->addCard("Unburial Rites",1,"sideboard");
+$deck->addCard("Frightful Delusion",1,"sideboard");
+$deck->addCard("Memory's Journey",1,"sideboard");
+$deck->addCard("Claustrophobia",1,"sideboard");
+$deck->addCard("Burning Vengeance",1,"sideboard");
+$deck->addCard("Island",3,"sideboard");
+$deck->addCard("Swamp",1,"sideboard");
+$deck->addCard("Mountain",1,"sideboard");
 eval {
 	$db->insertDeck($deck);
 }; if ($@) { print STDERR Dumper($@); }

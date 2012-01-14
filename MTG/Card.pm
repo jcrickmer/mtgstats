@@ -56,6 +56,7 @@ my $TAG_EXP = {
 	extra_land => [],
 	mana_bank => ['generate_mana'],
 	pump => [],
+    pump_by_affinity => ['pump'],
 	sacrifice => [],
 	opponent_sacrifice => [],
 	flying => ['reach'],
@@ -119,6 +120,8 @@ my $TAG_EXP = {
 	only_multiple_creatures_can_block => ['requires_special_blocking'],
 	unblockable => ['requires_special_blocking'],
 	requires_special_blocking => [],
+    generate_token_creatures => [],
+    transformer => [],
 };
 
 sub new {
