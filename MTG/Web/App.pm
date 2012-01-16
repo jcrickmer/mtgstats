@@ -46,6 +46,9 @@ sub call {
 	if ($env->{PATH_INFO} eq '/card') {
 		return $self->relocate($env, '/card/');
 	}
+	if ($env->{PATH_INFO} =~ /^\/Handler/) {
+		return $self->relocate($env, $env->{'PATH_INFO'}, 'http', 'gatherer.wizards.com');
+	}
 
 	my $result = $controller->$actionName($env);
 
@@ -53,9 +56,14 @@ sub call {
 }
 
 sub relocate {
-    my ($self, $env, $newPath) = @_;
+    my $self = shift;
+	my $env = shift;
+	my $newPath = shift || $env->{'PATH_INFO'};
+	my $newScheme = shift || $env->{'psgi.url_scheme'};
+	my $newHost = shift || $env->{'HTTP_HOST'};
+	my $newQS = shift || $env->{'QUERY_STRING'};
 	return [301,
-			['Location' => $env->{'psgi.url_scheme'} . '://' . $env->{'HTTP_HOST'} . $newPath,],
+			['Location' => $newScheme . '://' . $newHost . $newPath . (defined $newQS && length($newQS) ? '?' . $newQS : ''),],
 			['',]
 		];
 }
