@@ -9,7 +9,7 @@ use MTG::ProbUtil;
 use MTG::CardFilter;
 
 my $pu = MTG::ProbUtil->new();
-if (1) {
+if (0) {
 my $db = MTG::Database->new();
 
 my $deck = MTG::Deck->new($db);

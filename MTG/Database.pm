@@ -109,7 +109,7 @@ sub getCardByMultiverseId {
 	my $cards = $self->{db}->get_collection('cards');
 	my $res_doc;
 	eval {
-		$res_doc = $cards->find_one({'multiverseid'=>$id});
+		$res_doc = $cards->find_one({'multiverseid'=>"$id"});
     };
 
     if ($@) {

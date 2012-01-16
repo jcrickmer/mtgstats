@@ -183,10 +183,14 @@ sub cardsByType {
 sub cardsByCode {
 	my $self = shift;
 	my $codes = shift;
+	my $returnType = shift || 'HASH';
 	if (ref($codes) eq 'CODE') {
 		$codes = [$codes];
 	}
 	my $result = {};
+	if ($returnType eq 'ARRAY') {
+		$result = [];
+	}
 	foreach my $cardId (keys(%{$self->{cards}->{'main'}})) {
 		my $card_o = $self->{db}->getCardByOID($cardId, 1);
 		my $incl = 1;
@@ -194,7 +198,13 @@ sub cardsByCode {
 			$incl = $incl && &$cmp($card_o);
 		}
 		if ($incl) {
-			$result->{$card_o->getId()} = {card=>$card_o, count=>$self->{cards}->{'main'}->{$cardId}->{count}};
+			if ($returnType eq 'ARRAY') {
+				for (my $ppp = 0; $ppp < $self->{cards}->{'main'}->{$cardId}->{count}; $ppp++) {
+					push @$result, $card_o;
+				}
+			} else {
+				$result->{$card_o->getId()} = {card=>$card_o, count=>$self->{cards}->{'main'}->{$cardId}->{count}};
+			}
 		}
 	}
 	return $result;

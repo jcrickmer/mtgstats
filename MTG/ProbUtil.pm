@@ -28,11 +28,12 @@ sub probability {
 	my $desired = shift;
 	my $inChances = shift;
 	my $res = 0;
-	if ($inChances == 0
+	if ($cardCount == 0 && $desired == 0) {
+		return 1;
+	} elsif ($inChances == 0
 		|| $cardCount == 0) {
 		return 0;
-	}
-	if ($desired == 0) {
+	} elsif ($desired == 0) {
 		my $res = ($cardsInDeck - $cardCount) / $cardsInDeck;
 		for (my $chance = 1; $chance < $inChances; $chance++) {
 			# the nots

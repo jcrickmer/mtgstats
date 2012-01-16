@@ -55,6 +55,12 @@ my $TAG_EXP = {
 	library_to_battlefield => [],
 	extra_land => [],
 	mana_bank => ['generate_mana'],
+	generate_white_mana => ['generate_mana'],
+	generate_blue_mana => ['generate_mana'],
+	generate_black_mana => ['generate_mana'],
+	generate_green_mana => ['generate_mana'],
+	generate_red_mana => ['generate_mana'],
+	generate_colorless_mana => ['generate_mana'],
 	pump => [],
     pump_by_affinity => ['pump'],
 	sacrifice => [],
@@ -81,7 +87,7 @@ my $TAG_EXP = {
 	scry => ['add_to_hand','draw_card'],
 	add_to_hand => [],
 	pro_artifact => [],
-	artifact => ['spell'],
+	artifact => [],
 	draw_card => ['add_to_hand'],
 	'return' => [],
 	from_graveyard => [],
@@ -132,7 +138,7 @@ sub new {
 	my $test = shift;
 	if (defined $test && ref($test) eq 'HASH') {
         # REVISIT - we should only copy out what we need, not just assign a reference
-		foreach my $f (qw(_id multiverseid name CMC cost type rarity tags expansion subtype toughness power card_text flavor_text card_text_html flavor_text_html)) {
+		foreach my $f (qw(_id multiverseid name CMC cost type cardtype rarity tags expansion subtype toughness power card_text flavor_text card_text_html flavor_text_html)) {
 			if ($f eq 'multiverseid' && ref($test->{$f}) ne 'ARRAY') {
 				$self->{$f} = [$test->{$f}];
 			} else {
@@ -158,6 +164,9 @@ sub new {
 	if (! defined $self->{type}) {
 		$self->{type} = '';
 	}
+	if (! defined $self->{cardtype}) {
+		$self->{cardtype} = '';
+	}
 	if (! defined $self->{rarity}) {
 		$self->{rarity} = 'Common';
 	}
@@ -168,7 +177,7 @@ sub new {
 		$self->{expansion} = '';
 	}
 	if (! defined $self->{subtype}) {
-		$self->{subtype} = '';
+		$self->{subtype} = [];
 	}
 	if (! defined $self->{toughness}) {
 		$self->{toughness} = 0;
@@ -233,6 +242,12 @@ sub getTags {
 sub getType {
 	my $self = shift;
 	return $self->{type};
+}
+
+# returns a string
+sub getCardType {
+	my $self = shift;
+	return $self->{cardtype};
 }
 
 # given a card, add new tags to that tag array ref

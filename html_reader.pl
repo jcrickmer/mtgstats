@@ -1,6 +1,7 @@
 #!/usr/bin/perl
 
 use strict;
+use utf8;
 use HTML::Parser;
 use Data::Dumper;
 use MTG::Database;
@@ -9,7 +10,7 @@ use MTG::Util qw(trim html2Plain);
 
 my $db = MTG::Database->new();
 
-my @terms = qw(Islandwalk Forestwalk Swampwalk Plainswalk Moutainwalk indestructible Absorb Affinity Amplify Annihilator Attach Banding Bloodthirst Bury Bushido Buyback Cascade Champion Changeling Channel Chroma Clash Conspire Convoke Cycling Deathtouch Defender Delve Devour Domain Dredge Echo Enchant Entwine Epic Evoke Exalted Exile Fading Fateseal Fear Fight Flanking Flash Flashback Flip Flying Forecast Fortify Frenzy Graft Grandeur Gravestorm Haste Haunt Hellbent Hexproof Hideaway Horsemanship Imprint Infect Intimidate Kicker Kinship Landfall Landhome Landwalk Lifelink Madness Metalcraft Modular Morbid Morph Multikicker Ninjutsu Offering Persist Phasing Poisonous Protection Provoke Prowl Radiance Rampage Reach Rebound Recover Regenerate Reinforce Replicate Retrace Ripple Scry Shadow Shroud Soulshift Splice Storm Substance Sunburst Suspend Sweep Threshold Kicker Trample Transfigure Transform Transmute Unearth Vanishing Vigilance Wither);
+my @terms = qw(Islandwalk Forestwalk Swampwalk Plainswalk Moutainwalk indestructible Absorb Affinity Amplify Annihilator Attach Banding Bloodthirst Bury Bushido Buyback Cascade Champion Changeling Channel Chroma Clash Conspire Convoke Cycling Deathtouch Defender Delve Devour Domain Dredge Echo Enchant Entwine Epic Evoke Exalted Exile Fading Fateseal Fear Fight Flanking Flashback Flash Flip Flying Forecast Fortify Frenzy Graft Grandeur Gravestorm Haste Haunt Hellbent Hexproof Hideaway Horsemanship Imprint Infect Intimidate Kicker Kinship Landfall Landhome Landwalk Lifelink Madness Metalcraft Modular Morbid Morph Multikicker Ninjutsu Offering Persist Phasing Poisonous Protection Provoke Prowl Radiance Rampage Reach Rebound Recover Regenerate Reinforce Replicate Retrace Ripple Scry Shadow Shroud Soulshift Splice Storm Substance Sunburst Suspend Sweep Threshold Kicker Trample Transfigure Transform Transmute Unearth Vanishing Vigilance Wither);
 push @terms, 'Aura swap', 'Bands with other', 'Double strike', 'First strike', 'Join forces', 'Level up', 'Split second', 'Cumulative upkeep', 'Totem armor';
 
 my @files = ();
@@ -105,10 +106,12 @@ foreach my $file (@files) {
 	$p->handler(text => \&text_handler, "self,text");
 	$p->handler(end => \&end_handler, "self,tagname");
 	$p->empty_element_tags(1);
-	$p->parse_file($file);
+	open(my $fh, "<:utf8", $file) || die "...: $!";
+	$p->parse_file($fh);
 	
-	my $card = {multiverseid=>[$result->{multiverseid}],
-				tags=>{},};
+	my $card = MTG::Card->new();
+	$card->{multiverseid} = [$result->{multiverseid}];
+
 	{
 		my $v = $result->{Types};
 		$v =~ s/^.+>([^<]+)<.+$/$1/;
@@ -116,10 +119,20 @@ foreach my $file (@files) {
 		if (@mts > 1) {
 			my $tttt = trim(@mts[0]);
 			if ($tttt =~ /Legendary Creature/) {
+				$card->{cardtype} = 'Legendary Creature';
 				$card->{type} = 'Creature';
-				$card->{tags}->{legendary} = 1;
+				$card->addTag('legendary');
+			} elsif ($tttt =~ /Artifact Creature/) {
+				$card->{cardtype} = 'Artifact Creature';
+				$card->{type} = 'Creature';
+				$card->addTag('artifact');
+			} elsif ($tttt =~ /Basic Land/) {
+				$card->{cardtype} = 'Basic Land';
+				$card->{type} = 'Land';
+				$card->addTag('generate_mana');
 			} else {
 				$card->{type} = $tttt;
+				$card->{cardtype} = $tttt;
 			}
 			
 			for (my $qq = 1; $qq < @mts; $qq++) {
@@ -130,8 +143,17 @@ foreach my $file (@files) {
 			}
 		} else {
 			if ($v =~ /Legendary Creature/) {
+				$card->{cardtype} = 'Legendary Creature';
 				$card->{type} = 'Creature';
-				$card->{tags}->{legendary} = 1;
+				$card->addTag('legendary');
+			} elsif ($v =~ /Artifact Creature/) {
+				$card->{cardtype} = 'Artifact Creature';
+				$card->{type} = 'Creature';
+				$card->addTag('artifact');
+			} elsif ($v =~ /Basic Land/) {
+				$card->{cardtype} = 'Basic Land';
+				$card->{type} = 'Land';
+				$card->addTag('generate_mana');
 			} else {
 				$card->{type} = $v;
 			}
@@ -156,6 +178,7 @@ foreach my $file (@files) {
 	}
 	{
 		my $v = $result->{'Flavor Text'};
+
 		#$v =~ s/^<div.*><i>([^<]+)<\/i><\/div>$/$1/;
 		$card->{'flavor_text_html'} = trim($v);
 
@@ -212,12 +235,26 @@ foreach my $file (@files) {
 		my $ct = $card->{'card_text_html'};
 		foreach my $tterm (@terms) {
 			my $ltterm = lc($tterm);
-			if ($ct =~ />$tterm/) { $card->{tags}->{$ltterm} = 1; }
-			if ($ct =~ /, $ltterm/) { $card->{tags}->{$ltterm} = 1; }
+			if ($ct =~ />$tterm/) { $card->addTag($ltterm); }
+			if ($ct =~ /, $ltterm/) { $card->addTag($ltterm); }
+		}
+	}
+	if ($card->{type} eq 'Land') {
+		$card->addTag('generate_mana');
+		if ($card->getName() eq 'Plains') {
+			$card->addTag('generate_white_mana');
+		} elsif ($card->getName() eq 'Island') {
+			$card->addTag('generate_blue_mana');
+		} elsif ($card->getName() eq 'Swamp') {
+			$card->addTag('generate_black_mana');
+		} elsif ($card->getName() eq 'Forest') {
+			$card->addTag('generate_green_mana');
+		} elsif ($card->getName() eq 'Mountain') {
+			$card->addTag('generate_red_mana');
 		}
 	}
 	{
-		$card->{tags}->{needs_tag_review} = 1;
+		$card->addTag('needs_tag_review');
 	}
 	if (! defined $card->{multiverseid}) {
 		print "could not parse $file.  Maybe search results?\n";
@@ -225,16 +262,18 @@ foreach my $file (@files) {
 		#print Dumper($result);
 		#print Dumper($card) if ($card->{name} =~ /Gyre/);
 		#print $card->{name} . ":  " . join(', ', @{$card->{tags}}) . "\n";
-		my $mtgCard = MTG::Card->new($card);
-		print $file . ":  " . Dumper($mtgCard) if ($card->{name} eq '');
+		#my $mtgCard = MTG::Card->new($card);
+		print $file . ":  " . Dumper($card) if ($card->{name} eq '');
 		eval {
-			print "inserted " . $mtgCard->getName() . ": " . $db->insertCard($mtgCard) . "\n";
+			print "inserted " . $card->getName() . ": " . $db->insertCard($card) . "\n";
 		};
 		if ($@ && ref($@) eq 'MTG::Exception::Unique') {
-			print "skipped " . $mtgCard->getName() . ": " . $@->{message} . "\n";
+			print "skipped " . $card->getName() . ": " . $@->{message} . "\n";
 		} elsif($@) {
 			print Dumper($@);
 		}
 	}
+
+	close $fh;
 }
 

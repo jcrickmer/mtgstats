@@ -21,10 +21,11 @@ my $card = MTG::Card->new({multiverseid=>[294,205925],
 						cost=>[],
 						affinity_colors=>{},
 						type=>'Land',
+						cardtype=>'Basic Land',
 						rarity=>'Common',
 						tags=>{land=>1,basic_land=>1,generate_white_mana=>1},
 					});
-push @cards, $card;
+#push @cards, $card;
 
 
 $card = MTG::Card->new({multiverseid=>288,
@@ -36,7 +37,7 @@ $card = MTG::Card->new({multiverseid=>288,
 						rarity=>'Common',
 						tags=>{land=>1,basic_land=>1,generate_green_mana=>1},
 					});
-push @cards, $card;
+#push @cards, $card;
 
 $card = MTG::Card->new({multiverseid=>277,
 						name=>'Swamp',
@@ -47,7 +48,7 @@ $card = MTG::Card->new({multiverseid=>277,
 						rarity=>'Common',
 						tags=>{land=>1,basic_land=>1,generate_black_mana=>1},
 					});
-push @cards, $card;
+#push @cards, $card;
 
 $card = MTG::Card->new({multiverseid=>292,
 						name=>'Island',
@@ -58,7 +59,7 @@ $card = MTG::Card->new({multiverseid=>292,
 						rarity=>'Common',
 						tags=>{land=>1,basic_land=>1,generate_blue_mana=>1},
 					});
-push @cards, $card;
+#push @cards, $card;
 
 $card = MTG::Card->new({multiverseid=>290,
 						name=>'Mountain',
@@ -69,7 +70,7 @@ $card = MTG::Card->new({multiverseid=>290,
 						rarity=>'Common',
 						tags=>{land=>1,basic_land=>1,generate_red_mana=>1},
 					});
-push @cards, $card;
+#push @cards, $card;
 
 $card = MTG::Card->new({multiverseid=>213799,
 						   name=>'Go for the Throat',
@@ -428,7 +429,7 @@ foreach my $cc (@cards) {
 		print "inserted " . $db->insertCard($cc) . "\n";
 	};
 	if ($@ && ref($@) eq 'MTG::Exception::Unique') {
-		print "skipped. " . $@->{message} . "\n";
+		print "skipped " . $cc->getName() . ". " . $@->{message} . "\n";
 	} elsif($@) {
 		print Dumper($@);
 	}
@@ -458,7 +459,7 @@ $deck->setOwnerId(1);
 $deck->setName("Jason Red Punishment");
 $deck->setFormat("Standard");
 eval {
-	#$db->insertDeck($deck);
+	$db->insertDeck($deck);
 }; if ($@) { print STDERR Dumper($@); }
 
 $deck = MTG::Deck->new($db);
@@ -497,7 +498,7 @@ $deck->setOwnerId(2);
 $deck->setName("Premium Deck Series: Fire and Lightning");
 $deck->setFormat("Legacy");
 eval {
-	#$db->insertDeck($deck);
+	$db->insertDeck($deck);
 }; if ($@) { print STDERR Dumper($@); }
 
 $deck = MTG::Deck->new($db);
@@ -583,7 +584,7 @@ $deck->addCard("Phyrexian Metamorph");
 $deck->addCard("Bringer of the Green Dawn");
 $deck->addCard("Experiment Kraj");
 eval {
-	#$db->insertDeck($deck);
+	$db->insertDeck($deck);
 }; if ($@) { print STDERR Dumper($@); }
 
 $deck = MTG::Deck->new($db);
@@ -610,13 +611,13 @@ $deck->addCard("Spell Pierce",4,"sideboard");
 $deck->addCard("Spellskite",4,"sideboard");
 $deck->addCard("Viridian Corrupter",4,"sideboard");
 eval {
-	#$db->insertDeck($deck);
+	$db->insertDeck($deck);
 }; if ($@) { print STDERR Dumper($@); }
 
 $deck = MTG::Deck->new($db);
 $deck->setOwnerId(1);
-$deck->setName("Vamps Inastrad FNM Booster Draft January 13, 2012");
-$deck->setFormat("Standard");
+$deck->setName("Vamps Innistrad FNM Booster Draft January 13, 2012");
+$deck->setFormat("Booster Draft");
 $deck->setDate("2012-01-13");
 $deck->addCard("Mountain",7);
 $deck->addCard("Swamp",9);

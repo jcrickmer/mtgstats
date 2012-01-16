@@ -6,6 +6,7 @@
     <link type="text/css" rel="stylesheet" media="screen" href="/style.css" />
   </head>
   <body>
+    <div id="wholepage">
     <div class="header">
       <h1>MTG Stats - [% title %]</h1>
     </div>

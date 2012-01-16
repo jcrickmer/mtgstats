@@ -1,9 +1,19 @@
 body {
 	background-color: white;
+	font-family: helvetica,arial,sans-serif;
+	font-size: 10pt;
 }
 
-div.footer {
+div, td, p, span, th {
+	font-family: helvetica,arial,sans-serif;
 	font-size: 10pt;
+}
+div.footer {
+	clear: both;
+	font-size: 9pt;
+	margin-top: 20px;
+	padding-top:5px;
+	border-top: solid 1px #c0c0c0;
 }
 
 div.header {
@@ -13,6 +23,16 @@ div.globalnav {
 }
 div.card_details > img.card_image {
 	float: left;
-margin-right: 5px;
-padding-right: 5px;
+	margin-right: 5px;
+	padding-right: 5px;
+}
+
+#tags_container {
+    width: 400px;
+}
+td.probability {
+	text-align: right;
+}
+#wholepage {
+	width:980px;
 }
