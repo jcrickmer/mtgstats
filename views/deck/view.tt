@@ -81,23 +81,22 @@ google.load('visualization', '1.0', {'packages':['corechart']});
   [% END %]
 [% END %]
         </table>
-      </div>
 
-      <h4>Mana Curves</h4>
-      <table>
-        <tr><th rowspan="2">Spell Type</th><th colspan="11">Converted Mana Cost</th></tr>
-        <tr><th>0</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th><th>9</th><th>10</th><th>11</th></tr>
+        <h4>Mana Curves</h4>
+        <table>
+          <tr><th rowspan="2">Spell Type</th><th colspan="11">Converted Mana Cost</th></tr>
+          <tr><th>0</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th><th>9</th><th>10</th><th>11</th></tr>
 [% FOREACH type IN manaCurve.keys %]
-        <tr>
-          <td>[% type %]</td>
+          <tr>
+            <td>[% type %]</td>
   [% FOREACH i IN [0..11] %]
-          <td>[% manaCurve.$type.$i %]</td>
+            <td>[% manaCurve.$type.$i %]</td>
   [% END %]
-        </tr>
+          </tr>
 [% END %]
-      </table>
-      <div id="manaCurveGraph"></div>
-      <script type="text/javascript">
+        </table>
+        <div id="manaCurveGraph"></div>
+        <script type="text/javascript">
 google.setOnLoadCallback(drawManaCurve);
 function drawManaCurve() {
     // Create the data table.
@@ -128,7 +127,31 @@ function drawManaCurve() {
     var chart = new google.visualization.LineChart(document.getElementById('manaCurveGraph'));
     chart.draw(data, options);
 }
-      </script>
+        </script>
+      </div>
+
+      <div>
+        <h3>Supply and Demand</h3>
+<h4>Supply</h4>
+white: [% manaSupply.white %]<br>
+blue: [% manaSupply.blue %]<br>
+black: [% manaSupply.black %]<br>
+green: [% manaSupply.green %]<br>
+red: [% manaSupply.red %]<br>
+colorless: [% manaSupply.colorless %]<br>
+total: [% manaSupply.all %]<br>
+
+<p>Need to find a way to  look at demand as it pertains to the amount of mana that has to be spent at any one time.  Weighted on ratio of big CMC cards to little CMC cards, maybe?</p>
+<h4>Demand</h4>
+white: [% manaDemand.white %]<br>
+blue: [% manaDemand.blue %]<br>
+black: [% manaDemand.black %]<br>
+green: [% manaDemand.green %]<br>
+red: [% manaDemand.red %]<br>
+any: [% manaDemand.any %]<br>
+total: [% manaDemand.all %]<br>
+      </div>
+
 	</div>
 
 [% INCLUDE footer.tt %]

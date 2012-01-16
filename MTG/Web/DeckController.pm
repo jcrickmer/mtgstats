@@ -49,6 +49,7 @@ sub view {
 	my $manaCurve = {};
 
 	{
+        # probabilities for land in hand
 		my @types = qw(generate_mana generate_white_mana generate_blue_mana generate_black_mana generate_green_mana generate_red_mana generate_colorless_mana);
 		foreach my $tag (@types) {
 			my $lcards = $deck->cardsByCode([sub { my $card = shift;
@@ -64,6 +65,7 @@ sub view {
 		}
 	}
 	{
+        # probabilities for spells over different CMCs
 		foreach my $cmc (0 .. 13) {
 			my $scards = $deck->cardsByCode([sub { my $card = shift;
 												   return $card->{CMC} == $cmc && $card->{tags}->{spell};
@@ -102,6 +104,49 @@ sub view {
 		}
 	}
 
+
+	# supply and demand
+	my $manaSupply = {all=>0,white=>0,blue=>0,black=>0,green=>0,red=>0,colorless=>0};
+	my $manaDemand = {all=>0,white=>0,blue=>0,black=>0,green=>0,red=>0,any=>0};
+	{
+        # mana supply
+		my @types = qw(generate_mana generate_white_mana generate_blue_mana generate_black_mana generate_green_mana generate_red_mana generate_colorless_mana generate_two_mana generate_three_mana generate_four_mana generate_five_mana generate_six_mana generate_seven_mana);
+		my $gmcards = $deck->cardsByCode([sub { my $card = shift;
+												return $card->{tags}->{generate_mana};
+											},
+									  ], 'ARRAY');
+
+		foreach my $gmcard (@$gmcards) {
+			my $caught = 0;
+			my @colors = qw(white blue black green red colorless);
+			foreach my $color (@colors) {
+				if ($gmcard->{tags}->{'generate_' . $color . '_mana'}) {
+					$manaSupply->{$color} = $manaSupply->{$color} + 1;
+					$manaSupply->{all} = $manaSupply->{all} + 1;
+					$caught = 1;
+				}
+			}
+			if (! $caught) {
+				$manaSupply->{colorless} = $manaSupply->{colorless} + 1;
+				$manaSupply->{all} = $manaSupply->{all} + 1;
+			}
+		}
+
+		my $dmcards = $deck->cardsByCode([sub { my $card = shift;
+												return $card->{CMC} > 0;
+											},
+									  ], 'ARRAY');
+
+		foreach my $dmcard (@$dmcards) {
+			my @cost = @{$dmcard->{cost}};
+			for (my $tg = 0; $tg < @cost; $tg++) {
+## REVISIT - what to do about either/or costs?!
+				$manaDemand->{@cost[$tg]} = $manaDemand->{@cost[$tg]} + 1;
+				$manaDemand->{all} = $manaDemand->{all} + 1;
+			}
+		}
+	}
+
 	my $tags = $deck->getTags();
 	my @tagKeys = sort(keys(%$tags));
 	my $context = {deck => $deck,
@@ -114,6 +159,8 @@ sub view {
 				   manaProbs => $landProbs,
 				   spellProbs => $spellProbs,
 				   manaCurve => $manaCurve,
+				   manaSupply => $manaSupply,
+				   manaDemand => $manaDemand,
 			   };
 
 	my $output = '';
