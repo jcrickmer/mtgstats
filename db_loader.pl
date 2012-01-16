@@ -668,3 +668,34 @@ $deck->addCard("Mountain",1,"sideboard");
 eval {
 	$db->insertDeck($deck);
 }; if ($@) { print STDERR Dumper($@); }
+
+
+$deck = MTG::Deck->new($db);
+$deck->setOwnerId(1);
+$deck->setName("Innistrad WG Humans");
+$deck->setFormat("Standard");
+$deck->setDate("2011-12-10");
+$deck->addCard("Forest",10);
+$deck->addCard("Plains",11);
+$deck->addCard("Shimmering Grotto",1);
+$deck->addCard("Gavony Township",1);
+$deck->addCard("Avacyn's Pilgrim",4);
+$deck->addCard("Elite Inquisitor",2);
+$deck->addCard("Gideon's Lawkeeper",4);
+$deck->addCard("Serra Angel",2);
+$deck->addCard("Suture Priest",4);
+$deck->addCard("Hero of Bladehold",2);
+$deck->addCard("Tree of Redemption",1);
+$deck->addCard("Mirran Crusader",3);
+$deck->addCard("Caravan Vigil",2);
+$deck->addCard("Guardians' Pledge",3);
+$deck->addCard("Sickleslicer",1);
+$deck->addCard("Honor of the Pure",1);
+$deck->addCard("Shrine of Loyal Legions",3);
+$deck->addCard("Travel Preparations",2);
+$deck->addCard("Bonds of Faith",1);
+$deck->addCard("Mask of Avacyn",1);
+$deck->addCard("Timely Reinforcements",1);
+eval {
+	$db->insertDeck($deck);
+}; if ($@) { print STDERR Dumper($@); }

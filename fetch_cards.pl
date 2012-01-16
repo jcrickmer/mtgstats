@@ -173,8 +173,25 @@ my @names = ("Animar, Soul of Elements",
 "Memory's Journey",
 "Claustrophobia",
 "Burning Vengeance",
-
-
+"Plains",
+"Gavony Township",
+"Avacyn's Pilgrim",
+"Elite Inquisitor",
+"Gideon's Lawkeeper",
+"Serra Angel",
+"Suture Priest",
+"Hero of Bladehold",
+"Tree of Redemption",
+"Mirran Crusader",
+"Caravan Vigil",
+"Guardians' Pledge",
+"Sickleslicer",
+"Honor of the Pure",
+"Shrine of Loyal Legions",
+"Travel Preparations",
+"Bonds of Faith",
+"Mask of Avacyn",
+"Timely Reinforcements",
 );
 
 my $search_url_base = 'http://gatherer.wizards.com/Pages/Search/Default.aspx?name=';
