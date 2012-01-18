@@ -17,8 +17,7 @@ use Exception::Class (
 		field => ''
 	},
 		      
-	MTG::Exception::Registration => {
-		exceptions => (),
+	MTG::Exception::IncompleteObject => {
 	},
 		      
 	MTG::Exception::DAL => {

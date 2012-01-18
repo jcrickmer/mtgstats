@@ -105,7 +105,10 @@ my $TAG_EXP = {
 	counter_creature => [],
 	vigilance => [],
 	trample => [],
+	discard => ['mill'],
+	self_mill => ['mill'],
 	mill => [],
+	drain_life => [],
 	library_to_graveyard => ['mill'],
 	destroy_land => [],
 	target_land => [],
@@ -114,6 +117,7 @@ my $TAG_EXP = {
 	affect_all_players => ['affect_all'],
 	affect_all_creatures => ['affect_all'],
 	affect_all_nonflying_creatures => ['affect_all','affect_all_creatures'],
+	affect_all_your_creatures => [],
 	opponent_player_damage => [],
 	creature_damage => [],
 	gain_life => [],
@@ -152,9 +156,9 @@ sub new {
 	if (! defined $self->{multiverseid}) {
 		$self->{multiverseid} = [];
 	}
-	if (! defined $self->{name}) {
-		$self->{name} = '';
-	}
+	#if (! defined $self->{name}) {
+	#	$self->{name} = undef;
+	#}
 	if (! defined $self->{CMC}) {
 		$self->{CMC} = 0;
 	}
@@ -162,10 +166,10 @@ sub new {
 		$self->{cost} = [];
 	}
 	if (! defined $self->{type}) {
-		$self->{type} = '';
+		$self->{type} = undef;
 	}
 	if (! defined $self->{cardtype}) {
-		$self->{cardtype} = '';
+		$self->{cardtype} = undef;
 	}
 	if (! defined $self->{rarity}) {
 		$self->{rarity} = 'Common';
@@ -190,6 +194,14 @@ sub new {
 	return $self;
 }
 
+sub isComplete {
+	my $self = shift;
+	return defined $self->{name}
+	       && defined $self->{type}
+		   && defined $self->{multiverseid}
+		   && scalar(@{$self->{multiverseid}}) > 0;
+}
+
 sub addTag {
 	my $self = shift;
 	my $tag = shift;
@@ -201,9 +213,30 @@ sub getName {
 	return $self->{name};
 }
 
+sub setName {
+	my $self = shift;
+	$self->{name} = shift;
+	return;
+}
+
 sub getId {
 	my $self = shift;
 	return $self->{_id};
+}
+
+# Adds a multiverseid to the set of multiverseids.  Returns true if it
+# was added, false if it was not (i.e., it was already present).
+sub addMultiverseId {
+	my $self = shift;
+	my $toAdd = shift;
+	my $found = 0;
+	foreach my $mvid (@{$self->{multiverseid}}) {
+		$found = $found || $mvid eq $toAdd;
+	}
+	if (! $found) {
+		push @{$self->{multiverseid}}, $toAdd;
+	}
+	return $found;
 }
 
 # Returns a multiverse id number (typically the highest).
@@ -223,7 +256,7 @@ sub getMultiverseIds {
 	foreach my $id (@{$self->{multiverseid}}) {
 		push @result, $id;
 	}
-	return @result;
+	return \@result;
 }
 
 # returns a reference to an array of tags
@@ -242,6 +275,16 @@ sub getTags {
 sub getType {
 	my $self = shift;
 	return $self->{type};
+}
+
+# returns a string
+sub setType {
+	my $self = shift;
+	$self->{type} = shift;
+	if (! defined $self->{cardtype}) {
+		$self->{cardtype} = $self->{type};
+	}
+	return;
 }
 
 # returns a string

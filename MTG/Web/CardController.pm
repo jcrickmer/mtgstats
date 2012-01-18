@@ -12,6 +12,10 @@ sub new {
 	return $self;
 }
 
+sub default {
+	return @_[0]->main(@_);
+}
+
 sub view {
     my $self = shift;
     my $env = shift;
@@ -34,5 +38,24 @@ sub view {
 
 }
 
+sub main {
+    my $self = shift;
+    my $env = shift;
+    my $context = {};
+
+    my $output = '';
+    $self->{app}->{tt}->process('card/main.tt', $context, \$output) || die $self->{app}->{tt}->error();
+	#utf8::downgrade($output);
+	my $properOut = encode("utf8", $output);
+
+    return [
+        # HTTP Status code
+        200,
+        # HTTP headers as arrayref
+        [ 'Content-type' => 'text/html; charset=utf-8' ],
+        # Response body as array ref
+        [ $properOut ],
+    ];
+}
 
 1;

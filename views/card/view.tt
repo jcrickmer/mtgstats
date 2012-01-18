@@ -46,6 +46,10 @@
 <td class="attr_label">Flavor Text</td>
 <td class="attr_value">[% card.get('flavor_text_html') %]</td>
 </tr>
+<tr>
+<td class="attr_label">Multiverse Ids</td>
+<td class="attr_value">[% card.getMultiverseIds().join(', ') %]</td>
+</tr>
       </table>
 
     </div>

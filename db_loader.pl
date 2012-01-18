@@ -151,6 +151,257 @@ $card = MTG::Card->new({multiverseid=>222186,
 						tags=>{creature=>1,transformer=>1,generate_token_creatures=>1},
 					});
 push @cards, $card;
+$card = MTG::Card->new({multiverseid=>'226749',
+						name=>'Delver of Secrets',
+						CMC=>1,
+						cost=>['blue'],
+						affinity_colors=>{},
+						type=>'Creature',
+						subtype=>['Human','Wizard'],
+						rarity=>'Common',
+						power=>1,
+						toughness=>1,
+						card_text_html => '<div class="cardtextbox">At the beginning of your upkeep, look at the top card of your library. You may reveal that card. If an instant or sorcery card is revealed this way, transform Delver of Secrets.</div>',
+						card_text => html2Plain('<div class="cardtextbox">At the beginning of your upkeep, look at the top card of your library. You may reveal that card. If an instant or sorcery card is revealed this way, transform Delver of Secrets.</div>'),
+						flavor_text_html => '',
+						flavor_text => html2Plain(''),
+						tags=>{creature=>1,transformer=>1,flying=>1,peek=>1},
+					});
+push @cards, $card;
+$card = MTG::Card->new({multiverseid=>['222112'],
+						name=>'Village Ironsmith',
+						CMC=>2,
+						cost=>['nay','red'],
+						affinity_colors=>{},
+						type=>'Creature',
+						subtype=>['Human','Werewolf'],
+						rarity=>'Common',
+						power=>1,
+						toughness=>1,
+						card_text_html => '
+                        <div class="cardtextbox">First strike</div><div class="cardtextbox">At the beginning of each upkeep, if no spells were cast last turn, transform Village Ironsmith.</div>',
+						card_text => html2Plain('
+                        <div class="cardtextbox">First strike</div><div class="cardtextbox">At the beginning of each upkeep, if no spells were cast last turn, transform Village Ironsmith.</div>'),
+						flavor_text_html => '<div class="cardtextbox"><i>Each night, he abandons the trappings of civilization.</i></div>',
+						flavor_text => html2Plain('<div class="cardtextbox"><i>Each night, he abandons the trappings of civilization.</i></div>'),
+						tags=>{creature=>1,transformer=>1,first_strike=>1},
+					});
+push @cards, $card;
+$card = MTG::Card->new({multiverseid=>'221212',
+						name=>['Cloistered Youth'],
+						CMC=>2,
+						cost=>['any','white'],
+						affinity_colors=>{'black'},
+						type=>'Creature',
+						subtype=>['Human','Horror'],
+						rarity=>'Uncommon',
+						power=>1,
+						toughness=>1,
+						card_text_html => '<div class="cardtextbox">At the beginning of your upkeep, you may transform Cloistered Youth.</div>',
+						card_text => html2Plain('<div class="cardtextbox">At the beginning of your upkeep, you may transform Cloistered Youth.</div>'),
+						flavor_text_html => '<div class="cardtextbox"><i>"I heard her talking in her sleep&mdash;pleading, shrieking, snarling. It was not my daughter\'s voice. That is not my daughter."</i></div>',
+						flavor_text => html2Plain('<div class="cardtextbox"><i>"I heard her talking in her sleep&mdash;pleading, shrieking, snarling. It was not my daughter\'s voice. That is not my daughter."</i></div>'),
+						tags=>{creature=>1,transformer=>1,drain_life=>1},
+					});
+push @cards, $card;
+$card = MTG::Card->new({multiverseid=>['221211'],
+						name=>'Screeching Bat',
+						CMC=>3,
+						cost=>['any','any','black'],
+						affinity_colors=>{'black'},
+						type=>'Creature',
+						subtype=>['Human','Horror'],
+						rarity=>'Uncommon',
+						power=>2,
+						toughness=>2,
+						card_text_html => '<div class="cardtextbox">Flying</div><div class="cardtextbox">At the beginning of your upkeep, you may pay <img src="/Handlers/Image.ashx?size=small&amp;name=2&amp;type=symbol" alt="2" align="absbottom"><img src="/Handlers/Image.ashx?size=small&amp;name=B&amp;type=symbol" alt="Black" align="absbottom"><img src="/Handlers/Image.ashx?size=small&amp;name=B&amp;type=symbol" alt="Black" align="absbottom">. If you do, transform Screeching Bat.</div>',
+						card_text => html2Plain('<div class="cardtextbox">Flying</div><div class="cardtextbox">At the beginning of your upkeep, you may pay <img src="/Handlers/Image.ashx?size=small&amp;name=2&amp;type=symbol" alt="2" align="absbottom"><img src="/Handlers/Image.ashx?size=small&amp;name=B&amp;type=symbol" alt="Black" align="absbottom"><img src="/Handlers/Image.ashx?size=small&amp;name=B&amp;type=symbol" alt="Black" align="absbottom">. If you do, transform Screeching Bat.</div>'),
+						flavor_text_html => '<div class="cardtextbox"><i>The bat has such clarity of hearing that simple sounds become symphonies.</i></div>',
+						flavor_text => html2Plain('<div class="cardtextbox"><i>The bat has such clarity of hearing that simple sounds become symphonies.</i></div>'),
+						tags=>{creature=>1,transformer=>1,flying=>1},
+					});
+push @cards, $card;
+
+$card = MTG::Card->new({multiverseid=>['222016'],
+						name=>'Thraben Sentry',
+						CMC=>4,
+						cost=>['any','any','any','white'],
+						affinity_colors=>{},
+						type=>'Creature',
+						subtype=>['Human','Soldier'],
+						rarity=>'Common',
+						power=>2,
+						toughness=>2,
+						card_text_html => '<div class="cardtextbox">Vigilance</div><div class="cardtextbox">Whenever another creature you control dies, you may transform Thraben Sentry.</div>',
+						card_text => html2Plain('<div class="cardtextbox">Vigilance</div><div class="cardtextbox">Whenever another creature you control dies, you may transform Thraben Sentry.</div>'),
+						flavor_text_html => '<div class="cardtextbox"><i>"Looks like it\'s going to be a quiet night."</i></div>',
+						flavor_text => html2Plain('<div class="cardtextbox"><i>"Looks like it\'s going to be a quiet night."</i></div>'),
+						tags=>{creature=>1,transformer=>1,vigilance=>1},
+					});
+push @cards, $card;
+
+$card = MTG::Card->new({multiverseid=>['221209'],
+						name=>'Civilized Scholar',
+						CMC=>3,
+						cost=>['any','any','blue'],
+						affinity_colors=>{'red'},
+						type=>'Creature',
+						subtype=>['Human','Advisor','Mutant'],
+						rarity=>'Uncommon',
+						power=>0,
+						toughness=>1,
+						card_text_html => '<div class="cardtextbox"><img src="/Handlers/Image.ashx?size=small&amp;name=tap&amp;type=symbol" alt="Tap" align="absbottom">: Draw a card, then discard a card. If a creature card is discarded this way, untap Civilized Scholar, then transform it.</div>',
+						card_text => html2Plain('<div class="cardtextbox"><img src="/Handlers/Image.ashx?size=small&amp;name=tap&amp;type=symbol" alt="Tap" align="absbottom">: Draw a card, then discard a card. If a creature card is discarded this way, untap Civilized Scholar, then transform it.</div>'),
+						flavor_text_html => '<div class="cardtextbox"><i>"Me, angry? Of course not. Thanks to my research, I\'m above such petty emotions now."</i></div>',
+						flavor_text => html2Plain('<div class="cardtextbox"><i>"Me, angry? Of course not. Thanks to my research, I\'m above such petty emotions now."</i></div>'),
+						tags=>{creature=>1,transformer=>1,draw_card=>1,discard=>1,self_mill=>1},
+					});
+push @cards, $card;
+
+$card = MTG::Card->new({multiverseid=>['222915'],
+						name=>'Villagers of Estwald',
+						CMC=>3,
+						cost=>['any','any','green'],
+						affinity_colors=>{},
+						type=>'Creature',
+						subtype=>['Human','Werewolf'],
+						rarity=>'Common',
+						power=>2,
+						toughness=>3,
+						card_text_html => '<div class="cardtextbox">At the beginning of each upkeep, if no spells were cast last turn, transform Villagers of Estwald.</div>',
+						card_text => html2Plain('<div class="cardtextbox">At the beginning of each upkeep, if no spells were cast last turn, transform Villagers of Estwald.</div>'),
+						flavor_text_html => '<div class="cardtextbox"><i>You can spot a werewolf-infested town by its lack of butcher shops.</i></div>',
+						flavor_text => html2Plain('<div class="cardtextbox"><i>You can spot a werewolf-infested town by its lack of butcher shops.</i></div>'),
+						tags=>{creature=>1,transformer=>1},
+					});
+push @cards, $card;
+
+$card = MTG::Card->new({multiverseid=>['222124'],
+						name=>'Grizzled Outcasts',
+						CMC=>5,
+						cost=>['any','any','any','any','green'],
+						affinity_colors=>{},
+						type=>'Creature',
+						subtype=>['Human','Werewolf'],
+						rarity=>'Common',
+						power=>4,
+						toughness=>4,
+						card_text_html => '<div class="cardtextbox">At the beginning of each upkeep, if no spells were cast last turn, transform Grizzled Outcasts.</div>',
+						card_text => html2Plain('<div class="cardtextbox">At the beginning of each upkeep, if no spells were cast last turn, transform Grizzled Outcasts.</div>'),
+						flavor_text_html => '<div class="cardtextbox"><i>Seen as unsavory, the hunters were never allowed in town&mdash;until one night they vanished.</i></div>',
+						flavor_text => html2Plain('<div class="cardtextbox"><i>Seen as unsavory, the hunters were never allowed in town&mdash;until one night they vanished.</i></div>'),
+						tags=>{creature=>1,transformer=>1},
+					});
+push @cards, $card;
+
+$card = MTG::Card->new({multiverseid=>['227084'],
+						name=>'Kruin Outlaw',
+						CMC=>3,
+						cost=>['any','red','red'],
+						affinity_colors=>{},
+						type=>'Creature',
+						subtype=>['Human','Rogue','Werewolf'],
+						rarity=>'Rare',
+						power=>2,
+						toughness=>2,
+						card_text_html => '<div class="cardtextbox">First strike</div><div class="cardtextbox">At the beginning of each upkeep, if no spells were cast last turn, transform Kruin Outlaw.</div>',
+						card_text => html2Plain('<div class="cardtextbox">First strike</div><div class="cardtextbox">At the beginning of each upkeep, if no spells were cast last turn, transform Kruin Outlaw.</div>'),
+						flavor_text_html => '<div class="cardtextbox"><i>"Hold tight. I\'ve got a surprise for them."</i></div>',
+						flavor_text => html2Plain('<div class="cardtextbox"><i>"Hold tight. I\'ve got a surprise for them."</i></div>'),
+						tags=>{creature=>1,transformer=>1,first_strike=>1,double_strike=>1,only_multiple_creatures_can_block=>1,affect_all_your_creatures=>1},
+					});
+push @cards, $card;
+
+$card = MTG::Card->new({multiverseid=>['222105'],
+						name=>'Ulvenwald Mystics',
+						CMC=>4,
+						cost=>['any','any','green','green'],
+						affinity_colors=>{},
+						type=>'Creature',
+						subtype=>['Human','Shaman','Werewolf'],
+						rarity=>'Uncommon',
+						power=>3,
+						toughness=>3,
+						card_text_html => '<div class="cardtextbox">At the beginning of each upkeep, if no spells were cast last turn, transform Ulvenwald Mystics.</div>',
+						card_text => html2Plain('<div class="cardtextbox">At the beginning of each upkeep, if no spells were cast last turn, transform Ulvenwald Mystics.</div>'),
+						flavor_text_html => '<div class="cardtextbox"><i>"With this ritual, we cast aside our fragile humanity . . ."</i></div>',
+						flavor_text => html2Plain('<div class="cardtextbox"><i>"With this ritual, we cast aside our fragile humanity . . ."</i></div>'),
+						tags=>{creature=>1,transformer=>1,regenerate=>1},
+					});
+push @cards, $card;
+
+$card = MTG::Card->new({multiverseid=>['222189'],
+						name=>'Mayor of Avabruck',
+						CMC=>2,
+						cost=>['any','green'],
+						affinity_colors=>{},
+						type=>'Creature',
+						subtype=>['Human','Advisor','Werewolf'],
+						rarity=>'Rare',
+						power=>1,
+						toughness=>1,
+						card_text_html => '<div class="cardtextbox">Other Human creatures you control get +1/+1.</div><div class="cardtextbox">At the beginning of each upkeep, if no spells were cast last turn, transform Mayor of Avabruck.</div>',
+						card_text => html2Plain('<div class="cardtextbox">Other Human creatures you control get +1/+1.</div><div class="cardtextbox">At the beginning of each upkeep, if no spells were cast last turn, transform Mayor of Avabruck.</div>'),
+						flavor_text_html => '<div class="cardtextbox"><i>He can deny his true nature for only so long.</i></div>',
+						flavor_text => html2Plain('<div class="cardtextbox"><i>He can deny his true nature for only so long.</i></div>'),
+						tags=>{creature=>1,transformer=>1,pump_by_affinity=>1,generate_token_creatures=>1},
+					});
+push @cards, $card;
+
+$card = MTG::Card->new({multiverseid=>['227409'],
+						name=>'Gatstaf Shepherd',
+						CMC=>2,
+						cost=>['any','green'],
+						affinity_colors=>{},
+						type=>'Creature',
+						subtype=>['Human','Werewolf'],
+						rarity=>'Uncommon',
+						power=>2,
+						toughness=>2,
+						card_text_html => '<div class="cardtextbox">At the beginning of each upkeep, if no spells were cast last turn, transform Gatstaf Shepherd.</div>',
+						card_text => html2Plain('<div class="cardtextbox">At the beginning of each upkeep, if no spells were cast last turn, transform Gatstaf Shepherd.</div>'),
+						flavor_text_html => '<div class="cardtextbox"><i>"What is worse than a wolf in sheep\'s clothing?"</i></div><div class="cardtextbox">&mdash;Wolfhunter\'s riddle</div>',
+						flavor_text => html2Plain('<div class="cardtextbox"><i>"What is worse than a wolf in sheep\'s clothing?"</i></div><div class="cardtextbox">&mdash;Wolfhunter\'s riddle</div>'),
+						tags=>{creature=>1,transformer=>1,intimidate=>1},
+					});
+push @cards, $card;
+
+$card = MTG::Card->new({multiverseid=>['221179'],
+						name=>'Ludevic\'s Test Subject',
+						CMC=>2,
+						cost=>['any','blue'],
+						affinity_colors=>{},
+						type=>'Creature',
+						subtype=>['Lizard','Horror'],
+						rarity=>'Rare',
+						power=>0,
+						toughness=>3,
+						card_text_html => '<div class="cardtextbox">Defender</div><div class="cardtextbox"><img src="/Handlers/Image.ashx?size=small&amp;name=1&amp;type=symbol" alt="1" align="absbottom"><img src="/Handlers/Image.ashx?size=small&amp;name=U&amp;type=symbol" alt="Blue" align="absbottom">: Put a hatchling counter on Ludevic\'s Test Subject. Then if there are five or more hatchling counters on it, remove all of them and transform it.</div>',
+						card_text => html2Plain('<div class="cardtextbox">Defender</div><div class="cardtextbox"><img src="/Handlers/Image.ashx?size=small&amp;name=1&amp;type=symbol" alt="1" align="absbottom"><img src="/Handlers/Image.ashx?size=small&amp;name=U&amp;type=symbol" alt="Blue" align="absbottom">: Put a hatchling counter on Ludevic\'s Test Subject. Then if there are five or more hatchling counters on it, remove all of them and transform it.</div>'),
+						flavor_text_html => '',
+						flavor_text => html2Plain(''),
+						tags=>{creature=>1,transformer=>1,trample=>1},
+					});
+push @cards, $card;
+
+$card = MTG::Card->new({multiverseid=>['222111'],
+						name=>'Reckless Waif',
+						CMC=>1,
+						cost=>['red'],
+						affinity_colors=>{},
+						type=>'Creature',
+						subtype=>['Human','Werewolf'],
+						rarity=>'Uncommon',
+						power=>1,
+						toughness=>1,
+						card_text_html => '<div class="cardtextbox">At the beginning of each upkeep, if no spells were cast last turn, transform Reckless Waif.</div>',
+						card_text => html2Plain('<div class="cardtextbox">At the beginning of each upkeep, if no spells were cast last turn, transform Reckless Waif.</div>'),
+						flavor_text_html => '<div class="cardtextbox"><i>"Yes, I\'m alone. No, I\'m not worried."</i></div>',
+						flavor_text => html2Plain('<div class="cardtextbox"><i>"Yes, I\'m alone. No, I\'m not worried."</i></div>'),
+						tags=>{creature=>1,transformer=>1,},
+					});
+push @cards, $card;
+
 
 $card = MTG::Card->new({multiverseid=>220959,
 						name=>'Goblin Fireslinger',
@@ -459,7 +710,7 @@ $deck->setOwnerId(1);
 $deck->setName("Jason Red Punishment");
 $deck->setFormat("Standard");
 eval {
-	$db->insertDeck($deck);
+	#$db->insertDeck($deck);
 }; if ($@) { print STDERR Dumper($@); }
 
 $deck = MTG::Deck->new($db);
@@ -498,7 +749,7 @@ $deck->setOwnerId(2);
 $deck->setName("Premium Deck Series: Fire and Lightning");
 $deck->setFormat("Legacy");
 eval {
-	$db->insertDeck($deck);
+	#$db->insertDeck($deck);
 }; if ($@) { print STDERR Dumper($@); }
 
 $deck = MTG::Deck->new($db);
@@ -584,7 +835,7 @@ $deck->addCard("Phyrexian Metamorph");
 $deck->addCard("Bringer of the Green Dawn");
 $deck->addCard("Experiment Kraj");
 eval {
-	$db->insertDeck($deck);
+	#$db->insertDeck($deck);
 }; if ($@) { print STDERR Dumper($@); }
 
 $deck = MTG::Deck->new($db);
@@ -611,7 +862,7 @@ $deck->addCard("Spell Pierce",4,"sideboard");
 $deck->addCard("Spellskite",4,"sideboard");
 $deck->addCard("Viridian Corrupter",4,"sideboard");
 eval {
-	$db->insertDeck($deck);
+	#$db->insertDeck($deck);
 }; if ($@) { print STDERR Dumper($@); }
 
 $deck = MTG::Deck->new($db);
@@ -666,7 +917,7 @@ $deck->addCard("Island",3,"sideboard");
 $deck->addCard("Swamp",1,"sideboard");
 $deck->addCard("Mountain",1,"sideboard");
 eval {
-	$db->insertDeck($deck);
+	#$db->insertDeck($deck);
 }; if ($@) { print STDERR Dumper($@); }
 
 
@@ -696,6 +947,409 @@ $deck->addCard("Travel Preparations",2);
 $deck->addCard("Bonds of Faith",1);
 $deck->addCard("Mask of Avacyn",1);
 $deck->addCard("Timely Reinforcements",1);
+eval {
+	#$db->insertDeck($deck);
+}; if ($@) { print STDERR Dumper($@); }
+
+
+$deck = MTG::Deck->new($db);
+$deck->setOwnerId(11);
+$deck->setName("Levy WU GP Austin Innistrad Draft");
+$deck->setFormat("Booster Draft");
+$deck->setDate("2012-01-07");
+$deck->addCard("Island",8);
+$deck->addCard("Plains",9);
+$deck->addCard("Abbey Griffin",2);
+$deck->addCard("Champion of the Parish",1);
+$deck->addCard("Chapel Geist",1);
+$deck->addCard("Delver of Secrets",1);
+$deck->addCard("Doomed Traveler",1);
+$deck->addCard("Elder Cathar",2);
+$deck->addCard("Geist-Honored Monk",1);
+$deck->addCard("Invisible Stalker",1);
+$deck->addCard("Selfless Cathar",1);
+$deck->addCard("Spectral Rider",1);
+$deck->addCard("Stitcher's Apprentice",2);
+$deck->addCard("Unruly Mob",1);
+$deck->addCard("Voiceless Spirit",1);
+$deck->addCard("Dissipate",1);
+$deck->addCard("Feeling of Dread",2);
+$deck->addCard("Grasp of Phantoms",1);
+$deck->addCard("Lost in the Mist",1);
+$deck->addCard("Silver-Inlaid Dagger",1);
+$deck->addCard("Smite the Monstrous",1);
+$deck->addCard("Abbey Griffin",1,"sideboard");
+$deck->addCard("Cobbled Wings",1,"sideboard");
+$deck->addCard("Furor of the Bitten",1,"sideboard");
+$deck->addCard("Ghostly Possession",2,"sideboard");
+$deck->addCard("Gruesome Deformity",1,"sideboard");
+$deck->addCard("Heartless Summoning",1,"sideboard");
+$deck->addCard("Hysterical Blindness",1,"sideboard");
+$deck->addCard("Infernal Plunge",1,"sideboard");
+$deck->addCard("Nevermore",1,"sideboard");
+$deck->addCard("Night Terrors",1,"sideboard");
+$deck->addCard("Nightbird's Clutches",1,"sideboard");
+$deck->addCard("Sensory Deprivation",1,"sideboard");
+$deck->addCard("Somberwald Spider",1,"sideboard");
+$deck->addCard("Spare from Evil",1,"sideboard");
+$deck->addCard("Thraben Purebloods",1,"sideboard");
+$deck->addCard("Urgent Exorcism",1,"sideboard");
+$deck->addCard("Wooden Stake",1,"sideboard");
+eval {
+	$db->insertDeck($deck);
+}; if ($@) { print STDERR Dumper($@); }
+
+
+########
+$deck = MTG::Deck->new($db);
+$deck->setOwnerId(6);
+$deck->setName("Downing RUw GP Austin Innistrad Draft");
+$deck->setFormat("Booster Draft");
+$deck->setDate("2012-01-07");
+$deck->addCard("Island",5);
+$deck->addCard("Mountain",9);
+$deck->addCard("Plains",1);
+$deck->addCard("Shimmering Grotto",1);
+$deck->addCard("Ashmouth Hound",2);
+$deck->addCard("Bloodcrazed Neonate",1);
+$deck->addCard("Delver of Secrets",1);
+$deck->addCard("Feral Ridgewolf",1);
+$deck->addCard("Kessig Wolf",1);
+$deck->addCard("Lantern Spirit",1);
+$deck->addCard("Rage Thrower",1);
+$deck->addCard("Rakish Heir",2);
+$deck->addCard("Skirsdag Cultist",1);
+$deck->addCard("Village Ironsmith",1);
+$deck->addCard("Brimstone Volley",1);
+$deck->addCard("Butcher's Cleaver",1);
+$deck->addCard("Feeling of Dread",1);
+$deck->addCard("Forbidden Alchemy",1);
+$deck->addCard("Geistflame",2);
+$deck->addCard("Into the Maw of Hell",1);
+$deck->addCard("Silent Departure",1);
+$deck->addCard("Think Twice",1);
+$deck->addCard("Traitorous Blood",1);
+$deck->addCard("Traveler's Amulet",2);
+$deck->addCard("Altar's Reap",1,"sideboard");
+$deck->addCard("Frightful Delusion",1,"sideboard");
+$deck->addCard("Furor of the Bitten",1,"sideboard");
+$deck->addCard("Ghost Quarter",1,"sideboard");
+$deck->addCard("Gnaw to the Bone",1,"sideboard");
+$deck->addCard("Kessig Wolf",1,"sideboard");
+$deck->addCard("Maw of the Mire",1,"sideboard");
+$deck->addCard("Mulch",1,"sideboard");
+$deck->addCard("Orchard Spirit",1,"sideboard");
+$deck->addCard("Purify the Grave",1,"sideboard");
+$deck->addCard("Skeletal Grimace",1,"sideboard");
+$deck->addCard("Spare from Evil",1,"sideboard");
+$deck->addCard("Spider Spawning",1,"sideboard");
+$deck->addCard("Spidery Grasp",1,"sideboard");
+$deck->addCard("Vampire Interloper",1,"sideboard");
+$deck->addCard("Vampiric Fury",1,"sideboard");
+$deck->addCard("Wreath of Geists",1,"sideboard");
+eval {
+	$db->insertDeck($deck);
+}; if ($@) { print STDERR Dumper($@); }
+
+
+########
+$deck = MTG::Deck->new($db);
+$deck->setOwnerId(5);
+$deck->setName("Ochao WB GP Austin Innistrad Draft");
+$deck->setFormat("Booster Draft");
+$deck->setDate("2012-01-07");
+$deck->addCard("Plains",8);
+$deck->addCard("Swamp", 9);
+$deck->addCard("Bloodgift Demon",1);
+$deck->addCard("Bloodline Keeper", 1);
+$deck->addCard("Cloistered Youth", 2);
+$deck->addCard("Diregraf Ghoul");
+$deck->addCard("Doomed Traveler");
+$deck->addCard("Markov Patrician");
+$deck->addCard("Screeching Bat");
+$deck->addCard("Skirsdag High Priest");
+$deck->addCard("Stromkirk Patrol");
+$deck->addCard("Thraben Purebloods");
+$deck->addCard("Thraben Sentry");
+$deck->addCard("Unruly Mob");
+$deck->addCard("Walking Corpse",2);
+$deck->addCard("Altar's Reap");
+$deck->addCard("Curse of Death's Hold");
+$deck->addCard("Ghoulcaller's Chant");
+$deck->addCard("Midnight Haunting");
+$deck->addCard("Moment of Heroism");
+$deck->addCard("Smite the Monstrous",2);
+$deck->addCard("Unburial Rites");
+$deck->addCard("Civilized Scholar",1, "sideboard");
+$deck->addCard("Creeping Renaissance",1, "sideboard");
+$deck->addCard("Curse of the Bloody Tome",1, "sideboard");
+$deck->addCard("Dream Twist",1, "sideboard");
+$deck->addCard("Frightful Delusion",1, "sideboard");
+$deck->addCard("Ghostly Possession",1, "sideboard");
+$deck->addCard("Hysterical Blindness",2, "sideboard");
+$deck->addCard("Infernal Plunge",1, "sideboard");
+$deck->addCard("Intangible Virtue",1, "sideboard");
+$deck->addCard("Invisible Stalker",1, "sideboard");
+$deck->addCard("Memory's Journey",1, "sideboard");
+$deck->addCard("Moonmist",1, "sideboard");
+$deck->addCard("Nightbird's Clutches",1, "sideboard");
+$deck->addCard("Paraselene",1, "sideboard");
+$deck->addCard("Runic Repetition",1, "sideboard");
+$deck->addCard("Spare from Evil",1, "sideboard");
+$deck->addCard("Woodland Sleuth",1, "sideboard");
+eval {
+	$db->insertDeck($deck);
+}; if ($@) { print STDERR Dumper($@); }
+
+########
+$deck = MTG::Deck->new($db);
+$deck->setOwnerId(7);
+$deck->setName("Edwards GW GP Austin Innistrad Draft");
+$deck->setFormat("Booster Draft");
+$deck->setDate("2012-01-07");
+$deck->addCard("Forest",8);
+$deck->addCard("Plains",8);
+$deck->addCard("Ambush Viper",1);
+$deck->addCard("Avacynian Priest",1);
+$deck->addCard("Darkthicket Wolf",1);
+$deck->addCard("Festerhide Boar",1);
+$deck->addCard("Fiend Hunter",1);
+$deck->addCard("Galvanic Juggernaut",1);
+$deck->addCard("Hamlet Captain",1);
+$deck->addCard("Lumberknot",1);
+$deck->addCard("Selfless Cathar",1);
+$deck->addCard("Village Bell-Ringer",1);
+$deck->addCard("Villagers of Estwald",2);
+$deck->addCard("Voiceless Spirit",1);
+$deck->addCard("Woodland Sleuth",1);
+$deck->addCard("Blazing Torch",2);
+$deck->addCard("Bonds of Faith",1);
+$deck->addCard("Prey Upon",1);
+$deck->addCard("Ranger's Guile",1);
+$deck->addCard("Rebuke",2);
+$deck->addCard("Sharpened Pitchfork",1);
+$deck->addCard("Smite the Monstrous",1);
+$deck->addCard("Spidery Grasp",1);
+$deck->addCard("Ancient Grudge",1,"sideboard");
+$deck->addCard("Doomed Traveler",1,"sideboard");
+$deck->addCard("Gnaw to the Bone",1,"sideboard");
+$deck->addCard("Grizzled Outcasts",1,"sideboard");
+$deck->addCard("Inquisitor's Flail",1,"sideboard");
+$deck->addCard("Kindercatch",1,"sideboard");
+$deck->addCard("Make a Wish",1,"sideboard");
+$deck->addCard("Manor Skeleton",1,"sideboard");
+$deck->addCard("Maw of the Mire",1,"sideboard");
+$deck->addCard("Moonmist",1,"sideboard");
+$deck->addCard("Paraselene",1,"sideboard");
+$deck->addCard("Rooftop Storm",1,"sideboard");
+$deck->addCard("Thraben Purebloods",1,"sideboard");
+$deck->addCard("Urgent Exorcism",1,"sideboard");
+$deck->addCard("Woodland Sleuth",1,"sideboard");
+eval {
+	$db->insertDeck($deck);
+}; if ($@) { print STDERR Dumper($@); }
+
+
+########
+$deck = MTG::Deck->new($db);
+$deck->setOwnerId(8);
+$deck->setName("Saylor RB GP Austin Innistrad Draft");
+$deck->setFormat("Booster Draft");
+$deck->setDate("2012-01-07");
+$deck->addCard("Mountain",9);
+$deck->addCard("Swamp",8);
+$deck->addCard("Ashmouth Hound",1);
+$deck->addCard("Bloodcrazed Neonate",1);
+$deck->addCard("Geistcatcher's Rig",1);
+$deck->addCard("Kruin Outlaw",1);
+$deck->addCard("Markov Patrician",1);
+$deck->addCard("Pitchburn Devils",1);
+$deck->addCard("Rage Thrower",1);
+$deck->addCard("Riot Devils",1);
+$deck->addCard("Scourge of Geier Reach",1);
+$deck->addCard("Skirsdag Cultist",1);
+$deck->addCard("Stromkirk Noble",1);
+$deck->addCard("Village Cannibals",1);
+$deck->addCard("Village Ironsmith",1);
+$deck->addCard("Army of the Damned",1);
+$deck->addCard("Blazing Torch",1);
+$deck->addCard("Bump in the Night",1);
+$deck->addCard("Butcher's Cleaver",1);
+$deck->addCard("Corpse Lunge",1);
+$deck->addCard("Dead Weight",1);
+$deck->addCard("Harvest Pyre",1);
+$deck->addCard("Heretic's Punishment",1);
+$deck->addCard("Moan of the Unhallowed",1);
+$deck->addCard("Tribute to Hunger",1);
+$deck->addCard("Victim of Night",1);
+$deck->addCard("Ambush Viper",1,"sideboard");
+$deck->addCard("Ancient Grudge",2,"sideboard");
+$deck->addCard("Boneyard Wurm",2,"sideboard");
+$deck->addCard("Ghoulraiser",1,"sideboard");
+$deck->addCard("Graveyard Shovel",1,"sideboard");
+$deck->addCard("Moldgraf Monstrosity",1,"sideboard");
+$deck->addCard("Night Terrors",1,"sideboard");
+$deck->addCard("Rally the Peasants",1,"sideboard");
+$deck->addCard("Ranger's Guile",1,"sideboard");
+$deck->addCard("Selfless Cathar",1,"sideboard");
+$deck->addCard("Shimmering Grotto",1,"sideboard");
+$deck->addCard("Spider Spawning",1,"sideboard");
+$deck->addCard("Stromkirk Patrol",1,"sideboard");
+$deck->addCard("Tree of Redemption",1,"sideboard");
+$deck->addCard("Ulvenwald Mystics",1,"sideboard");
+$deck->addCard("Vampiric Fury",1,"sideboard");
+eval {
+	$db->insertDeck($deck);
+}; if ($@) { print STDERR Dumper($@); }
+
+
+########
+$deck = MTG::Deck->new($db);
+$deck->setOwnerId(9);
+$deck->setName("Howden GUr GP Austin Innistrad Draft");
+$deck->setFormat("Booster Draft");
+$deck->setDate("2012-01-07");
+$deck->addCard("Forest",8);
+$deck->addCard("Island",6);
+$deck->addCard("Mountain",1);
+$deck->addCard("Shimmering Grotto",1);
+$deck->addCard("Armored Skaab",1);
+$deck->addCard("Avacyn's Pilgrim",1);
+$deck->addCard("Darkthicket Wolf",1);
+$deck->addCard("Gatstaf Shepherd",1);
+$deck->addCard("Hollowhenge Scavenger",1);
+$deck->addCard("Ludevic's Test Subject",1);
+$deck->addCard("Makeshift Mauler",1);
+$deck->addCard("Mayor of Avabruck",1);
+$deck->addCard("Moon Heron",2);
+$deck->addCard("Murder of Crows",1);
+$deck->addCard("One-Eyed Scarecrow",1);
+$deck->addCard("Orchard Spirit",1);
+$deck->addCard("Pitchburn Devils",1);
+$deck->addCard("Selhoff Occultist",1);
+$deck->addCard("Brimstone Volley",1);
+$deck->addCard("Caravan Vigil",2);
+$deck->addCard("Harvest Pyre",1);
+$deck->addCard("Prey Upon",1);
+$deck->addCard("Ranger's Guile",1);
+$deck->addCard("Spectral Flight",1);
+$deck->addCard("Spidery Grasp",1);
+$deck->addCard("Travel Preparations",1);
+$deck->addCard("Altar's Reap",1,"sideboard");
+$deck->addCard("Brain Weevil",1,"sideboard");
+$deck->addCard("Cobbled Wings",1,"sideboard");
+$deck->addCard("Curse of Oblivion",2,"sideboard");
+$deck->addCard("Curse of the Nightly Hunt",1,"sideboard");
+$deck->addCard("Feral Ridgewolf",1,"sideboard");
+$deck->addCard("Grave Bramble",1,"sideboard");
+$deck->addCard("Grizzled Outcasts",1,"sideboard");
+$deck->addCard("Mask of Avacyn",1,"sideboard");
+$deck->addCard("Naturalize",2,"sideboard");
+$deck->addCard("Sharpened Pitchfork",1,"sideboard");
+$deck->addCard("Thraben Sentry",1,"sideboard");
+$deck->addCard("Traitorous Blood",2,"sideboard");
+$deck->addCard("Wooden Stake",1,"sideboard");
+eval {
+	$db->insertDeck($deck);
+}; if ($@) { print STDERR Dumper($@); }
+
+
+########
+$deck = MTG::Deck->new($db);
+$deck->setOwnerId(10);
+$deck->setName("Bursavich URb GP Austin Innistrad Draft");
+$deck->setFormat("Booster Draft");
+$deck->setDate("2012-01-07");
+$deck->addCard("Island",10);
+$deck->addCard("Mountain",6);
+$deck->addCard("Swamp",1);
+$deck->addCard("Ashmouth Hound",1);
+$deck->addCard("Battleground Geist",1);
+$deck->addCard("Fortress Crab",1);
+$deck->addCard("One-Eyed Scarecrow",1);
+$deck->addCard("Selhoff Occultist",1);
+$deck->addCard("Sturmgeist",1);
+$deck->addCard("Tormented Pariah",1);
+$deck->addCard("Burning Vengeance",1);
+$deck->addCard("Claustrophobia",2);
+$deck->addCard("Curse of the Bloody Tome",2);
+$deck->addCard("Desperate Ravings",1);
+$deck->addCard("Dissipate",1);
+$deck->addCard("Dream Twist",2);
+$deck->addCard("Forbidden Alchemy",1);
+$deck->addCard("Ghoulcaller's Bell",1);
+$deck->addCard("Into the Maw of Hell",1);
+$deck->addCard("Sensory Deprivation",3);
+$deck->addCard("Think Twice",1);
+$deck->addCard("Avacynian Priest",1,"sideboard");
+$deck->addCard("Back from the Brink",1,"sideboard");
+$deck->addCard("Bramblecrush",2,"sideboard");
+$deck->addCard("Curse of the Pierced Heart",1,"sideboard");
+$deck->addCard("Ghoulcaller's Chant",1,"sideboard");
+$deck->addCard("Hollowhenge Scavenger",1,"sideboard");
+$deck->addCard("Intangible Virtue",1,"sideboard");
+$deck->addCard("Laboratory Maniac",1,"sideboard");
+$deck->addCard("Lumberknot",1,"sideboard");
+$deck->addCard("Memory's Journey",1,"sideboard");
+$deck->addCard("Night Revelers",1,"sideboard");
+$deck->addCard("Past in Flames",1,"sideboard");
+$deck->addCard("Reckless Waif",1,"sideboard");
+$deck->addCard("Scourge of Geier Reach",1,"sideboard");
+$deck->addCard("Tormented Pariah",1,"sideboard");
+$deck->addCard("Typhoid Rats",1,"sideboard");
+$deck->addCard("Vampiric Fury",1,"sideboard");
+$deck->addCard("Witchbane Orb",1,"sideboard");
+eval {
+	$db->insertDeck($deck);
+}; if ($@) { print STDERR Dumper($@); }
+
+
+########
+
+$deck = MTG::Deck->new($db);
+$deck->setOwnerId(12);
+$deck->setName("Cox BU GP Austin Innistrad Draft");
+$deck->setFormat("Booster Draft");
+$deck->setDate("2012-01-07");
+$deck->addCard("Island",8);
+$deck->addCard("Swamp",9);
+$deck->addCard("Abattoir Ghoul",1);
+$deck->addCard("Armored Skaab",2);
+$deck->addCard("Battleground Geist",1);
+$deck->addCard("Deranged Assistant",2);
+$deck->addCard("Fortress Crab",1);
+$deck->addCard("Makeshift Mauler",1);
+$deck->addCard("Skaab Goliath",1);
+$deck->addCard("Snapcaster Mage",1);
+$deck->addCard("Stitched Drake",1);
+$deck->addCard("Stromkirk Patrol",1);
+$deck->addCard("Typhoid Rats",1);
+$deck->addCard("Vampire Interloper",1);
+$deck->addCard("Walking Corpse",1);
+$deck->addCard("Cackling Counterpart",1);
+$deck->addCard("Corpse Lunge",1);
+$deck->addCard("Curiosity",1);
+$deck->addCard("Dead Weight",1);
+$deck->addCard("Ghoulcaller's Chant",1);
+$deck->addCard("Grasp of Phantoms",1);
+$deck->addCard("Victim of Night",2);
+$deck->addCard("Bitterheart Witch",1,"sideboard");
+$deck->addCard("Brain Weevil",1,"sideboard");
+$deck->addCard("Creepy Doll",1,"sideboard");
+$deck->addCard("Fortress Crab",1,"sideboard");
+$deck->addCard("Ghoulcaller's Bell",1,"sideboard");
+$deck->addCard("Graveyard Shovel",1,"sideboard");
+$deck->addCard("Inquisitor's Flail",1,"sideboard");
+$deck->addCard("Intangible Virtue",1,"sideboard");
+$deck->addCard("Manor Skeleton",1,"sideboard");
+$deck->addCard("Moment of Heroism",1,"sideboard");
+$deck->addCard("Night Revelers",2,"sideboard");
+$deck->addCard("Nightbird's Clutches",1,"sideboard");
+$deck->addCard("Rebuke",1,"sideboard");
+$deck->addCard("Silverchase Fox",1,"sideboard");
+$deck->addCard("Typhoid Rats",1,"sideboard");
+$deck->addCard("Voiceless Spirit",1,"sideboard");
+$deck->addCard("Woodland Cemetery",1,"sideboard");
 eval {
 	$db->insertDeck($deck);
 }; if ($@) { print STDERR Dumper($@); }

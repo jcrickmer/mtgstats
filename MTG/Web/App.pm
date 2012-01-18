@@ -36,7 +36,7 @@ sub call {
 
 	$env->{PATH_INFO} =~ /^\/([^\/]+)\/([^\/]+)/;
 	my $contName = $1;
-	my $actionName = $2 || 'list';
+	my $actionName = $2 || 'default';
 
 	my $controller = $self->{$contName . '_controller'} || $self->{deck_controller};
 

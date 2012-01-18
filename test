@@ -3,5 +3,5 @@
 use TAP::Harness;
 
 my $harness = TAP::Harness->new();
-$harness->runtests(('t/probabilities.t', 't/cardfilter.t', 't/deck_io.t'));
+$harness->runtests(('t/probabilities.t', 't/cardfilter.t', 't/deck_io.t','t/card_io.t'));
 

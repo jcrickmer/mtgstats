@@ -1,0 +1,9 @@
+[% INCLUDE header.tt
+    title = "Card View - $card.getName"
+ %]
+
+    <div class="main">
+Main view.
+    </div>
+
+[% INCLUDE footer.tt %]

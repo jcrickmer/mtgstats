@@ -154,6 +154,15 @@ sub getCardByName {
 	return $res_card;
 }
 
+sub removeCard {
+	my $self = shift;
+	my $card = checkClass('MTG::Card', shift);
+	my $res = $self->{db}->get_collection('cards')->remove({'_id'=>$card->getId()}, {safe=>1});
+	$self->{cardCache}->removeCard($card->getId());
+	#print STDERR Dumper($res);
+	return $res->{n};
+}
+
 sub getDeckByNameAndOwnerId {
 	my $self = shift;
 	my $name = shift;
@@ -247,9 +256,20 @@ sub removeDeck {
 	return;
 }
 
+# Insert an MTG::Card into the database.  Returns the OID (table id)
+# of the new card.  Several exceptions could be thrown.
 sub insertCard {
 	my $self = shift;
 	my $card = shift; # we need to pass something in, right?
+	if (! defined $card) {
+		die MTG::Exception::NullPointer->new();
+	}
+	checkClass('MTG::Card', $card);
+	if (! $card->isComplete()) {
+		my $ex = MTG::Exception::IncompleteObject->new();
+		$ex->throw();
+	}
+
 	$card->broadenTags();
 
 	my $cards = $self->{db}->get_collection('cards');
@@ -278,6 +298,10 @@ sub insertCard {
 		$ex->{field} = $1;
 		$ex->throw();
     }
+
+	# stick it in cache for future performance
+	$self->{cardCache}->addCard($card);
+
 	return $id;
 }
 

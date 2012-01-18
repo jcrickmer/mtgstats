@@ -4,6 +4,7 @@ use strict;
 use Data::Dumper;
 use Template;
 use MTG::ProbUtil;
+use Encode qw(encode);
 
 use parent 'MTG::Web::Controller';
 
@@ -14,6 +15,10 @@ sub new {
 	return $self;
 }
 
+sub default {
+	return @_[0]->list(@_);
+}
+
 sub list {
 	my $self = shift;
 	my $env = shift;
@@ -22,14 +27,15 @@ sub list {
 
 	my $output = '';
 	$self->{app}->{tt}->process('deck/list.tt', $context, \$output) || die $self->{app}->{tt}->error();
+	my $properOut = encode("utf8", $output);
 
     return [
         # HTTP Status code
         200,
         # HTTP headers as arrayref
-        [ 'Content-type' => 'text/html' ],
+        [ 'Content-type' => 'text/html; charset=utf-8' ],
         # Response body as array ref
-        [ $output ],
+        [ $properOut ],
     ];
 
 }

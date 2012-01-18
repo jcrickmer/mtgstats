@@ -5,7 +5,7 @@
     <div class="main">
       <ul>
 [%  FOREACH deck IN decks %]
-        <li><a href="view?deckid=[% deck.getId %]">[% deck.name %]</a> [% deck.cardCount %] </li>
+        <li><a href="view?deckid=[% deck.getId() %]">[% deck.name %]</a> [% deck.cardCount("main") %] </li>
 [%  END %]
       </ul>
     </div>

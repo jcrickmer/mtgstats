@@ -23,4 +23,10 @@ sub getCard {
 	return $self->{cards}->{id};
 }
 
+sub removeCard {
+	my $self = shift;
+	my $id = shift;
+	delete $self->{cards}->{id};
+}
+
 1;
