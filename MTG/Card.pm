@@ -5,134 +5,6 @@ use strict;
 use Clone;
 use MTG::MongoObject;
 
-my $TAG_EXP = {
-	upkeep => [],
-	endstep => [],
-	permanent => [],
-	tap_down => [],
-	tap_creature => ['tap_down'],
-	tap_artifact => ['tap_down'],
-	untap => [],
-	untap_artifact => ['untap'],
-	untap_creature => ['untap'],
-	haste => ['immediate'],
-	flash => ['immediate'],
-	immediate => [],
-	protection => ['spell_protection'],
-	spell_protection => [],
-	shroud => ['spell_protection'],
-	hexproof => ['spell_protection'],
-	creature => ['spell', 'permanent'],
-	spell => [],
-	enchantment => ['spell'],
-	emblem => ['permanent'],
-	instant => ['spell', 'immediate'],
-	leveler => [],
-	removal => [],
-	destroy_creature => ['removal'],
-	destroy_artifact => ['removal'],
-	destroy_enchantment => ['removal'],
-	land => ['generate_mana', 'permanent'],
-	legendary => [],
-	generate_mana => [],
-	generate_mana_multicolor => [],
-	generate_mana_colorless => [],
-	fetch => ['add_to_hand',],
-	fetch_library => ['add_to_hand','fetch'],
-	fetch_library_card => ['add_to_hand','fetch', 'fetch_library'],
-	fetch_library_land => ['add_to_hand','fetch', 'fetch_library'],
-	fetch_library_creature => ['add_to_hand','fetch', 'fetch_library'],
-	fetch_library_enchantment => ['add_to_hand','fetch', 'fetch_library'],
-	fetch_library_artifact => ['add_to_hand','fetch', 'fetch_library'],
-	fetch_library_equipment => ['add_to_hand','fetch', 'fetch_library'],
-	fetch_graveyard => ['add_to_hand','fetch'],
-	fetch_graveyard_card => ['add_to_hand','fetch', 'fetch_graveyard'],
-	fetch_graveyard_land => ['add_to_hand','fetch', 'fetch_graveyard'],
-	fetch_graveyard_creature => ['add_to_hand','fetch', 'fetch_graveyard'],
-	fetch_graveyard_enchantment => ['add_to_hand','fetch', 'fetch_graveyard'],
-	fetch_graveyard_instant => ['add_to_hand','fetch', 'fetch_graveyard'],
-	fetch_graveyard_sorcery => ['add_to_hand','fetch', 'fetch_graveyard'],
-	library_to_battlefield => [],
-	extra_land => [],
-	mana_bank => ['generate_mana'],
-	generate_white_mana => ['generate_mana'],
-	generate_blue_mana => ['generate_mana'],
-	generate_black_mana => ['generate_mana'],
-	generate_green_mana => ['generate_mana'],
-	generate_red_mana => ['generate_mana'],
-	generate_colorless_mana => ['generate_mana'],
-	pump => [],
-    pump_by_affinity => ['pump'],
-	sacrifice => [],
-	opponent_sacrifice => [],
-	flying => ['reach'],
-	reach => [],
-	fear => [],
-	regenerate => [],
-	bloodthirst => ['pump','morbid'],
-	morbid => [],
-	landfall => [],
-	exile => [],
-	affects_graveyard => [],
-	exile_from_graveyard => ['exile', 'effects_graveyard'],
-	additional_cost => [],
-	aura => [],
-	shuffle => ['affects_library'],
-	affects_library => [],
-	planeswalker => [],
-	equipment_to_battlefield => [],
-	land_to_creature => [],
-	infect => [],
-	enters_tapped => [],
-	scry => ['add_to_hand','draw_card'],
-	add_to_hand => [],
-	pro_artifact => [],
-	artifact => [],
-	draw_card => ['add_to_hand'],
-	'return' => [],
-	from_graveyard => [],
-	return_creature => ['return'],
-	return_permanent => ['return'],
-	return_battlefield_to_hand => ['return'],
-	return_battlefield_to_library => ['return'],
-	return_graveyard_to_library => ['return'],
-	return_graveyard_to_hand => ['return'],
-	return_graveyard_to_battlefield => ['return'],
-	target_creature => [],
-	target_player => [],
-	kicker => [],
-	counter => [],
-	counter_creature => [],
-	vigilance => [],
-	trample => [],
-	discard => ['mill'],
-	self_mill => ['mill'],
-	mill => [],
-	drain_life => [],
-	library_to_graveyard => ['mill'],
-	destroy_land => [],
-	target_land => [],
-	target_spell => [],
-	affect_all => [],
-	affect_all_players => ['affect_all'],
-	affect_all_creatures => ['affect_all'],
-	affect_all_nonflying_creatures => ['affect_all','affect_all_creatures'],
-	affect_all_your_creatures => [],
-	opponent_player_damage => [],
-	creature_damage => [],
-	gain_life => [],
-	lifelink => ['gain_life'],
-	flashback => [],
-	nonfliers_cant_block => [],
-	tap_ability => [],
-	nonflier_defense => ['creature_defense'],
-	creature_defense => [],
-	only_multiple_creatures_can_block => ['requires_special_blocking'],
-	unblockable => ['requires_special_blocking'],
-	requires_special_blocking => [],
-    generate_token_creatures => [],
-    transformer => [],
-};
 
 sub new {
 	my $class = shift;
@@ -320,10 +192,19 @@ sub broadenTags {
 		$self->addTag('spell');
 	}
 	my $tags_ref = $self->{tags};
+	#foreach my $kk (keys(%$tags_ref)) {
+	#	#print "$kk...\n";
+	#	if (grep(/^$kk$/, keys(%$TAG_EXP))) {
+	#		foreach my $newt (@{$TAG_EXP->{$kk}}) {
+	#			$self->{tags}->{$newt} = 1;
+	#			#print "adding $newt for $kk\n";
+	#		}
+	#	}
+	#}
 	foreach my $kk (keys(%$tags_ref)) {
 		#print "$kk...\n";
-		if (grep(/^$kk$/, keys(%$TAG_EXP))) {
-			foreach my $newt (@{$TAG_EXP->{$kk}}) {
+		if (grep(/^$kk$/, keys(%$MTG::TagMap::TAGS))) {
+			foreach my $newt (@{$MTG::TagMap::TAGS->{$kk}}) {
 				$self->{tags}->{$newt} = 1;
 				#print "adding $newt for $kk\n";
 			}
