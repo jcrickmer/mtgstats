@@ -61,7 +61,7 @@ sub new {
 	if (! defined $self->{power}) {
 		$self->{power} = 0;
 	}
-	push(@{$self->{serializable}}, qw(_id multiverseid name CMC cost type rarity tags expansion subtype toughness power card_text flavor_text card_text_html flavor_text_html));
+	push(@{$self->{serializable}}, qw(_id multiverseid name CMC cost type cardtype rarity tags expansion subtype toughness power card_text flavor_text card_text_html flavor_text_html));
 	bless($self, $class);
 	return $self;
 }
@@ -88,6 +88,17 @@ sub getName {
 sub setName {
 	my $self = shift;
 	$self->{name} = shift;
+	return;
+}
+
+sub getCMC {
+	my $self = shift;
+	return $self->{CMC};
+}
+
+sub setCMC {
+	my $self = shift;
+	$self->{CMC} = shift;
 	return;
 }
 
@@ -160,9 +171,154 @@ sub setType {
 }
 
 # returns a string
+sub getRarity {
+	my $self = shift;
+	return $self->{rarity};
+}
+
+# sets a string
+sub setRarity {
+	my $self = shift;
+	$self->{rarity} = shift;
+	return;
+}
+
+# returns a string
+sub getPower {
+	my $self = shift;
+	return $self->{power};
+}
+
+# sets a string
+sub setPower {
+	my $self = shift;
+	$self->{power} = shift;
+	return;
+}
+
+# returns a string
+sub getToughness {
+	my $self = shift;
+	return $self->{toughness};
+}
+
+# sets a string
+sub setToughness {
+	my $self = shift;
+	$self->{toughness} = shift;
+	return;
+}
+
+# returns a string
+sub getExpansion {
+	my $self = shift;
+	return $self->{expansion};
+}
+
+# sets a string
+sub setExpansion {
+	my $self = shift;
+	$self->{expansion} = shift;
+	return;
+}
+
+# returns a string
+sub setCardType {
+	my $self = shift;
+	$self->{cardtype} = shift;
+	return;
+}
+
+# returns an array ref that is a copy of the cost (thus it is safe for
+# modification without impact to the card object).
+sub getCost {
+	my $self = shift;
+	my @result = @{$self->{cost}};
+	return \@result;
+}
+
+# expects an array reference
+sub setCost {
+	my $self = shift;
+	my $ar = shift;
+	my @a = @$ar; # we want a copy of it so that it is not inadvertently edited later.
+	$self->{cost} = \@a;
+	return;
+}
+
+# returns an array ref that is a copy of the cost (thus it is safe for
+# modification without impact to the card object).
+sub getSubtype {
+	my $self = shift;
+	my @result = @{$self->{subtype}};
+	return \@result;
+}
+
+# expects an array reference
+sub setSubtype {
+	my $self = shift;
+	my $ar = shift;
+	my @a = @$ar; # we want a copy of it so that it is not inadvertently edited later.
+	$self->{subtype} = \@a;
+	return;
+}
+
+# returns a string
 sub getCardType {
 	my $self = shift;
 	return $self->{cardtype};
+}
+
+# returns a string
+sub getCardText {
+	my $self = shift;
+	return $self->{card_text};
+}
+
+# sets a string
+sub setCardText {
+	my $self = shift;
+	$self->{card_text} = shift;
+	return;
+}
+
+# returns a string
+sub getCardTextHTML {
+	my $self = shift;
+	return $self->{card_text_html};
+}
+
+# sets a string
+sub setCardTextHTML {
+	my $self = shift;
+	$self->{card_text_html} = shift;
+	return;
+}
+
+# returns a string
+sub getFlavorText {
+	my $self = shift;
+	return $self->{flavor_text};
+}
+
+# sets a string
+sub setFlavorText {
+	my $self = shift;
+	$self->{flavor_text} = shift;
+	return;
+}
+
+# returns a string
+sub getFlavorTextHTML {
+	my $self = shift;
+	return $self->{flavor_text_html};
+}
+
+# sets a string
+sub setFlavorTextHTML {
+	my $self = shift;
+	$self->{flavor_text_html} = shift;
+	return;
 }
 
 # given a card, add new tags to that tag array ref
