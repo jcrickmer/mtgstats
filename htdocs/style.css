@@ -20,7 +20,16 @@ div.header {
 }
 
 div.globalnav {
+border-top: solid 1px #c0c0c0;
+border-bottom: solid 1px #c0c0c0;
 }
+div.globalnav > ul li {
+    display: inline
+}
+div.globalnav > ul > li {
+    padding-left: 15px;
+}
+
 div.card_details > img.card_image {
 	float: left;
 	margin-right: 5px;
@@ -35,4 +44,16 @@ td.probability {
 }
 #wholepage {
 	width:980px;
+}
+
+
+table.card_details {
+    border: 1px solid #000000;
+	border-collapse: separate;
+	border-spacing: 10px;
+
+}
+table.card_details td {
+    padding: 8px 8px;
+	background-color: #e0e0e0;
 }

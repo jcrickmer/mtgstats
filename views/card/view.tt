@@ -5,7 +5,7 @@
     <div class="main card_details">
       <h2>[% card.getName %]</h2>
       <img src="http://gatherer.wizards.com/Handlers/Image.ashx?type=card&multiverseid=[% card.get('multiverseid').0 %]" class="card_image" />
-	  <table>
+	  <table class="card_details">
 <tr>
 <td class="attr_label">Name</td>
 <td class="attr_value">[% card.get('name') %]</td>
@@ -26,10 +26,12 @@
 <td class="attr_label">Subtype</td>
 <td class="attr_value">[% card.get('subtype').join %]</td>
 </tr>
+[% IF card.getType() == 'Creature' %]
 <tr>
 <td class="attr_label">Power/Toughness</td>
 <td class="attr_value">[% card.get('power') %]/[% card.get('toughness') %]</td>
 </tr>
+[% END %]
 <tr>
 <td class="attr_label">Rarity</td>
 <td class="attr_value">[% card.get('rarity') %]</td>

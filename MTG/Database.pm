@@ -163,6 +163,24 @@ sub removeCard {
 	return $res->{n};
 }
 
+sub getCardsByTag {
+	my $self = shift;
+	my $tag = shift;
+	my $pageNum = shift || 0;
+	my $perPage = shift || 20;
+print STDERR "lookingfor page number $pageNum\n";
+	my $cursor = $self->{db}->get_collection('cards')->find({"tags.$tag"=>1})->skip($pageNum * $perPage)->limit($perPage);
+	# revisit - maybe we could apply some caching...
+
+	my @result;
+	while (my $doc = $cursor->next()) {
+		my $res_card = MTG::Card->new($doc);
+		push(@result, $res_card);
+	}
+#	print STDERR Dumper @result;
+	return \@result;
+}
+
 sub getDeckByNameAndOwnerId {
 	my $self = shift;
 	my $name = shift;

@@ -28,27 +28,29 @@ sub call {
     # $env is the full PSGI environment
     my ($self, $env) = @_;
 
+	if ($env->{PATH_INFO} eq '/deck' || $env->{PATH_INFO} eq '/') {
+		return $self->relocate($env, '/deck/');
+	} elsif ($env->{PATH_INFO} eq '/card') {
+		return $self->relocate($env, '/card/');
+	} elsif ($env->{PATH_INFO} =~ /^\/Handler/) {
+		return $self->relocate($env, $env->{'PATH_INFO'}, 'http', 'gatherer.wizards.com');
+	}
+
+	# as a convenience, go ahead and split out the quert string.
 	my @qsp = split(/&/, $env->{QUERY_STRING});
 	foreach my $part (@qsp) {
 		$part =~ /^([^=]+)=?(.*)$/;
 		$env->{'app.qs'}->{$1} = $2;
 	}
 
-	$env->{PATH_INFO} =~ /^\/([^\/]+)\/([^\/]+)/;
-	my $contName = $1;
-	my $actionName = $2 || 'default';
+	$env->{PATH_INFO} =~ /^\/([^\/]+)/;
+	my $contName = $1 || 'deck';
+	my $actionName = 'default';
+	if ($env->{PATH_INFO} =~ /^\/[^\/]+\/([^\/]+)/) {
+		$actionName = $1;
+	}
 
 	my $controller = $self->{$contName . '_controller'} || $self->{deck_controller};
-
-	if ($env->{PATH_INFO} eq '/deck' || $env->{PATH_INFO} eq '/') {
-		return $self->relocate($env, '/deck/');
-	}
-	if ($env->{PATH_INFO} eq '/card') {
-		return $self->relocate($env, '/card/');
-	}
-	if ($env->{PATH_INFO} =~ /^\/Handler/) {
-		return $self->relocate($env, $env->{'PATH_INFO'}, 'http', 'gatherer.wizards.com');
-	}
 
 	my $result = $controller->$actionName($env);
 

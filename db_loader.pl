@@ -579,7 +579,7 @@ $card = MTG::Card->new({multiverseid=>218004,
 						affinity_colors=>{'red'=>1},
 						type=>'Sorcery',
 						rarity=>'Uncommon',
-						tags=>{generate_mana=>1}
+						tags=>{generate_mana=>1, generate_red_mana=>1}
 					});
 push @cards, $card;
 
@@ -686,6 +686,7 @@ foreach my $cc (@cards) {
 	}
 }
 
+
 my $deck = MTG::Deck->new($db);
 $deck->addCard("Harvest Pyre",2);
 $deck->addCard("Mountain", 23);
@@ -710,7 +711,7 @@ $deck->setOwnerId(1);
 $deck->setName("Jason Red Punishment");
 $deck->setFormat("Standard");
 eval {
-	#$db->insertDeck($deck);
+	$db->insertDeck($deck);
 }; if ($@) { print STDERR Dumper($@); }
 
 $deck = MTG::Deck->new($db);
@@ -749,7 +750,7 @@ $deck->setOwnerId(2);
 $deck->setName("Premium Deck Series: Fire and Lightning");
 $deck->setFormat("Legacy");
 eval {
-	#$db->insertDeck($deck);
+	$db->insertDeck($deck);
 }; if ($@) { print STDERR Dumper($@); }
 
 $deck = MTG::Deck->new($db);
@@ -835,7 +836,7 @@ $deck->addCard("Phyrexian Metamorph");
 $deck->addCard("Bringer of the Green Dawn");
 $deck->addCard("Experiment Kraj");
 eval {
-	#$db->insertDeck($deck);
+	$db->insertDeck($deck);
 }; if ($@) { print STDERR Dumper($@); }
 
 $deck = MTG::Deck->new($db);
@@ -862,7 +863,7 @@ $deck->addCard("Spell Pierce",4,"sideboard");
 $deck->addCard("Spellskite",4,"sideboard");
 $deck->addCard("Viridian Corrupter",4,"sideboard");
 eval {
-	#$db->insertDeck($deck);
+	$db->insertDeck($deck);
 }; if ($@) { print STDERR Dumper($@); }
 
 $deck = MTG::Deck->new($db);
@@ -917,7 +918,7 @@ $deck->addCard("Island",3,"sideboard");
 $deck->addCard("Swamp",1,"sideboard");
 $deck->addCard("Mountain",1,"sideboard");
 eval {
-	#$db->insertDeck($deck);
+	$db->insertDeck($deck);
 }; if ($@) { print STDERR Dumper($@); }
 
 
@@ -948,7 +949,7 @@ $deck->addCard("Bonds of Faith",1);
 $deck->addCard("Mask of Avacyn",1);
 $deck->addCard("Timely Reinforcements",1);
 eval {
-	#$db->insertDeck($deck);
+	$db->insertDeck($deck);
 }; if ($@) { print STDERR Dumper($@); }
 
 

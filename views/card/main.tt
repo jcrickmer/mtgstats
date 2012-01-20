@@ -3,7 +3,14 @@
  %]
 
     <div class="main">
-Main view.
+      Main view for cards.
+
+      <h3>Cards tagged "needs_tag_review"</h3>
+      <ul>
+[% FOREACH card IN cards %]
+        <li><a href="/card/view?cardid=[% card.getId() %]">[% card.getName() %]</a></li>
+[% END %]
+      </ul>
     </div>
 
 [% INCLUDE footer.tt %]

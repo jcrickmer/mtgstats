@@ -12,6 +12,7 @@
     </div>
     <div class="globalnav">
       <ul>
-        <li><a href="/deck/list">Decks</a></li>
+        <li><a href="/deck/">Decks</a></li>
+        <li><a href="/card/">Cards</a></li>
       </ul>
     </div>

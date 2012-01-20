@@ -4,6 +4,7 @@ use strict;
 use utf8;
 use parent 'MTG::Web::Controller';
 use Encode qw(encode);
+use Data::Dumper;
 
 sub new {
 	my $class = shift;
@@ -13,7 +14,8 @@ sub new {
 }
 
 sub default {
-	return @_[0]->main(@_);
+	my $self = shift;
+	return $self->main(@_);
 }
 
 sub view {
@@ -42,6 +44,10 @@ sub main {
     my $self = shift;
     my $env = shift;
     my $context = {};
+
+    # let's show cards that need some loving...
+	my $cards_a = $self->{app}->{db}->getCardsByTag('needs_tag_review', $env->{'app.qs'}->{lp});
+	$context->{cards} = $cards_a;
 
     my $output = '';
     $self->{app}->{tt}->process('card/main.tt', $context, \$output) || die $self->{app}->{tt}->error();
