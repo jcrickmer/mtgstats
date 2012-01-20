@@ -309,6 +309,7 @@ sub insertCard {
 	my $id;
     eval {
 		$id = $cards->insert($doc, {safe => 1});
+		$card->{'_id'} = $id;
     };
     if ($@ =~ /^E11000 duplicate key error index:\s\w+\.cards\.\$(\w+)\s+dup key/) {
 		# we have a duplicate key on field $1;
@@ -321,6 +322,48 @@ sub insertCard {
 	$self->{cardCache}->addCard($card);
 
 	return $id;
+}
+
+# Insert an MTG::Card into the database.  Returns the OID (table id)
+# of the new card.  Several exceptions could be thrown.
+sub saveCard {
+	my $self = shift;
+	my $card = shift; # we need to pass something in, right?
+	if (! defined $card) {
+		my $ex = MTG::Exception::NullPointer->new();
+		$ex->throw();
+	}
+	checkClass('MTG::Card', $card);
+	if (! $card->isComplete()) {
+		my $ex = MTG::Exception::IncompleteObject->new();
+		$ex->throw();
+	}
+
+	if (! defined $card->{'_id'}) {
+		my $ex = MTG::Exception::NullPointer->new(message => '_id is not defined.');
+		$ex->throw();
+	}
+
+	$card->broadenTags();
+
+	my $cards = $self->{db}->get_collection('cards');
+
+	my $doc = $card->toBSON();
+
+    eval {
+		$cards->update({'_id'=>$card->getId()}, $doc, {safe => 1});
+    };
+    if ($@ =~ /^E11000 duplicate key error index:\s\w+\.cards\.\$(\w+)\s+dup key/) {
+		# we have a duplicate key on field $1;
+		my $ex = MTG::Exception::Unique->new(message => $1 . ' must be unique, _id = "' . $doc->{'_id'} . '"', show_trace => 1);
+		$ex->{field} = $1;
+		$ex->throw();
+    }
+
+	# stick it in cache for future performance
+	$self->{cardCache}->addCard($card);
+
+	return 1;
 }
 
 1;

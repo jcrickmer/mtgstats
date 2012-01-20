@@ -1,6 +1,6 @@
 package MTG::TagMap;
 
-my $TAGS = {
+$TAGS = {
     'return' => [],
     add_to_hand => [],
     additional_cost => [],

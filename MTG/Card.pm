@@ -4,7 +4,8 @@ use base qw(Clone MTG::MongoObject);
 use strict;
 use Clone;
 use MTG::MongoObject;
-
+use MTG::TagMap;
+use Data::Dumper;
 
 sub new {
 	my $class = shift;
@@ -80,6 +81,12 @@ sub addTag {
 	$self->{tags}->{$tag} = 1;
 }
 
+sub removeTag {
+	my $self = shift;
+	my $tag = shift;
+	delete $self->{tags}->{$tag};
+}
+
 sub getName {
 	my $self = shift;
 	return $self->{name};
@@ -152,6 +159,12 @@ sub getTags {
 		}
 	}
 	return $result;
+}
+
+sub isTagged {
+	my $self = shift;
+	my $tagcmp = shift;
+	return $self->{tags}->{$tagcmp} > 0;
 }
 
 # returns a string
@@ -333,6 +346,7 @@ sub broadenTags {
 		$self->addTag('spell');
 	}
 	if ($self->{type} eq 'Creature') {
+		$self->addTag('creature');
 		$self->addTag('permanent');
 		$self->addTag('spell');
 	}
@@ -358,11 +372,11 @@ sub broadenTags {
 	#	}
 	#}
 	foreach my $kk (keys(%$tags_ref)) {
-		#print "$kk...\n";
+		#print STDERR "$kk...\n";
 		if (grep(/^$kk$/, keys(%$MTG::TagMap::TAGS))) {
 			foreach my $newt (@{$MTG::TagMap::TAGS->{$kk}}) {
 				$self->{tags}->{$newt} = 1;
-				#print "adding $newt for $kk\n";
+				#print STDERR "adding $newt for $kk\n";
 			}
 		}
 	}
