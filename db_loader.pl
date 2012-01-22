@@ -15,6 +15,8 @@ use MongoDB::OID;
 my @cards = ();
 my $db = MTG::Database->new();
 
+if (0) {
+
 my $card = MTG::Card->new({multiverseid=>[294,205925],
 						name=>'Plains',
 						CMC=>0,
@@ -714,6 +716,7 @@ eval {
 	$db->insertDeck($deck);
 }; if ($@) { print STDERR Dumper($@); }
 
+
 $deck = MTG::Deck->new($db);
 $deck->addCard("Barbarian Ring", 1);
 $deck->addCard("Ghitu Encampment", 1);
@@ -1351,6 +1354,143 @@ $deck->addCard("Silverchase Fox",1,"sideboard");
 $deck->addCard("Typhoid Rats",1,"sideboard");
 $deck->addCard("Voiceless Spirit",1,"sideboard");
 $deck->addCard("Woodland Cemetery",1,"sideboard");
+eval {
+	$db->insertDeck($deck);
+}; if ($@) { print STDERR Dumper($@); }
+
+########
+
+my $deck = MTG::Deck->new($db);
+$deck->setOwnerId(13);
+$deck->setName("Red Deck Wins 2011 Nationals - Germany");
+$deck->setFormat("Standard - M12");
+$deck->setDate("2011-08-12");
+$deck->addCards(q{4 Chandra's Phoenix
+4 Goblin Guide
+4 Grim Lavamancer
+2 Hero of Oxid Ridge
+1 Kargan Dragonlord
+2 Plated Geopede
+1 Koth of the Hammer
+2 Burst Lightning
+4 Lightning Bolt
+4 Searing Blaze
+4 Shrine of Burning Rage
+4 Staggershock
+1 Sword of War and Peace
+4 Arid Mesa
+11 Mountain
+4 Scalding Tarn
+4 Teetering Peaks
+});
+$deck->addCards(q{3 Act of Aggression
+2 Arc Lightning
+2 Combust
+2 Dismember
+2 Manabarbs
+3 Manic Vandal
+1 Vulshok Refugee}, 'sideboard');
+eval {
+	$db->insertDeck($deck);
+}; if ($@) { print STDERR Dumper($@); }
+
+}
+my $deck = MTG::Deck->new($db);
+$deck->setOwnerId(2);
+$deck->setName("BU Zombie Horde");
+$deck->setFormat("Standard - Innistrad");
+$deck->setDate("2011-01-01");
+$deck->addCards(q{
+12 Swamp
+12 Island
+2 Cemetery Reaper
+1 Skaab Goliath
+3 Skaab Ruinator
+2 Undead Alchemist
+2 Geth, Lord of the Vault
+4 Doom Blade
+1 Diregraf Ghoul
+2 Armored Skaab
+4 Makeshift Mauler
+4 Stitched Drake
+2 Ghoulraiser
+2 Abattoir Ghoul
+1 Nested Ghoul
+1 Cellar Door
+1 Zombie Goliath
+1 Moan of the Unhallowed
+1 Memoricide
+1 Call to the Grave
+1 Gravedigger
+1 Endless Ranks of the Dead
+1 Rooftop Storm
+});
+eval {
+	$db->insertDeck($deck);
+}; if ($@) { print STDERR Dumper($@); }
+
+
+$deck = MTG::Deck->new($db);
+$deck->setOwnerId(1);
+$deck->setName("Jason Red Punishment v2");
+$deck->setFormat("Standard - Innistrad");
+$deck->addCard("Mountain", 23);
+$deck->addCard("Balefire Dragon", 2);
+$deck->addCard("Stormblood Berserker",2);
+$deck->addCard("Gorehorn Minotaurs",2);
+$deck->addCard("Lightning Elemental",3);
+$deck->addCard("Goblin Fireslinger",4);
+$deck->addCard("Devil's Play",4);
+$deck->addCard("Shrine of Burning Rage",2);
+$deck->addCard("Incinerate",3);
+$deck->addCard("Melt Terrain", 1);
+$deck->addCard("Whipflare", 2);
+$deck->addCard("Traitorous Blood",2);
+$deck->addCard("Tectonic Rift",1);
+$deck->addCard("Slagstorm", 1);
+$deck->addCard("Brimstone Volley",1);
+$deck->addCard("Geosurge",2);
+$deck->addCard("Circle of Flame",2);
+$deck->addCard("Past in Flames");
+$deck->addCard("Artillerize",2);
+eval {
+	$db->insertDeck($deck);
+}; if ($@) { print STDERR Dumper($@); }
+
+$deck = MTG::Deck->new($db);
+$deck->setOwnerId(1);
+$deck->setName("Jason Red Punishment v3");
+$deck->setFormat("Standard - Innistrad");
+$deck->addCard("Mountain", 23);
+$deck->addCard("Balefire Dragon", 2);
+$deck->addCard("Stormblood Berserker",4);
+$deck->addCard("Chandra's Phoenix",2);
+$deck->addCard("Goblin Fireslinger",4);
+$deck->addCard("Devil's Play",4);
+$deck->addCard("Shrine of Burning Rage",3);
+$deck->addCard("Incinerate",3);
+$deck->addCard("Melt Terrain", 1);
+$deck->addCard("Whipflare", 2);
+$deck->addCard("Traitorous Blood",2);
+$deck->addCard("Tectonic Rift",1);
+$deck->addCard("Slagstorm", 1);
+$deck->addCard("Koth of the Hammer",1);
+$deck->addCard("Geosurge",2);
+$deck->addCard("Circle of Flame",2);
+$deck->addCard("Past in Flames", 1);
+$deck->addCard("Artillerize", 2);
+$deck->addCard("Nightbird's Clutches", 2, 'sideboard');
+$deck->addCard("Chandra's Outrage", 2, 'sideboard');
+$deck->addCard("Brimstone Volley", 1, 'sideboard');
+$deck->addCard("Fallen Ferromancer", 2, 'sideboard');
+$deck->addCard("Fling", 2, 'sideboard');
+$deck->addCard("Arc Trail", 1, 'sideboard');
+$deck->addCard("Lightning Elemental", 1, 'sideboard');
+$deck->addCard("Gorehorn Minotaurs", 2, 'sideboard');
+$deck->addCard("Tectonic Rift", 3, 'sideboard');
+$deck->addCard("Invader Parasite", 1, 'sideboard');
+$deck->addCard("Crush", 1, 'sideboard');
+$deck->addCard("Feral Ridgewolf", 3, 'sideboard');
 eval {
 	$db->insertDeck($deck);
 }; if ($@) { print STDERR Dumper($@); }

@@ -235,8 +235,10 @@ foreach my $file (@files) {
 		my $ct = $card->{'card_text_html'};
 		foreach my $tterm (@terms) {
 			my $ltterm = lc($tterm);
-			if ($ct =~ />$tterm/) { $card->addTag($ltterm); }
-			if ($ct =~ /, $ltterm/) { $card->addTag($ltterm); }
+			my $ultterm = $ltterm;
+			$ultterm =~ s/(\W)/_/gi;
+			if ($ct =~ />$tterm/) { $card->addTag($ultterm); }
+			if ($ct =~ /, $ltterm/) { $card->addTag($ultterm); }
 		}
 	}
 	if ($card->{type} eq 'Land') {
@@ -270,7 +272,8 @@ foreach my $file (@files) {
 		if ($@ && ref($@) eq 'MTG::Exception::Unique') {
 			print "skipped " . $card->getName() . ": " . $@->{message} . "\n";
 		} elsif($@) {
-			print Dumper($@);
+			print "ERROR. Could not load " . $card->getName() . ": " . $@->{message} . "\n";
+			#print Dumper($@);
 		}
 	}
 
