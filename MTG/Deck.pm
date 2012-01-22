@@ -284,4 +284,22 @@ sub getTags {
 	return $result;
 }
 
+# expects a string of newline delimited "n Foo Card Name" entries
+sub addCards {
+	my $self = shift;
+	my $text = shift;
+	my $cardStatus = shift || 'main';
+	my @lines = split(/\r?\n/,$text);
+	foreach my $line (@lines) {
+		#print "line: $line\n";
+		if ($line =~ /^(\d+)\s+(.+)$/) {
+			my $count = $1;
+			my $card = $2;
+			$self->addCard($card, $count, $cardStatus);
+		} else {
+			print STDERR "Could not parse \"$line\"\n";
+		}
+	}
+}
+
 1;

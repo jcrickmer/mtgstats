@@ -37,7 +37,7 @@
 <td class="attr_value">[% card.get('rarity') %]</td>
 </tr>
 <tr>
-<td class="attr_label">Tags</td>
+<td class="attr_label">Tags <span><a href="#" onclick="openTagEditDialog(); return false;">(edit)</a></span></td>
 <td class="attr_value">[% card.get('tags').keys.join(", ") %]</td>
 </tr>
 <tr>
@@ -55,6 +55,88 @@
       </table>
 
     </div>
+<script type="text/javascript">
+$(function() {
+    var tagsdialag = $(this);
+	$("#edit_tags_dialog").dialog({
+        autoOpen: false,
+		width: 600,
+        buttons: {
+            "Ok": saveTags,
+            "Cancel": function() {
+                      $(this).dialog("close");
+                  }
+        }
+    }); 
+});
+
+function openTagEditDialog() {
+	var tags = [[% FOREACH tag IN card.get('tags').keys %]"[% tag %]",[% END %]];
+	$("#edit_tags_dialog").append('<form onsubmit="tagAdd(); return false;">');
+    var hhh = $("#edit_tags_dialog form");
+	hhh.append('<ul id="tag_edit_list"></ul>');
+    var ul = hhh.find("ul");
+    for (var t = 0; t < tags.length; t++) {
+        ul.append('<li id="tag_dialog_' + tags[t] + '">' + tags[t] + ' <a href="#" onclick="tagRemove(\'' + tags[t] + '\');return false;">(x)</a></li>');
+    }
+    ul.append('<li><input name="newtag" id="newtag" type="text"/></li>');
+	$("#edit_tags_dialog").dialog('open');
+
+	return;
+}
+
+function tagAdd() {
+    var ul = $("#edit_tags_dialog form ul");
+	var ccc = $("#newtag");
+    var newTag = ccc.val();
+    var tags = newTag.split(" ");
+	if (tags.length > 0) {
+        for (var y = 0; y < tags.length; y++) {
+            ccc.before('<li id="tag_dialog_' + tags[y] + '">' + tags[y] + ' <a href="#" onclick="tagRemove(\'' + tags[y] + '\');return false;">(x)</a></li>');
+        }
+    } else {
+        ccc.before('<li id="tag_dialog_' + newTag + '">' + newTag + ' <a href="#" onclick="tagRemove(\'' + newTag + '\');return false;">(x)</a></li>');
+    }
+    ccc.val("");
+    return false;
+}
+
+function tagRemove(tagname) {
+    $("#tag_dialog_" + tagname).toggleClass("pending_remove");
+}
+
+function saveTags() {
+    var request = {cardid:"[% card.getId() %]"};
+    request.tags = new Array();
+    var lis = $("#edit_tags_dialog form ul li");
+    lis.each(function(index) {
+        var liText = $(this).text();
+        if (liText.length > 0) {
+            var parts = $(this).text().split(" ");
+			if (parts.length > 0) {
+                var val = parts[0];
+                if ($(this).hasClass("pending_remove")) {
+                    //console.log("not including " + val);
+                } else {
+                    request.tags.push(val);
+                }
+            }
+        }
+    });
+    $.getJSON("save",
+              request,
+              function(data, textStatus) {
+                  if (data.status == "Ok") {
+                      $("#edit_tags_dialog").dialog("close");
+                  } else {
+                      alert(data.status);
+                  }
+              }
+    );
+}
+
+</script>
+<div id="edit_tags_dialog" title="Edit Tags"></div>
 
 
 [% INCLUDE footer.tt %]

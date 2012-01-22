@@ -14,7 +14,7 @@ sub new {
 
 	$self->{tt} = Template->new({
 		INCLUDE_PATH => '/home/jason/projects/mtgstats/views',
-		INTERPOLATE  => 1,
+		INTERPOLATE  => 0,
 	}) || die "$Template::ERROR\n";
 
 	$self->{deck_controller} = MTG::Web::DeckController->new($self);
@@ -40,7 +40,21 @@ sub call {
 	my @qsp = split(/&/, $env->{QUERY_STRING});
 	foreach my $part (@qsp) {
 		$part =~ /^([^=]+)=?(.*)$/;
-		$env->{'app.qs'}->{$1} = $2;
+		my $k = $1;
+		my $v = $2;
+		$k =~ s/\%([A-Fa-f0-9]{2})/pack('C', hex($1))/seg;
+		$v =~ s/\%([A-Fa-f0-9]{2})/pack('C', hex($1))/seg;
+		if ($k =~ /^([^\[]+)\[\]$/) {
+			my $kname = $1;
+			if (! defined $env->{'app.qs'}->{$kname}) {
+				$env->{'app.qs'}->{$kname} = [];
+			} elsif (ref $env->{'app.qs'}->{$kname} eq '') {
+				$env->{'app.qs'}->{$kname} = [$env->{'app.qs'}->{$kname}];
+			}
+			push @{$env->{'app.qs'}->{$kname}}, $v;
+		} else {
+			$env->{'app.qs'}->{$k} = $v;
+		}
 	}
 
 	$env->{PATH_INFO} =~ /^\/([^\/]+)/;

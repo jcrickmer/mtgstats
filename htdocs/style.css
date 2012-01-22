@@ -57,3 +57,6 @@ table.card_details td {
     padding: 8px 8px;
 	background-color: #e0e0e0;
 }
+li.pending_remove {
+    text-decoration: line-through;
+}

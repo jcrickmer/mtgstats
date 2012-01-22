@@ -87,6 +87,18 @@ sub removeTag {
 	delete $self->{tags}->{$tag};
 }
 
+# takes an array reference of tags and removes all of the current tags.
+sub replaceTags {
+	my $self = shift;
+	my $tags = shift;
+	$self->{tags} = {};
+	foreach my $tag (@$tags) {
+		print STDERR "adding tag $tag\n";
+		$self->addTag($tag);
+	}
+	return;
+}
+
 sub getName {
 	my $self = shift;
 	return $self->{name};
