@@ -366,4 +366,25 @@ sub saveCard {
 	return 1;
 }
 
+# this could take a while.  Returns an array ref.
+sub getAllTags {
+	my $self = shift;
+	my $cards = $self->{db}->get_collection('cards');
+
+	my $kkeys = {};
+	foreach my $k (keys(%{$MTG::TagMap::TAGS})) {
+		$kkeys->{$k} = 1;
+	}
+	my $cursor = $cards->find({},{"tags"=>1});
+	while (my $doc = $cursor->next()) {
+		my $tags = $doc->{tags};
+		foreach my $k (keys(%$tags)) {
+			$kkeys->{$k} = 1;
+		}
+	}
+	my @result = keys(%$kkeys);
+	#print STDERR Dumper(\@result);
+	return \@result;
+}
+
 1;

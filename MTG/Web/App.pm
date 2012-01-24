@@ -5,6 +5,7 @@ use MTG::Database;
 use MTG::Card;
 use MTG::Web::DeckController;
 use MTG::Web::CardController;
+use MTG::Web::TagController;
 use Data::Dumper;
 
 sub new {
@@ -19,6 +20,8 @@ sub new {
 
 	$self->{deck_controller} = MTG::Web::DeckController->new($self);
 	$self->{card_controller} = MTG::Web::CardController->new($self);
+	$self->{tag_controller} = MTG::Web::TagController->new($self);
+	$self->{tag_controller}->init($self->{db});
 
 	bless($self, $class);
 	return $self;
@@ -32,6 +35,8 @@ sub call {
 		return $self->relocate($env, '/deck/');
 	} elsif ($env->{PATH_INFO} eq '/card') {
 		return $self->relocate($env, '/card/');
+	} elsif ($env->{PATH_INFO} eq '/tag') {
+		return $self->relocate($env, '/tag/');
 	} elsif ($env->{PATH_INFO} =~ /^\/Handler/) {
 		return $self->relocate($env, $env->{'PATH_INFO'}, 'http', 'gatherer.wizards.com');
 	}

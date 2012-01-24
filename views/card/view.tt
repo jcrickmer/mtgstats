@@ -81,7 +81,9 @@ function openTagEditDialog() {
     }
     ul.append('<li><input name="newtag" id="newtag" type="text"/></li>');
 	$("#edit_tags_dialog").dialog('open');
-
+	$("#newtag").autocomplete({
+	    source: window.MTG.tags
+    });
 	return;
 }
 
@@ -136,6 +138,13 @@ function saveTags() {
     );
 }
 
+$.getJSON("/tag/",
+          {},
+          function(data, textStatus) {
+              // REVISIT this from a namespace perspective.
+              window.MTG = data;
+          }
+    );
 </script>
 <div id="edit_tags_dialog" title="Edit Tags"></div>
 

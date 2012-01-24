@@ -16,7 +16,8 @@ sub new {
 }
 
 sub default {
-	return @_[0]->list(@_);
+	my $self = shift;
+	return $self->list(@_);
 }
 
 sub list {
