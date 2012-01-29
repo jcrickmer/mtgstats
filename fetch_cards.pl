@@ -1,7 +1,8 @@
 #!/usr/bin/perl
 
 use strict;
-
+use MTG::Database;
+use MTG::GathererLoader;
 use URI::Escape;
 
 my $agent = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_5_8) AppleWebKit/535.2 (KHTML, like Gecko) Chrome/15.0.874.121 Safari/535.2';
@@ -597,31 +598,13 @@ my @names = ("Animar, Soul of Elements",
 "Crush",
 "Chandra's Outrage",
 "Feral Ridgewolf",
+"Rofellos, Llanowar Emissary",
 );
 
-my $search_url_base = 'http://gatherer.wizards.com/Pages/Search/Default.aspx?name=';
+my $db = MTG::Database->new();
+my $loader = MTG::GathererLoader->new($db);
 
 foreach my $name (@names) {
-	my $fn = $name;
-	$fn =~ s/(\W)/_/gi;
-	if (! -e "card_html/$fn.html") {
-		my $url = $search_url_base . &mkQuery($name);
-		my $cmd = 'curl -g -s -L -A \'' . $agent . '\' ' . $url . " > card_html/$fn.html";
-		print "$name - downloading...\n";
-		`$cmd`;
-		`sleep 2`;
-	} else {
-		print "$name - skipping...\n";
-	}
-}
-
-sub mkQuery {
-	my $term = shift;
-	my @ts = split(/\s+/, $term);
-	my $result = '';
-	foreach my $t (@ts) {
-		$result = $result . '+[' . uri_escape($t) . ']';
-	}
-	$result =~ s/'/\\'/gi;
-	return $result;
+	my $res = $loader->fetchCardByName($name);
+	`sleep 2` if ($res);
 }

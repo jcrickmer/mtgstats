@@ -14,7 +14,8 @@ use Exception::Class (
 	},
 		      
 	MTG::Exception::Unique => {
-		field => ''
+		field => '',
+		id => undef,
 	},
 		      
 	MTG::Exception::IncompleteObject => {

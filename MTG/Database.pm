@@ -167,8 +167,7 @@ sub getCardsByTag {
 	my $self = shift;
 	my $tag = shift;
 	my $pageNum = shift || 0;
-	my $perPage = shift || 20;
-print STDERR "lookingfor page number $pageNum\n";
+	my $perPage = shift || 25;
 	my $cursor = $self->{db}->get_collection('cards')->find({"tags.$tag"=>1})->skip($pageNum * $perPage)->limit($perPage);
 	# revisit - maybe we could apply some caching...
 
@@ -313,7 +312,9 @@ sub insertCard {
     };
     if ($@ =~ /^E11000 duplicate key error index:\s\w+\.cards\.\$(\w+)\s+dup key/) {
 		# we have a duplicate key on field $1;
-		my $ex = MTG::Exception::Unique->new(message => $1 . ' must be unique, _id = "' . $doc->{'_id'} . '"', show_trace => 1);
+		my $ex = MTG::Exception::Unique->new(message => $1 . ' must be unique, _id = "' . $doc->{'_id'} . '"',
+											 show_trace => 1);
+		$ex->{id} = $doc->{'_id'};
 		$ex->{field} = $1;
 		$ex->throw();
     }

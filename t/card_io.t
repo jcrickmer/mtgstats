@@ -4,7 +4,7 @@ use strict;
 use warnings FATAL => 'all';
 use Time::HiRes qw(gettimeofday tv_interval);
   
-use Test::More tests => 182;
+use Test::More tests => 183;
 
 use MTG::Database;
 use MTG::Deck;
@@ -238,9 +238,10 @@ ok(defined $db, 'Database exists.');                # check that we got somethin
             # tests might need to be updated if instant starts to have
             # more default tags.
 			my $tags_a = $card->getTags();
-			is(scalar @$tags_a, 3);
+			is(scalar @$tags_a, 4);
 			ok(grep(/rad_tag/, @$tags_a));
 			ok(grep(/permanent/, @$tags_a));
+			ok(grep(/creature/, @$tags_a));
 			ok(grep(/spell/, @$tags_a));
 			ok($card->isTagged('rad_tag'));
 		} elsif ($field eq 'expansion') {

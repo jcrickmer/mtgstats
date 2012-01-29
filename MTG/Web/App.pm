@@ -7,6 +7,7 @@ use MTG::Web::DeckController;
 use MTG::Web::CardController;
 use MTG::Web::TagController;
 use Data::Dumper;
+use URI::Escape;
 
 sub new {
 	my $class = shift;
@@ -45,10 +46,12 @@ sub call {
 	my @qsp = split(/&/, $env->{QUERY_STRING});
 	foreach my $part (@qsp) {
 		$part =~ /^([^=]+)=?(.*)$/;
-		my $k = $1;
-		my $v = $2;
-		$k =~ s/\%([A-Fa-f0-9]{2})/pack('C', hex($1))/seg;
-		$v =~ s/\%([A-Fa-f0-9]{2})/pack('C', hex($1))/seg;
+		my $k = uri_unescape($1);
+		my $v = uri_unescape($2);
+		$k =~ s/\+/ /gi;
+		$v =~ s/\+/ /gi;
+		#$k =~ s/\%([A-Fa-f0-9]{2})/pack('C', hex($1))/seg;
+		#$v =~ s/\%([A-Fa-f0-9]{2})/pack('C', hex($1))/seg;
 		if ($k =~ /^([^\[]+)\[\]$/) {
 			my $kname = $1;
 			if (! defined $env->{'app.qs'}->{$kname}) {

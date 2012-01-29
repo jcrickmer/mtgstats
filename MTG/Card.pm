@@ -126,12 +126,24 @@ sub getId {
 	return $self->{_id};
 }
 
+sub getColor {
+	my $self = shift;
+	my $added = {};
+	foreach my $c (@{$self->{cost}}) {
+		if ($c ne 'any' && ! defined $added->{$c}) {
+			$added->{$c} = 1;
+		}
+	}
+	return join(', ', keys(%$added));
+}
+
 # Adds a multiverseid to the set of multiverseids.  Returns true if it
 # was added, false if it was not (i.e., it was already present).
 sub addMultiverseId {
 	my $self = shift;
 	my $toAdd = shift;
 	my $found = 0;
+	die ("MultiverseId mustbe in the format of \"\\d+[a-z]?\".  \"$toAdd\" does not match.") if (! ($toAdd =~ /^\d+[a-z]?$/));
 	foreach my $mvid (@{$self->{multiverseid}}) {
 		$found = $found || $mvid eq $toAdd;
 	}

@@ -3,11 +3,34 @@
  %]
 
     <div class="main">
-      <ul>
-[%  FOREACH deck IN decks %]
-        <li><a href="view?deckid=[% deck.getId() %]">[% deck.name %]</a> [% deck.cardCount("main") %] </li>
-[%  END %]
-      </ul>
+      <script type="text/javascript" src="/js/DataTables/media/js/jquery.dataTables.js"></script>
+      <style>
+@import "/js/DataTables/media/css/demo_page.css";
+@import "/js/DataTables/media/css/demo_table.css";
+      </style>
+      <script type="text/javascript">
+$(document).ready(function() {
+	$('#deck_list').dataTable();
+} );
+      </script>
+      <table id="deck_list">
+        <thead>
+          <tr>
+            <th>Deck Name</th>
+            <th>Owner</th>
+            <th>Cards</th>
+          </tr>
+        </thead>
+        <tbody>
+[% FOREACH deck IN decks %]
+          <tr>
+            <td><a href="view?deckid=[% deck.getId() %]">[% deck.name %]</a></td>
+            <td>[% deck.getOwnerId() %]</td>
+            <td>[% deck.cardCount("main") %]</td>
+          </tr>
+[% END %]
+        </tbody>
+      </table>
     </div>
 
 [% INCLUDE footer.tt %]

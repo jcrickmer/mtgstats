@@ -5,12 +5,50 @@
     <div class="main">
       Main view for cards.
 
+      <h3>Search or Add Card by Name or Multiverseid</h3>
+      <form action="add">
+Name or Multiverseid: <input type="text" name="cardname"/> <input type="submit"/>
+      </form>
+
       <h3>Cards tagged "needs_tag_review"</h3>
-      <ul>
+  <script type="text/javascript" src="/js/DataTables/media/js/jquery.dataTables.js"></script>
+      <style>
+@import "/js/DataTables/media/css/demo_page.css";
+@import "/js/DataTables/media/css/demo_table.css";
+      </style>
+      <script type="text/javascript">
+$(document).ready(function() {
+	$('#card_list').dataTable({
+       "iDisplayList": 25,
+       "aoColumns": [
+                     { "sWidth": "220px" },
+                     { "sWidth": "120px" },
+                     { "sWidth": "120px" },
+                     { "sWidth": "120px" }
+        ]
+    });
+} );
+      </script>
+      <table id="card_list" style="clear:both;">
+        <thead>
+          <tr>
+            <th id="deck_list_ch_card">Card</th>
+            <th id="deck_list_ch_type">Type</th>
+            <th id="deck_list_ch_color">Color</th>
+            <th id="deck_list_ch_cmc">CMC</th>
+          </tr>
+        </thead>
+        <tbody>
 [% FOREACH card IN cards %]
-        <li><a href="/card/view?cardid=[% card.getId() %]">[% card.getName() %]</a></li>
+          <tr>
+            <td><a href="/card/view?cardid=[% card.getId() %]">[% card.getName() %]</a></td>
+            <td>[% card.getType() %]</td>
+            <td>[% card.getColor() %]</td>
+            <td>[% card.getCMC() %]</td>
+          </tr>
 [% END %]
-      </ul>
+        </tbody>
+      </table>
     </div>
 
 [% INCLUDE footer.tt %]

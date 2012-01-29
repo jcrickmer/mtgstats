@@ -60,3 +60,16 @@ table.card_details td {
 li.pending_remove {
     text-decoration: line-through;
 }
+
+th#deck_list_ch_card {
+	width: 220px;
+}
+th#deck_list_ch_type {
+	width: 120px;
+}
+th#deck_list_ch_color {
+	width: 100px;
+}
+th#deck_list_ch_cmc {
+	width: 100px;
+}

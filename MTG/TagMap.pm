@@ -92,6 +92,7 @@ $TAGS = {
     pro_artifact => [],
     protection => ['spell_protection'],
     pump => [],
+    battle_cry => ['pump'],
     pump_by_affinity => ['pump'],
     reach => ['against_flying'],
     regenerate => [],
