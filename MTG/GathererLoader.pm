@@ -147,7 +147,7 @@ sub readCard {
 		$p->empty_element_tags(1);
 		open(my $fh, "<:utf8", $file) || die "...: $!";
 		$p->parse_file($fh);
-		
+		#print Dumper($result); # if a field is missing, but it looks like it is in the HTML, this is a good place to take a peek.
 		my $card = MTG::Card->new();
 		if (defined $result->{multiverseid} && $result->{multiverseid} ne '') {
 			$card->addMultiverseId($result->{multiverseid});
@@ -244,6 +244,10 @@ sub readCard {
 		}
 		if ($card->{type} =~ /Creature/) {
 			my $v = $result->{'P/T'};
+			if ($v eq '' || $v == undef) {
+			    # Gather website was putting bold around this as of July 21, 2013.  Just an HTML mistake that makes my job harder...
+			    $v = $result->{'<b>P/T:</b>'};
+			}
 			$v =~ /^\D*(\d+)\D*\/\D*(\d+)\D*$/;
 			$card->{power} = $1;
 			$card->{toughness} = $2;

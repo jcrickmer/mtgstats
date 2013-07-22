@@ -7,14 +7,18 @@ use URI::Escape;
 
 my $agent = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_5_8) AppleWebKit/535.2 (KHTML, like Gecko) Chrome/15.0.874.121 Safari/535.2';
 
-my @multiverseids = (368961); #(174808, 174922);
+my @multiverseids = (370553..370825); #(174808, 174922);
 
 foreach my $id (@multiverseids) {
 	my $url = 'http://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=' . $id;
 	my $cmd = 'curl -s -L -A ' . "'" . 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_5_8) AppleWebKit/535.2 (KHTML, like Gecko) Chrome/15.0.874.121 Safari/535.2' . "' " . $url . ' > card_html/' . $id . '.html';
-	#print "$id";
-	`$cmd`;
-	#`sleep 3`;
+	if (! -e 'card_html/' . $id . '.html' || -s 'card_html/' . $id . '.html' < 10000) {
+	    print "$id\n";
+	    `$cmd`;
+	    `sleep 1`;
+	} else {
+	    print "skipping $id - I already have it.\n";
+	}
 }
 
 my @names = ("Animar, Soul of Elements",

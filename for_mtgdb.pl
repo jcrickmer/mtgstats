@@ -20,6 +20,7 @@ my $res = $loader->readCardDir(*STDOUT);
 #my $filename = "card_html/Rampant_Growth.html";
 #my $filename = "card_html/Animar__Soul_of_Elements.html";
 #my $filename = "card_html/Garruk_Wildspeaker.html";
+#my $filename = "card_html/370738.html";
 #my $res = $loader->readCard($filename, *STDOUT);
 
 my $dbh = DBI->connect('DBI:mysql:mtgdb','mtgdb','password') || die "Could not connect to database: $DBI::errstr";
