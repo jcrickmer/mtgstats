@@ -74,14 +74,14 @@ sub readCard {
 			if ($tagname eq 'form') {
 				# going after multiverseid
 				if ($attr->{action} =~ /Details\.aspx\?multiverseid=(\d+)/) {
-print STDERR "78 - Setting multiverseid to $1\n";
+#print STDERR "78 - Setting multiverseid to $1\n";
 					$result->{multiverseid} = $1;
 				}
 			}
 			if ($tagname eq 'img') {
 				# going after multiverseid
 				if ($attr->{src} =~ /Image\.as.x\?multiverseid=(\d+)/) {
-print STDERR "86 - Setting multiverseid to $1\n";
+#print STDERR "86 - Setting multiverseid to $1\n";
 					$result->{multiverseid} = $1;
 				}
 			}
@@ -159,6 +159,8 @@ print STDERR "86 - Setting multiverseid to $1\n";
 			my @mts = split (/[-—]/, $v);
 			if (@mts > 1) {
 				my $tttt = trim(@mts[0]);
+				my @yyyy = split(/\s/, $tttt);
+				$card->{types} = \@yyyy;
 				if ($tttt =~ /Legendary Creature/) {
 					$card->{cardtype} = 'Legendary Creature';
 					$card->{type} = 'Creature';
@@ -179,10 +181,12 @@ print STDERR "86 - Setting multiverseid to $1\n";
 				for (my $qq = 1; $qq < @mts; $qq++) {
 					my $gfd = trim(@mts[$qq]);
 					if (length($gfd) > 0) {
-						push @{$card->{subtype}}, split(/\s/, $gfd);
+					    push @{$card->{subtype}}, split(/\s/, $gfd);
 					}
 				}
 			} else {
+			    my @yyyy = split(/\s/, $v);
+			    $card->{types} = \@yyyy;
 				if ($v =~ /Legendary Creature/) {
 					$card->{cardtype} = 'Legendary Creature';
 					$card->{type} = 'Creature';
@@ -197,8 +201,18 @@ print STDERR "86 - Setting multiverseid to $1\n";
 					$card->addTag('generate_mana');
 				} else {
 					$card->{type} = $v;
+					$card->{cardtype} = $v; # added this on 2013-07-21.  Not ure if this is what teh Perl program needs or not, just eems to be missing.  REVISIT.  Not tested
 				}
 			}
+		}
+		{
+			my $v = $result->{Expansion};
+			$v =~ s/^.+>([^<]+)<\/a.+$/$1/;
+			$card->{expansion} = $v;
+
+			$v = $result->{Expansion};
+			$v =~ /"Details\.aspx\?multiverseid=(\d+)"/;
+		    $card->{spec_multiverseid} = $1;
 		}
 		{
 			my $v = $result->{Rarity};
@@ -234,10 +248,20 @@ print STDERR "86 - Setting multiverseid to $1\n";
 			$card->{power} = $1;
 			$card->{toughness} = $2;
 		}
+		if ($card->{type} =~ /Planeswalker/) {
+			my $v = $result->{'Loyalty'};
+			$v =~ /^\D*(\d+)\D*$/;
+			$card->{loyalty} = $1;
+		}
 		{
 			my $v = $result->{'Converted Mana Cost'};
 			$v =~ s/^\D*(\d+)\D*$/$1/;
 			$card->{'CMC'} = $v;
+		}
+		{
+			my $v = $result->{'Card Number'};
+			$v =~ s/^\D*(\d+)\D*$/$1/;
+			$card->{'expansion_card_number'} = $v;
 		}
 		{
 			my $v = $result->{'Mana Cost'};
@@ -248,15 +272,38 @@ print STDERR "86 - Setting multiverseid to $1\n";
 				$part =~ /alt="([^"]+)"/;
 				my $vv = $1;
 				if ($vv =~ /^\d+$/) {
-					for (my $uu = 0; $uu < $vv; $uu++) {
-						push @cost, 'any';
-					}
+				    for (my $uu = 0; $uu < $vv; $uu++) {
+					push @cost, 'any';
+				    }
 				} else {
 					$vv =~ s/ or /|/g;
-					push @cost, lc($vv);
+					push @cost, lc($vv); ## OLD CODE before trying to get this data into Java/MySQL
 				}
 			}
 			$card->{'cost'} = \@cost;
+		}
+		{
+		    my $v = $result->{'Mana Cost'}; # For the Java/MySQL version...
+		    $v =~ s/<\/img>//g;
+		    my @cost = ();
+		    my @parts = split />/, $v;
+		    foreach my $part (@parts) {
+			$part =~ /alt="([^"]+)"/;
+			my $vv = $1;
+			if ($vv =~ /^\d+$/) {
+			    push @cost, '{' . $vv . '}';
+			} else {
+			    my $colorSymbs = {'white' => '{w}',
+					      'blue' => '{u}',
+					      'black' => '{b}',
+					      'red' => '{r}',
+					      'green' => '{g}',
+					     };
+			    $vv =~ s/ or /|/g;
+			    push @cost, $colorSymbs->{lc($vv)};
+			}
+		    }
+		    $card->{'truecost'} = \@cost;
 		}
 		{
 			## All Sets
@@ -265,7 +312,7 @@ print STDERR "86 - Setting multiverseid to $1\n";
 				if ($bb =~ /"Details\.aspx\?multiverseid=(\d+)"/) {
 					my $newId = $1;
 					if (! grep(/^$newId$/, @{$card->{multiverseid}})) {
-						print STDERR "267 - adding id $newId\n";
+						#print STDERR "267 - adding id $newId\n";
 						$card->addMultiverseId($newId);
 					}
 				}
@@ -305,6 +352,7 @@ print STDERR "86 - Setting multiverseid to $1\n";
 			$results->{$file} = {status=>'error', msg=>"Could not parse $file.  Maybe search results?"};
 		} else {
 			#print Dumper($result);
+		    #print Dumper($card);
 			#print Dumper($card) if ($card->{name} =~ /Gyre/);
 			#print $card->{name} . ":  " . join(', ', @{$card->{tags}}) . "\n";
 			#my $mtgCard = MTG::Card->new($card);
@@ -315,7 +363,7 @@ print STDERR "86 - Setting multiverseid to $1\n";
 				eval {
 					my $oid = $self->{db}->insertCard($card);
 					print $progress_glob "inserted " . $card->getName() . ": " . $oid . "\n" if (defined $progress_glob);
-					$results->{$file} = {status=>'success', cardid=>$oid, msg=> "Inserted " . $card->getName() . ": " . $oid};
+					$results->{$file} = {status=>'success', cardid=>$oid, msg=> "Inserted " . $card->getName() . ": " . $oid, card=>$card};
 				};
 				if ($@ && ref($@) eq 'MTG::Exception::Unique') {
 					print $progress_glob "skipped " . $card->getName() . ": " . $@->{message} . "\n" if (defined $progress_glob);
@@ -324,8 +372,12 @@ print STDERR "86 - Setting multiverseid to $1\n";
 										 cardid=>$@->{id},
 									 };
 				} elsif($@) {
-					print $progress_glob "ERROR. Could not load " . $card->getName() . ": " . $@->{message} . "\n" if (defined $progress_glob);
-					$results->{$file} = {status=>'error', msg=> "Could not load " . $card->getName() . ": " . Dumper($@)};
+				    if (ref($@) eq '') {
+					print $progress_glob "ERROR 1. Could not load " . $card->getName() . ": " . $@ . "\n" if (defined $progress_glob);
+				    } else {
+					print $progress_glob "ERROR 2. Could not load " . $card->getName() . ": " . $@->{message} . "\n" if (defined $progress_glob);
+				    }
+					$results->{$file} = {status=>'error', card=>$card, msg=> "Could not load " . $card->getName() . ": " . Dumper($@)};
 					#print Dumper($@);
 				}
 			}

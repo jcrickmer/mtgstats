@@ -7,13 +7,13 @@ use URI::Escape;
 
 my $agent = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_5_8) AppleWebKit/535.2 (KHTML, like Gecko) Chrome/15.0.874.121 Safari/535.2';
 
-my @multiverseids = (174808, 174922);
+my @multiverseids = (368961); #(174808, 174922);
 
 foreach my $id (@multiverseids) {
 	my $url = 'http://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=' . $id;
 	my $cmd = 'curl -s -L -A ' . "'" . 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_5_8) AppleWebKit/535.2 (KHTML, like Gecko) Chrome/15.0.874.121 Safari/535.2' . "' " . $url . ' > card_html/' . $id . '.html';
 	#print "$id";
-	#`$cmd`;
+	`$cmd`;
 	#`sleep 3`;
 }
 
@@ -599,12 +599,52 @@ my @names = ("Animar, Soul of Elements",
 "Chandra's Outrage",
 "Feral Ridgewolf",
 "Rofellos, Llanowar Emissary",
+"Rootbound Crag", #4
+"Copperline Gorge", #4
+"Vorinclex, Voice of Hunger", #2
+"Balefire Dragon", #2
+"Melt Terrain", #4
+"Tectonic Rift", #4
+"Invader Parasite", #2
+"Geosurge", #2
+"Dawntreader Elk", #2
+"Primeval Titan", #1
+"Sword of Feast and Famine", #1
+"Llanowar Elves", #4
+"Giant Growth", #4
+"Treefolk Harbinger",
+"Unstoppable Ash",
+"Seedguide Ash",
+"Wall of Nets",
+"Thorntooth Witch",
+"Oakgnarl Warrior",
+"Indomitable Ancients",
+"Reach of Branches",
+"Battlewand Oak",
+"Fendeep Summoner",
+"Sapling of Colfenor",
+"Treefolk Seedlings",
+"Bosk Banneret",
+"Guard Duty",
+"Archangel of Strife",
+"Wall of Faith",
+"Burrenton Shield-Bearers",
+"Stalwart Shield-Bearers",
+"Task Force",
+"Sustainer of the Realm",
+"Wall of Resistance",
+"Blessed Orator",
+"Crenellated Wall",
+"Defender of the Order",
+"Oathsworn Giant",
 );
+if (0) {
+    my $db = MTG::Database->new();
+    my $loader = MTG::GathererLoader->new($db);
 
-my $db = MTG::Database->new();
-my $loader = MTG::GathererLoader->new($db);
-
-foreach my $name (@names) {
+    foreach my $name (@names) {
 	my $res = $loader->fetchCardByName($name);
 	`sleep 2` if ($res);
+    }
 }
+

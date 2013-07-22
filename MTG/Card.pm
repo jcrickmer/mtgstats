@@ -15,7 +15,7 @@ sub new {
 	my $test = shift;
 	if (defined $test && ref($test) eq 'HASH') {
         # REVISIT - we should only copy out what we need, not just assign a reference
-		foreach my $f (qw(_id multiverseid name CMC cost type cardtype rarity tags expansion subtype toughness power card_text flavor_text card_text_html flavor_text_html)) {
+		foreach my $f (qw(_id multiverseid name CMC cost type cardtype rarity tags expansion subtype toughness loyalty power card_text flavor_text card_text_html flavor_text_html)) {
 			if ($f eq 'multiverseid' && ref($test->{$f}) ne 'ARRAY') {
 				$self->{$f} = [$test->{$f}];
 			} else {
@@ -62,7 +62,7 @@ sub new {
 	if (! defined $self->{power}) {
 		$self->{power} = 0;
 	}
-	push(@{$self->{serializable}}, qw(_id multiverseid name CMC cost type cardtype rarity tags expansion subtype toughness power card_text flavor_text card_text_html flavor_text_html));
+	push(@{$self->{serializable}}, qw(_id multiverseid name CMC cost type cardtype rarity tags expansion subtype toughness loyalty power card_text flavor_text card_text_html flavor_text_html));
 	bless($self, $class);
 	return $self;
 }
@@ -243,6 +243,19 @@ sub getToughness {
 sub setToughness {
 	my $self = shift;
 	$self->{toughness} = shift;
+	return;
+}
+
+# returns a string
+sub getLoyalty {
+	my $self = shift;
+	return $self->{loyalty};
+}
+
+# sets a string
+sub setLoyalty {
+	my $self = shift;
+	$self->{loyalty} = shift;
 	return;
 }
 
