@@ -1394,7 +1394,7 @@ eval {
 	$db->insertDeck($deck);
 }; if ($@) { print STDERR Dumper($@); }
 
-}
+
 my $deck = MTG::Deck->new($db);
 $deck->setOwnerId(2);
 $deck->setName("BU Zombie Horde");
@@ -1491,6 +1491,74 @@ $deck->addCard("Tectonic Rift", 3, 'sideboard');
 $deck->addCard("Invader Parasite", 1, 'sideboard');
 $deck->addCard("Crush", 1, 'sideboard');
 $deck->addCard("Feral Ridgewolf", 3, 'sideboard');
+eval {
+	$db->insertDeck($deck);
+}; if ($@) { print STDERR Dumper($@); }
+
+
+my $deck = MTG::Deck->new($db);
+$deck->setOwnerId(2);
+$deck->setName("RG Bad Lands");
+$deck->setFormat("Standard - Innistrad");
+$deck->setDate("2012-02-06");
+$deck->addCards(q{
+4 Rootbound Crag
+4 Copperline Gorge
+5 Mountain
+5 Forest
+4 Shimmering Grotto
+2 Vorinclex, Voice of Hunger
+4 Rampant Growth
+4 Garruk's Companion
+2 Balefire Dragon
+4 Melt Terrain
+4 Tectonic Rift
+2 Invader Parasite
+2 Geosurge
+2 Dawntreader Elk
+2 Manabarbs
+1 Primeval Titan
+1 Sword of Feast and Famine
+4 Llanowar Elves
+4 Giant Growth});
+eval {
+	$db->insertDeck($deck);
+}; if ($@) { print STDERR Dumper($@); }
+
+}
+my $deck = MTG::Deck->new($db);
+$deck->setOwnerId(2);
+$deck->setName("Doran");
+$deck->setFormat("Commander");
+$deck->setDate("2012-02-06");
+$deck->addCards(q{
+1 Treefolk Harbinger
+1 Unstoppable Ash
+1 Seedguide Ash
+1 Wall of Nets
+1 Thorntooth Witch
+1 Oakgnarl Warrior
+1 Indomitable Ancients
+1 Reach of Branches
+1 Battlewand Oak
+1 Fendeep Summoner
+1 Sapling of Colfenor
+1 Treefolk Seedlings
+1 Bosk Banneret
+1 Accorder's Shield
+1 Archangel of Strife
+1 Wall of Faith
+1 Burrenton Shield-Bearers
+1 Stalwart Shield-Bearers
+1 Task Force
+1 Sustainer of the Realm
+1 Wall of Resistance
+1 Blessed Orator
+1 Crenellated Wall
+1 Defender of the Order
+1 Oathsworn Giant
+1 Guard Duty
+});
 eval {
 	$db->insertDeck($deck);
 }; if ($@) { print STDERR Dumper($@); }

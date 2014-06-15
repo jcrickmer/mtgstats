@@ -15,7 +15,7 @@ sub new {
 	my $test = shift;
 	if (defined $test && ref($test) eq 'HASH') {
         # REVISIT - we should only copy out what we need, not just assign a reference
-		foreach my $f (qw(_id multiverseid name CMC cost type cardtype rarity tags expansion subtype toughness loyalty power card_text flavor_text card_text_html flavor_text_html)) {
+		foreach my $f (qw(_id multiverseid name CMC cost type cardtype types rarity tags expansion subtype toughness loyalty power card_text flavor_text card_text_html flavor_text_html watermark)) {
 			if ($f eq 'multiverseid' && ref($test->{$f}) ne 'ARRAY') {
 				$self->{$f} = [$test->{$f}];
 			} else {
@@ -56,13 +56,16 @@ sub new {
 	if (! defined $self->{subtype}) {
 		$self->{subtype} = [];
 	}
+	if (! defined $self->{types}) {
+		$self->{types} = [];
+	}
 	if (! defined $self->{toughness}) {
 		$self->{toughness} = 0;
 	}
 	if (! defined $self->{power}) {
 		$self->{power} = 0;
 	}
-	push(@{$self->{serializable}}, qw(_id multiverseid name CMC cost type cardtype rarity tags expansion subtype toughness loyalty power card_text flavor_text card_text_html flavor_text_html));
+	push(@{$self->{serializable}}, qw(_id multiverseid name CMC cost type types cardtype rarity tags expansion subtype toughness loyalty power card_text flavor_text card_text_html flavor_text_html watermark));
 	bless($self, $class);
 	return $self;
 }
@@ -260,6 +263,19 @@ sub setLoyalty {
 }
 
 # returns a string
+sub getWatermark {
+	my $self = shift;
+	return $self->{watermark};
+}
+
+# sets a string
+sub setWatermark {
+	my $self = shift;
+	$self->{watermark} = shift;
+	return;
+}
+
+# returns a string
 sub getExpansion {
 	my $self = shift;
 	return $self->{expansion};
@@ -310,6 +326,23 @@ sub setSubtype {
 	my $ar = shift;
 	my @a = @$ar; # we want a copy of it so that it is not inadvertently edited later.
 	$self->{subtype} = \@a;
+	return;
+}
+
+# returns an array ref that is a copy of the cost (thus it is safe for
+# modification without impact to the card object).
+sub getTypes {
+	my $self = shift;
+	my @result = @{$self->{types}};
+	return \@result;
+}
+
+# expects an array reference
+sub setTypes {
+	my $self = shift;
+	my $ar = shift;
+	my @a = @$ar; # we want a copy of it so that it is not inadvertently edited later.
+	$self->{types} = \@a;
 	return;
 }
 

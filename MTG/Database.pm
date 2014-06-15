@@ -100,6 +100,7 @@ sub getCardByMultiverseId {
 
 	my $res_card;
 	if ($cacheOk) {
+        # REVISIT - what, this is not going to work?  cache keys are oids, right?
 		$res_card = $self->{cardCache}->getCard($id);
 		if (defined $res_card) {
 			return $res_card;

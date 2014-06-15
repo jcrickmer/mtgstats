@@ -10,7 +10,7 @@
       </style>
       <script type="text/javascript">
 $(document).ready(function() {
-	$('#deck_list').dataTable();
+	$('#deck_list').dataTable({"iDisplayLength":25});
 } );
       </script>
       <table id="deck_list">

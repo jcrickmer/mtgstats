@@ -41,6 +41,25 @@ sub list {
 
 }
 
+sub print {
+    my $self = shift;
+    my $env = shift;
+    my $deck = $self->{app}->{db}->getDeckById($env->{'app.qs'}->{deckid});
+    my $cards = $deck->getCards();
+    my $context = {cards => $cards};
+    my $output = '';
+    $self->{app}->{tt}->process('deck/print.tt', $context, \$output) || die $self->{app}->{tt}->error();
+
+    return [
+        # HTTP Status code
+        200,
+        # HTTP headers as arrayref
+        [ 'Content-type' => 'text/html' ],
+        # Response body as array ref
+        [ $output ],
+    ];
+}
+
 sub view {
 	my $self = shift;
 	my $env = shift;

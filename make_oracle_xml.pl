@@ -40,7 +40,7 @@ LEFT JOIN cardsubtypes AS cst1 ON basecards.id = cst1.basecard_id AND cst1.posit
 LEFT JOIN subtypes AS st1 ON cst1.subtype_id = st1.id
 LEFT JOIN cardsubtypes AS cst2 ON basecards.id = cst2.basecard_id AND cst2.position = 2
 LEFT JOIN subtypes AS st2 ON cst2.subtype_id = st2.id
-WHERE exp.id = 52;
+WHERE exp.id = 60;
 };
 
 my $cards = $dbh->selectall_arrayref($sql);

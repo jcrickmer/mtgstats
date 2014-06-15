@@ -16,12 +16,12 @@ use DBI;
 
 my $loader = MTG::GathererLoader->new(undef);
 
-my $res = $loader->readCardDir(*STDOUT);
+#my $res = $loader->readCardDir(*STDOUT);
 #my $filename = "card_html/Rampant_Growth.html";
 #my $filename = "card_html/Animar__Soul_of_Elements.html";
 #my $filename = "card_html/Garruk_Wildspeaker.html";
 #my $filename = "card_html/370738.html";
-#my $res = $loader->readCard($filename, *STDOUT);
+my $res = $loader->readCard('card_html/146729.html', *STDOUT);
 
 my $dbh = DBI->connect('DBI:mysql:mtgdb','mtgdb','password') || die "Could not connect to database: $DBI::errstr";
 $dbh->{'mysql_enable_utf8'} = 1;
@@ -29,7 +29,7 @@ $dbh->do(qq{SET NAMES 'utf8';});
 
 foreach my $fkey (keys %$res) {
     my $card = $res->{$fkey}->{card};
-    print "+++++++++ thinking about \"" . $card->{name} . "\"\n";
+    #print "+++++++++ thinking about \"" . $card->{name} . "\"\n";
     if ($card->{name} eq undef) {
 	print Dumper($res->{$fkey});
     }

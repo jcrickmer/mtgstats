@@ -21,12 +21,17 @@ sub new {
 sub readCardDir {
 	my $self = shift;
 	my $progress_glob = shift;
+	my $limit = shift || 100000;
 	my @files = ();
 	opendir DIR, 'card_html' || die("Cannot open diectory.");
+	my $counter = 0;
 	while (my $file = readdir DIR){
-		if ($file =~ /^\w.*\.html$/) {
-			push @files, 'card_html/'.$file; 
-		}
+	    if ($file =~ /^\w.*\.html$/) {
+		push @files, 'card_html/'.$file; 
+		print "ADDING ". $file . "\n";
+		$counter++;
+	    }
+	    last if ($counter > $limit);
 	}
 	$self->readCard(\@files, $progress_glob);
 }
@@ -145,7 +150,7 @@ sub readCard {
 		$p->handler(text => \&text_handler, "self,text");
 		$p->handler(end => \&end_handler, "self,tagname");
 		$p->empty_element_tags(1);
-		open(my $fh, "<:utf8", $file) || die "...: $!";
+		open(my $fh, "<:utf8", $file) || die "... \"$file\": $!";
 		$p->parse_file($fh);
 		#print Dumper($result); # if a field is missing, but it looks like it is in the HTML, this is a good place to take a peek.
 		my $card = MTG::Card->new();
@@ -165,6 +170,20 @@ sub readCard {
 					$card->{cardtype} = 'Legendary Creature';
 					$card->{type} = 'Creature';
 					$card->addTag('legendary');
+				} elsif ($tttt =~ /Legendary Enchantment Creature/) {
+					$card->{cardtype} = $tttt;
+					$card->{type} = 'Creature';
+					$card->addTag('enchantment');
+					$card->addTag('legendary');
+				} elsif ($tttt =~ /Legendary Artifact Creature/) {
+					$card->{cardtype} = $tttt;
+					$card->{type} = 'Creature';
+					$card->addTag('artifact');
+					$card->addTag('legendary');
+				} elsif ($tttt =~ /Enchantment Creature/) {
+					$card->{cardtype} = 'Enchantment Creature';
+					$card->{type} = 'Creature';
+					$card->addTag('enchantment');
 				} elsif ($tttt =~ /Artifact Creature/) {
 					$card->{cardtype} = 'Artifact Creature';
 					$card->{type} = 'Creature';
@@ -268,6 +287,11 @@ sub readCard {
 			$card->{'expansion_card_number'} = $v;
 		}
 		{
+			my $v = $result->{'Watermark'};
+			$v =~ s/^.+>([^<]+)<.+$/$1/;
+			$card->{watermark} = $v;
+		}
+		{
 			my $v = $result->{'Mana Cost'};
 			$v =~ s/<\/img>//g;
 			my @cost = ();
@@ -364,6 +388,9 @@ sub readCard {
 				print $progress_glob $file . ":  " . Dumper($card) if (defined $progress_glob);
 				$results->{$file} = {status=>'error', msg=>"Could not parse $file.  Possibly a two-faced card?"};
 			} else {
+			    $results->{$file} = {status=>'success', cardid=>undef, msg=> "NO DATABASE", card=>$card};
+## June 14, 2014 - NOT USING the MTG::Database object to do inserts. Just want to get the $results object back.
+			    if (0) {
 				eval {
 					my $oid = $self->{db}->insertCard($card);
 					print $progress_glob "inserted " . $card->getName() . ": " . $oid . "\n" if (defined $progress_glob);
@@ -384,6 +411,7 @@ sub readCard {
 					$results->{$file} = {status=>'error', card=>$card, msg=> "Could not load " . $card->getName() . ": " . Dumper($@)};
 					#print Dumper($@);
 				}
+			}
 			}
 		}
 		

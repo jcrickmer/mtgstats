@@ -49,14 +49,14 @@ google.load('visualization', '1.0', {'packages':['corechart']});
         <h3>Land Probabilities</h3>
 <h4>Opening Hand</h4>
 <table>
-<tr><th>Type</th><th>0</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th></tr>
+<tr><th>Type</th><th>0</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th><th>9</th><th>10</th><th>11</th><th>12</th></tr>
 [% colors = ['Any', 'White', 'Blue', 'Black', 'Green', 'Red', 'Colorless'] %]
 [% colorCounter = 0 %]
 [% FOREACH typeKey IN ['generate_mana', 'generate_white_mana', 'generate_blue_mana', 'generate_black_mana', 'generate_green_mana', 'generate_red_mana', 'generate_colorless_mana'] %]
 <tr>
 <td>[% colors.$colorCounter %]</td>
 [% colorCounter = colorCounter + 1 %]
-[% FOREACH i IN [0..7] %]
+[% FOREACH i IN [0..12] %]
 [% prob = manaProbs.$typeKey.$i %]<td class="probability" style="color: [% IF prob > 0.6 %]#d0d0d0[% ELSE %]black[% END %]; background-color: rgb([% int(255 * (1 - manaProbs.$typeKey.$i)) %],[% int(255 * (1 - manaProbs.$typeKey.$i)) %],[% int(255 * (1 - manaProbs.$typeKey.$i)) %]);">[% percent(manaProbs.$typeKey.$i * 100) %]</td>
 [% END %]
 </tr>

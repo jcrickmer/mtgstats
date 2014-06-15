@@ -19,7 +19,7 @@ Name or Multiverseid: <input type="text" name="cardname"/> <input type="submit"/
       <script type="text/javascript">
 $(document).ready(function() {
 	$('#card_list').dataTable({
-       "iDisplayList": 25,
+       "iDisplayLength": 25,
        "aoColumns": [
                      { "sWidth": "220px" },
                      { "sWidth": "120px" },

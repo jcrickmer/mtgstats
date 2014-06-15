@@ -9,7 +9,7 @@ my $codeRef = sub { $app->call(@_); };
 
 builder {
     # Precious debug info. Right on your page!
-    enable 'Debug';
+    #enable 'Debug';
 
     # Make Plack middleware render some static for you
     enable "Static",
