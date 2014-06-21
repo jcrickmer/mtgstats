@@ -60,10 +60,10 @@ sub new {
 		$self->{types} = [];
 	}
 	if (! defined $self->{toughness}) {
-		$self->{toughness} = 0;
+		$self->{toughness} = undef;
 	}
 	if (! defined $self->{power}) {
-		$self->{power} = 0;
+		$self->{power} = undef;
 	}
 	push(@{$self->{serializable}}, qw(_id multiverseid name CMC cost type types cardtype rarity tags expansion subtype toughness loyalty power card_text flavor_text card_text_html flavor_text_html watermark));
 	bless($self, $class);

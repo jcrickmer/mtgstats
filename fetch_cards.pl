@@ -33,7 +33,7 @@ foreach my $id (@multiverseids) {
     if (! -e 'card_html/' . $id . '.html' || -s 'card_html/' . $id . '.html' < 10000) {
 	printf("%d (%03.2f%% - %d of %d)\n", $id, 100.0 * $stopper / (1.0 * scalar(@multiverseids)), $stopper, scalar(@multiverseids));
 	`$cmd`;
-	usleep(1000000 + (rand() * 10000000));
+	usleep(1000000 + (rand() * 3000000));
     } else {
 	print "skipping $id - I already have it.\n";
     }
