@@ -21,15 +21,18 @@ sub new {
 sub readCardDir {
 	my $self = shift;
 	my $progress_glob = shift;
+	my $startPos = shift || 0;
 	my $limit = shift || 100000;
 	my @files = ();
 	opendir DIR, 'card_html' || die("Cannot open diectory.");
 	my $counter = 0;
 	while (my $file = readdir DIR){
 	    if ($file =~ /^\w.*\.html$/) {
-		push @files, 'card_html/'.$file; 
-		print "ADDING ". $file . "\n";
-		$counter++;
+			if ($counter >= $startPos) {
+				push @files, 'card_html/'.$file; 
+				print "ADDING ". $file . "\n";
+			}
+			$counter++;
 	    }
 	    last if ($counter > $limit);
 	}
@@ -97,7 +100,7 @@ sub readCard {
 		my $dtext = shift;
 		if ($inLabelDiv || $inValueDiv) {
 			$btext = $btext . $dtext;
-			#		#print "'" . $dtext . "'\n";
+					#print "'" . $dtext . "'\n";
 			#		if ($inLabelDiv) {
 			#			$lastLabel = $dtext;
 			#		}
@@ -123,12 +126,13 @@ sub readCard {
 				$btext = trim($btext);
 				$btext =~ s/(\s)\s*/$1/gi;
 				#print "VALUE: " . $btext . "\n";
-				$result->{$lastLabel} = $btext;
+				$result->{$lastLabel} =+ $btext;
 				$lastLabel = undef;
 				$btext = '';
 				$inValueDiv = 0;
 			}
 		} else {
+			#print "======ELSE=====" . $tagname . "\n";
 			if ($inLabelDiv || $inValueDiv) {
 				$btext = $btext . '</' . $tagname . '>';
 			}
@@ -161,7 +165,8 @@ sub readCard {
 		{
 			my $v = $result->{Types};
 			$v =~ s/^.+>([^<]+)<.+$/$1/;
-			my @mts = split (/[-—]/, $v);
+			$v =~ s/\x{2019}/'/;
+			my @mts = split (/[-—]/, $v, 2);
 			if (@mts > 1) {
 				my $tttt = trim(@mts[0]);
 				my @yyyy = split(/\s/, $tttt);
@@ -226,9 +231,15 @@ sub readCard {
 		}
 		{
 			my $v = $result->{Expansion};
+			#print STDOUT "$$$$$$$$$$$\n" . Dumper($result) . "%%%%%%%%%%\n";
+			#print STDOUT Dumper($result);
 			$v =~ s/^.+>([^<]+)<\/a.+$/$1/;
 			$card->{expansion} = $v;
-
+			if ($card->{expansion} =~ /Magic.+Conspiracy$/) {
+				$card->{expansion} = 'Magic: The Gathering - Conspiracy';
+			} elsif ($card->{expansion} =~ /Magic.+Commander$/) {
+				$card->{expansion} = 'Magic: The Gathering - Commander';
+			}
 			$v = $result->{Expansion};
 			$v =~ /"Details\.aspx\?multiverseid=(\d+)"/;
 		    $card->{spec_multiverseid} = $1;
@@ -282,8 +293,13 @@ sub readCard {
 			$card->{'CMC'} = $v;
 		}
 		{
+			my $v = $result->{'Card #'};
+			$v =~ s/^\D*(\d+[aAbBcCdD]?)\D*$/$1/;
+			$card->{'expansion_card_number'} = $v;
+		}
+		{
 			my $v = $result->{'Card Number'};
-			$v =~ s/^\D*(\d+)\D*$/$1/;
+			$v =~ s/^\D*(\d+[aAbBcCdD]?)\D*$/$1/;
 			$card->{'expansion_card_number'} = $v;
 		}
 		{

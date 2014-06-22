@@ -16,15 +16,17 @@ use DBI;
 
 my $loader = MTG::GathererLoader->new(undef);
 
-my $res = $loader->readCardDir(*STDOUT);
+my $res = $loader->readCardDir(*STDOUT); #, 14999, 16000);
 #my $filename = "card_html/Rampant_Growth.html";
 #my $filename = "card_html/Animar__Soul_of_Elements.html";
 #my $filename = "card_html/Garruk_Wildspeaker.html";
 #my $filename = "card_html/370738.html";
-#my $res = $loader->readCard('card_html/253606.html', *STDOUT);
+#my $res = $loader->readCard('card_html/368950.html', *STDOUT); #$loader->readCard('card_html/262699.html', *STDOUT));
+#my $res = $loader->readCard('card_html/Island.html', *STDOUT);
+#my $res = $loader->readCard('card_html/74027.html', *STDOUT);
 
 
-my $dbh = DBI->connect('DBI:mysql:mtgdbpy','mtgdb','password') || die "Could not connect to database: $DBI::errstr";
+my $dbh = DBI->connect('DBI:mysql:mtgdbpy','mtgdb','password', {RaiseError=>1, PrintError=>0}) || die "Could not connect to database: $DBI::errstr";
 $dbh->{'mysql_enable_utf8'} = 1;
 $dbh->do(qq{SET NAMES 'utf8';});
 
@@ -83,7 +85,7 @@ foreach my $fkey (keys %$res) {
     print "+++++++++ thinking about \"" . $card->{name} . "\"\n";
     #print Dumper($card);
     if ($card->{name} eq undef) {
-	print Dumper($res->{$fkey});
+		print Dumper($res->{$fkey});
     }
     if (1) {
 # now that we have a card, we need to see if we have everything we need to insert it, if we don't already have it.
@@ -188,23 +190,78 @@ foreach my $ccc (@{$card->{truecost}}) {
 # print Dumper(\@subtype_ids);
 
 
+my $physicalcard_id = undef;
+{ #physicalcard
+	#print "card number = " . $card->{expansion_card_number} ."\n";
+	my $position = 'F';
+	if ($card->{expansion_card_number} =~ /b$/) {
+		$position = 'B';
+	}
+	# the reason that we care about card position here is that the card name may be specific to the position or side that the card is placed on the physical card.
+    my $testSQL = 'SELECT physicalcard_id FROM basecards WHERE name = ' . $dbh->quote($card->{name}) . ' AND cardposition = ' . "'" . $position . "'" . ';';
+    my @row  = $dbh->selectrow_array($testSQL);
+    if (! @row) {
+		eval {
+			my $insertSQL = 'INSERT INTO physicalcards () VALUES ()';
+			my $sth = $dbh->prepare($insertSQL);
+			$sth->execute();
+			$physicalcard_id = $sth->{mysql_insertid};
+			print "Inserted physicalcard $physicalcard_id for \"" . $card->{name} . "\"\n";
+		};
+		if ($@) {
+			print Dumper($card);
+			die("database error: " . $@);
+		}
+	} else {
+		$physicalcard_id = $row[0];
+	}
+}
+print "Physicalcard id = " . $physicalcard_id . "\n";
+
 my $basecard_id = undef;
 { #basecard
     my $testSQL = 'SELECT id FROM basecards WHERE name = ' . $dbh->quote($card->{name}) . ';';
     my @row  = $dbh->selectrow_array($testSQL);
-    if (@row == 0) {
-	my $insertSQL = 'INSERT INTO basecards (name, rules_text, mana_cost, cmc, power, toughness, loyalty) VALUES (?, ?, ?, ?, ?, ?, ?)';
-	my $sth = $dbh->prepare($insertSQL);
-	$sth->execute($card->{name}, 
-		      $card->{card_text},
-		      join('', @{$card->{truecost}}),
-		      $card->{CMC}, 
-		      $card->{power},
-		      $card->{toughness},
-		      $card->{loyalty});
-	print "Inserted basecard for " . $card->{name} . "\n";
-	@row = $dbh->selectrow_array($testSQL);
-    }
+    if (! @row) {
+		my $position = 'F';
+		if ($card->{expansion_card_number} =~ /b$/) {
+			$position = 'B';
+		}
+		my $insertSQL = 'INSERT INTO basecards (physicalcard_id, name, rules_text, mana_cost, cmc, power, toughness, loyalty, created_at, updated_at, cardposition) VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW(), ?)';
+		eval {
+			my $sth = $dbh->prepare($insertSQL);
+			$sth->execute($physicalcard_id,
+						  $card->{name}, 
+						  $card->{card_text} || '',
+						  join('', @{$card->{truecost}}),
+						  $card->{CMC} || 0,
+						  $card->{power},
+						  $card->{toughness},
+						  $card->{loyalty},
+						  $position,
+					  );
+			print "Inserted basecard for " . $card->{name} . "\n";
+			@row = $dbh->selectrow_array($testSQL);
+		};
+		if ($@) {
+			print Dumper($card);
+			die("basecard database error: " . $@);
+		}
+    } else {
+		my $updateSQL = 'UPDATE basecards SET name = ?, rules_text = ?, mana_cost = ?, cmc = ?, power = ?, toughness = ?, loyalty = ?, updated_at = NOW() WHERE id = ?';
+		my $sth = $dbh->prepare($updateSQL);
+		$sth->execute($card->{name}, 
+					  $card->{card_text} || '',
+					  join('', @{$card->{truecost}}),
+					  $card->{CMC}, 
+					  $card->{power},
+					  $card->{toughness},
+					  $card->{loyalty},
+					  $row[0],
+				  );
+		print "Updated basecard " . $row[0] . " for " . $card->{name} . "\n";
+		@row = $dbh->selectrow_array($testSQL);
+	}
     $basecard_id = $row[0];
 }
 print "Basecard id = $basecard_id\n";
@@ -223,45 +280,85 @@ print "Basecard id = $basecard_id\n";
 
 { # types
     for (my $pp = 0; $pp < @type_ids; $pp++) {
-	my $insertSQL = 'INSERT INTO cardtypes (basecard_id, type_id, position) VALUES (?, ?, ?)';
-	my $sth = $dbh->prepare($insertSQL);
-	# I am ok with trying to do dup entries here.  MySQL will get over it... 
-	$sth->execute($basecard_id,
-		      $type_ids[$pp],
-		      $pp);
+		my $insertSQL = 'INSERT INTO cardtypes (basecard_id, type_id, position) VALUES (?, ?, ?)';
+		eval {
+			my $sth = $dbh->prepare($insertSQL);
+			# I am ok with trying to do dup entries here.  MySQL will get over it... 
+			$sth->execute($basecard_id,
+						  $type_ids[$pp],
+						  $pp);
+		};
+		if ($@) {
+			if ($@ =~ /Duplicate entry/) {
+			} else {
+				print Dumper($card);
+				die("type table insert error: " . $@);
+			}
+		}
     }
 }
 
 { # subtypes
     for (my $pp = 0; $pp < @subtype_ids; $pp++) {
-	my $insertSQL = 'INSERT INTO cardsubtypes (basecard_id, subtype_id, position) VALUES (?, ?, ?)';
-	my $sth = $dbh->prepare($insertSQL);
-	# I am ok with trying to do dup entries here.  MySQL will get over it... 
-	$sth->execute($basecard_id,
-		      $subtype_ids[$pp],
-		      $pp);
-    }
+		my $insertSQL = 'INSERT INTO cardsubtypes (basecard_id, subtype_id, position) VALUES (?, ?, ?)';
+		eval {
+			my $sth = $dbh->prepare($insertSQL);
+			# I am ok with trying to do dup entries here.  MySQL will get over it... 
+			$sth->execute($basecard_id,
+						  $subtype_ids[$pp],
+						  $pp);
+		};
+		if ($@) {
+			if ($@ =~ /Duplicate entry/) {
+			} else {
+				print Dumper($card);
+				die("subtype table insert error: " . $@);
+			}
+		}
+	}
 }
 
 my $cardId = undef;
 { #card
-    my $testSQL = 'SELECT id FROM cards WHERE multiverseid = ' . $card->{spec_multiverseid} . ';';
+    my $testSQL = 'SELECT id, created_at FROM cards WHERE multiverseid = ' . $card->{spec_multiverseid} . ';';
     my @row  = $dbh->selectrow_array($testSQL);
-    if (@row == 0) {
-	my $insertSQL = 'INSERT INTO cards (expansionset_id, basecard_id, rarity, multiverseid, flavor_text, card_number) VALUES (?, ?, ?, ?, ?, ?)';
-	my $sth = $dbh->prepare($insertSQL);
-	$sth->execute($expansionset_id,
-		      $basecard_id,
-		      $rarity_id,
-		      $card->{spec_multiverseid}, 
-		      $card->{flavor_text},
-		      $card->{expansion_card_number});
-	print "Inserted card for \"" . $card->{name} . "\" in \"" . $card->{expansion} . "\"\n";
-	@row = $dbh->selectrow_array($testSQL);
-    }
-    $cardId = $row[0];
-    print "Card Id is " . $cardId . "\n";
+    if (! @row) {
+		my $insertSQL = 'INSERT INTO cards (created_at, updated_at, expansionset_id, basecard_id, rarity, multiverseid, flavor_text, card_number, mark_id) VALUES (NOW(), NOW(), ?, ?, ?, ?, ?, ?, ?)';
+		eval {
+			my $sth = $dbh->prepare($insertSQL);
+			$sth->execute($expansionset_id,
+						  $basecard_id,
+						  $rarity_id,
+						  $card->{spec_multiverseid}, 
+						  $card->{flavor_text},
+						  $card->{expansion_card_number},
+						  $mark_id);
+			$cardId = $sth->{mysql_insertid};
+			print "Inserted card $cardId for \"" . $card->{name} . "\" in \"" . $card->{expansion} . "\"\n";
+		};
+		if ($@) {
+			print Dumper($card);
+			die("card table insert error: " . $@);
+		}
+    } else {
+		$cardId = $row[0];
+		my $updateSQL = 'UPDATE cards SET expansionset_id = ?, rarity = ?, flavor_text = ?, card_number = ?, mark_id = ?, updated_at = NOW() WHERE multiverseid = ?';
+		eval {
+			my $sth = $dbh->prepare($updateSQL);
+			$sth->execute($expansionset_id,
+						  $rarity_id,
+						  $card->{flavor_text},
+						  $card->{expansion_card_number},
+						  $mark_id,
+						  $card->{spec_multiverseid});
+			print "Updated card $cardId for \"" . $card->{name} . "\" in \"" . $card->{expansion} . "\" (" . $card->{spec_multiverseid} . ")\n";
+		};
+		if ($@) {
+			print Dumper($card);
+			die("card table update error: " . $@);
+		}
+	}
 }
 
-    }
+}
 }
