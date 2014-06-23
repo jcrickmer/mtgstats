@@ -16,7 +16,7 @@ use DBI;
 
 my $loader = MTG::GathererLoader->new(undef);
 
-my $res = $loader->readCardDir(*STDOUT); #, 14999, 16000);
+my $res = $loader->readCardDir(*STDOUT); #, 14400, 14999);
 #my $filename = "card_html/Rampant_Growth.html";
 #my $filename = "card_html/Animar__Soul_of_Elements.html";
 #my $filename = "card_html/Garruk_Wildspeaker.html";
@@ -24,6 +24,9 @@ my $res = $loader->readCardDir(*STDOUT); #, 14999, 16000);
 #my $res = $loader->readCard('card_html/368950.html', *STDOUT); #$loader->readCard('card_html/262699.html', *STDOUT));
 #my $res = $loader->readCard('card_html/Island.html', *STDOUT);
 #my $res = $loader->readCard('card_html/74027.html', *STDOUT);
+#my $res = $loader->readCard('card_html/369063.html', *STDOUT); # beck and call
+#my $res = $loader->readCard('card_html/368967.html', *STDOUT);
+#my $res = $loader->readCard('card_html/215080.html', *STDOUT);
 
 
 my $dbh = DBI->connect('DBI:mysql:mtgdbpy','mtgdb','password', {RaiseError=>1, PrintError=>0}) || die "Could not connect to database: $DBI::errstr";
@@ -79,15 +82,19 @@ my $subtypes_hash;
     $subtypes_hash = $sth->fetchall_hashref('subtype');
 }
 
-
+my $fakeCardNumber = 1;
+my $totalCountUp = 0;
 foreach my $fkey (keys %$res) {
-    my $card = $res->{$fkey}->{card};
-    print "+++++++++ thinking about \"" . $card->{name} . "\"\n";
-    #print Dumper($card);
-    if ($card->{name} eq undef) {
-		print Dumper($res->{$fkey});
-    }
-    if (1) {
+	# $fkey is a filename.
+    my $cards = $res->{$fkey}->{cards};
+	foreach my $card (@$cards) {
+		print "+++++++++ thinking about \"" . $card->{name} . "\"\n";
+		#print Dumper($card);
+		if ($card->{name} eq undef) {
+			print "CARD NAME IS undef!\n";
+			print Dumper($res->{$fkey});
+		}
+		if (1) {
 # now that we have a card, we need to see if we have everything we need to insert it, if we don't already have it.
 # Check:
 #   1. expansion set
@@ -189,16 +196,27 @@ foreach my $ccc (@{$card->{truecost}}) {
 # }
 # print Dumper(\@subtype_ids);
 
+if (! defined $card->{expansion_card_number}) {
+	print "NO CARD NUMBER, NO DICE. - " . $card->{multiverseid}->[0] . "\n";
+	next;
+}
 
 my $physicalcard_id = undef;
 { #physicalcard
+	# The only way that we are going to know if this is related to
+	# another card is if they share a multiverseid but have a
+	# different card number of the same expansion set. Lots of things
+	# to test!
+
 	#print "card number = " . $card->{expansion_card_number} ."\n";
 	my $position = 'F';
 	if ($card->{expansion_card_number} =~ /b$/) {
 		$position = 'B';
 	}
 	# the reason that we care about card position here is that the card name may be specific to the position or side that the card is placed on the physical card.
-    my $testSQL = 'SELECT physicalcard_id FROM basecards WHERE name = ' . $dbh->quote($card->{name}) . ' AND cardposition = ' . "'" . $position . "'" . ';';
+    my $testSQL = 'SELECT physicalcard_id FROM basecards WHERE name = ' . $dbh->quote($card->{name}) . ' AND cardposition = ' . "'" . $position . "'"
+	              . ' UNION SELECT physicalcard_id FROM basecards, cards WHERE cards.basecard_id = basecards.id AND cards.multiverseid = ' . $card->{multiverseid}->[0] .';';
+	print $testSQL . "\n";
     my @row  = $dbh->selectrow_array($testSQL);
     if (! @row) {
 		eval {
@@ -209,6 +227,7 @@ my $physicalcard_id = undef;
 			print "Inserted physicalcard $physicalcard_id for \"" . $card->{name} . "\"\n";
 		};
 		if ($@) {
+			print "!!!!!! Database Error! Card follows...\n";
 			print Dumper($card);
 			die("database error: " . $@);
 		}
@@ -244,6 +263,7 @@ my $basecard_id = undef;
 			@row = $dbh->selectrow_array($testSQL);
 		};
 		if ($@) {
+			print "!!!!!! Database Error! Card follows...\n";
 			print Dumper($card);
 			die("basecard database error: " . $@);
 		}
@@ -291,6 +311,7 @@ print "Basecard id = $basecard_id\n";
 		if ($@) {
 			if ($@ =~ /Duplicate entry/) {
 			} else {
+				print "!!!!!! Database Error! Card follows...\n";
 				print Dumper($card);
 				die("type table insert error: " . $@);
 			}
@@ -311,6 +332,7 @@ print "Basecard id = $basecard_id\n";
 		if ($@) {
 			if ($@ =~ /Duplicate entry/) {
 			} else {
+				print "!!!!!! Database Error! Card follows...\n";
 				print Dumper($card);
 				die("subtype table insert error: " . $@);
 			}
@@ -320,7 +342,9 @@ print "Basecard id = $basecard_id\n";
 
 my $cardId = undef;
 { #card
-    my $testSQL = 'SELECT id, created_at FROM cards WHERE multiverseid = ' . $card->{spec_multiverseid} . ';';
+    my $testSQL = 'SELECT id, created_at FROM cards WHERE multiverseid = ' . $card->{spec_multiverseid}
+	              . ' AND card_number = ' . $dbh->quote($card->{expansion_card_number}) . ';';
+	print "SQL: " . $testSQL . "\n";
     my @row  = $dbh->selectrow_array($testSQL);
     if (! @row) {
 		my $insertSQL = 'INSERT INTO cards (created_at, updated_at, expansionset_id, basecard_id, rarity, multiverseid, flavor_text, card_number, mark_id) VALUES (NOW(), NOW(), ?, ?, ?, ?, ?, ?, ?)';
@@ -337,12 +361,17 @@ my $cardId = undef;
 			print "Inserted card $cardId for \"" . $card->{name} . "\" in \"" . $card->{expansion} . "\"\n";
 		};
 		if ($@) {
+			print "!!!!!! Database Error! Card follows...\n";
 			print Dumper($card);
-			die("card table insert error: " . $@);
+			if ($card->{rarity} ne 'Basic Land') {
+				die("card table insert error: " . $@);
+			} else {
+				print "... ignoring it - it is a Basic Land and probably just alt art.\n";
+			}
 		}
     } else {
 		$cardId = $row[0];
-		my $updateSQL = 'UPDATE cards SET expansionset_id = ?, rarity = ?, flavor_text = ?, card_number = ?, mark_id = ?, updated_at = NOW() WHERE multiverseid = ?';
+		my $updateSQL = 'UPDATE cards SET expansionset_id = ?, rarity = ?, flavor_text = ?, card_number = ?, mark_id = ?, updated_at = NOW() WHERE multiverseid = ? AND card_number = ?';
 		eval {
 			my $sth = $dbh->prepare($updateSQL);
 			$sth->execute($expansionset_id,
@@ -350,15 +379,26 @@ my $cardId = undef;
 						  $card->{flavor_text},
 						  $card->{expansion_card_number},
 						  $mark_id,
-						  $card->{spec_multiverseid});
+						  $card->{spec_multiverseid},
+						  $card->{expansion_card_number});
 			print "Updated card $cardId for \"" . $card->{name} . "\" in \"" . $card->{expansion} . "\" (" . $card->{spec_multiverseid} . ")\n";
 		};
 		if ($@) {
+			print "!!!!!! Database Error! Card follows...\n";
 			print Dumper($card);
-			die("card table update error: " . $@);
+			if ($card->{rarity} ne 'Basic Land') {
+				die("card table update error: " . $@);
+			} else {
+				print "... ignoring it - it is a Basic Land and probably just alt art.\n";
+			}
 		}
 	}
 }
 
 }
 }
+    $totalCountUp++;
+print "Completed " . $totalCountUp . " of " . keys(%$res) . "\n";
+}
+
+
