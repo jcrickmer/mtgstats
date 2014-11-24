@@ -154,6 +154,35 @@ sub readCard {
 		$inValueDiv = 0;
 		$lastLabel = undef;
 		$result = {};
+
+		my $colorSymbs = {'white' => '{w}',
+						  'blue' => '{u}',
+						  'black' => '{b}',
+						  'red' => '{r}',
+						  'green' => '{g}',
+						  'two or white' => '{2w}',
+						  'two or blue' => '{2u}',
+						  'two or black' => '{2b}',
+						  'two or red' => '{2r}',
+						  'two or green' => '{2g}',
+						  'white or blue' => '{wu}',
+						  'white or black' => '{wb}',
+						  'blue or black' => '{ub}',
+						  'blue or red' => '{ur}',
+						  'black or red' => '{br}',
+						  'black or green' => '{bg}',
+						  'red or green' => '{rg}',
+						  'red or white' => '{rw}',
+						  'green or white' => '{gw}',
+						  'green or blue' => '{gu}',
+						  'phyrexian white' => '{wp}',
+						  'phyrexian blue' => '{up}',
+						  'phyrexian black' => '{bp}',
+						  'phyrexian red' => '{rp}',
+						  'phyrexian green' => '{gp}',
+						  'variable colorless' => '{x}',
+					  };
+
 		$cardCounter = 0; # This counts the number of cards that show up on this one HTML page. It is for handling cards like "Beck // Call" and "Wear // Tear".
 		$btext = '';
 		$nest = 0;
@@ -247,8 +276,10 @@ sub readCard {
 				#print STDOUT "$$$$$$$$$$$\n" . Dumper($result) . "%%%%%%%%%%\n";
 				#print STDOUT Dumper($result);
 				$v =~ s/^.+>([^<]+)<\/a.+$/$1/;
+
 				$card->{expansion} = $v;
 				if ($card->{expansion} =~ /Magic.+Conspiracy$/) {
+                # These are hard-codings to deal with some ambiguity in Expansion Set names
 					$card->{expansion} = 'Magic: The Gathering - Conspiracy';
 				} elsif ($card->{expansion} =~ /Magic.+Commander$/) {
 					$card->{expansion} = 'Magic: The Gathering - Commander';
@@ -265,14 +296,14 @@ sub readCard {
 			{
 				my $v = $result->{'Card Name'};
 				$v =~ s/^<div.*>([^<]+)<\/div>$/$1/;
-				$card->{name} = $v;
+				$card->setName($v);
 			}
 			{
 				my $v = $result->{'Card Text'};
 				#$v =~ s/^<div.*>([^<]+)<\/div>$/$1/;
-				$card->{'card_text_html'} = trim($v);
+				$card->setCardTextHTML(trim($v));
 				
-				$card->{'card_text'} = html2Plain($v);
+				$card->setCardText(html2Plain($v));
 			}
 			{
 				my $v = $result->{'Flavor Text'};
@@ -350,14 +381,9 @@ sub readCard {
 					if ($vv =~ /^\d+$/) {
 						push @cost, '{' . $vv . '}';
 					} else {
-						my $colorSymbs = {'white' => '{w}',
-										  'blue' => '{u}',
-										  'black' => '{b}',
-										  'red' => '{r}',
-										  'green' => '{g}',
-									  };
-						$vv =~ s/ or /|/g;
-						push @cost, $colorSymbs->{lc($vv)};
+						$vv = lc($vv);
+						#$vv =~ s/ or /|/g;
+						push @cost, $colorSymbs->{$vv};
 					}
 				}
 				$card->{'truecost'} = \@cost;

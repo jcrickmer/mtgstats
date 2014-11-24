@@ -6,6 +6,7 @@ use Clone;
 use MTG::MongoObject;
 use MTG::TagMap;
 use Data::Dumper;
+use MTG::Util qw(makeFilingName);
 
 sub new {
 	my $class = shift;
@@ -15,7 +16,7 @@ sub new {
 	my $test = shift;
 	if (defined $test && ref($test) eq 'HASH') {
         # REVISIT - we should only copy out what we need, not just assign a reference
-		foreach my $f (qw(_id multiverseid name CMC cost type cardtype types rarity tags expansion subtype toughness loyalty power card_text flavor_text card_text_html flavor_text_html watermark)) {
+		foreach my $f (qw(_id multiverseid name filing_name CMC cost type cardtype types rarity tags expansion subtype toughness loyalty power card_text flavor_text card_text_html flavor_text_html watermark)) {
 			if ($f eq 'multiverseid' && ref($test->{$f}) ne 'ARRAY') {
 				$self->{$f} = [$test->{$f}];
 			} else {
@@ -65,7 +66,7 @@ sub new {
 	if (! defined $self->{power}) {
 		$self->{power} = undef;
 	}
-	push(@{$self->{serializable}}, qw(_id multiverseid name CMC cost type types cardtype rarity tags expansion subtype toughness loyalty power card_text flavor_text card_text_html flavor_text_html watermark));
+	push(@{$self->{serializable}}, qw(_id multiverseid name filing_name CMC cost type types cardtype rarity tags expansion subtype toughness loyalty power card_text flavor_text card_text_html flavor_text_html watermark));
 	bless($self, $class);
 	return $self;
 }
@@ -73,6 +74,7 @@ sub new {
 sub isComplete {
 	my $self = shift;
 	return defined $self->{name}
+	       && defined $self->{filing_name}
 	       && defined $self->{type}
 		   && defined $self->{multiverseid}
 		   && scalar(@{$self->{multiverseid}}) > 0;
@@ -110,6 +112,7 @@ sub getName {
 sub setName {
 	my $self = shift;
 	$self->{name} = shift;
+	$self->{filing_name} = makeFilingName($self->{name});
 	return;
 }
 
@@ -362,6 +365,7 @@ sub getCardText {
 sub setCardText {
 	my $self = shift;
 	$self->{card_text} = shift;
+	$self->{card_text} =~ s/\x{2212}(\d)/-$1/g;
 	return;
 }
 
@@ -375,6 +379,7 @@ sub getCardTextHTML {
 sub setCardTextHTML {
 	my $self = shift;
 	$self->{card_text_html} = shift;
+	$self->{card_text_html} =~ s/\x{2212}(\d)/-$1/g;
 	return;
 }
 
