@@ -95,24 +95,31 @@ foreach my $set (keys %$sets_hash) {
 	}
 
 	# now let's get to the cards.
-	if ($set eq "LEB") {
+	if ($set ne "UGL" && $set ne "UNH") {
 		my $cards = $sets_hash->{$set}->{cards};
 		
 		# loop through all of the cards
 		foreach my $card (@{$cards}) {
 			print "-> ", $card->{name}, " (", $card->{multiverseid} , "):\n";
 			
-			if (1) { #$card->{multiverseid}  < 29292 && $card->{multiverseid}  > 29280) {
+			# first of all, we are ONLY doing basic cards...
+			if (defined $card->{multiverseid}) {
 				#print Dumper($card);
+
 				my $basecard_id = doBasecard($card);
 
-				doCardColors($card, $basecard_id);
+				#doCardColors($card, $basecard_id);
 
-				doCardTypes($card, $basecard_id);
+				#doCardTypes($card, $basecard_id);
 
-				doCardSubtypes($card, $basecard_id);
+				#doCardSubtypes($card, $basecard_id);
 
-				doCard($card, $basecard_id, $set);
+				#doCard($card, $basecard_id, $set);
+
+				doRulings($card, $basecard_id);
+
+			} else {
+				print " skipping " . $card->{layout} . " cards.\n";
 			}
 		}
 	}
@@ -122,25 +129,45 @@ sub doBasecard {
 	my $card = shift;
 
 	# grab the basecard
-	my ($id, $name, $rules_text, $cmc, $power, $toughness, $loyalty);
+	my ($id, $name, $rules_text, $cmc, $power, $toughness, $loyalty, $physicalcard_id, $cardposition);
 	eval {
-		my $testSQL = "SELECT id, name, rules_text, cmc, power, toughness, loyalty FROM basecards WHERE name = ?";
+		my $testSQL = "SELECT id, name, rules_text, cmc, power, toughness, loyalty, physicalcard_id FROM basecards WHERE name = ?";
 		my $sth = $dbh->prepare($testSQL);
 		$sth->execute($card->{name});
-		($id, $name, $rules_text, $cmc, $power, $toughness, $loyalty) = $sth->fetchrow_array() and $sth->finish();
+		($id, $name, $rules_text, $cmc, $power, $toughness, $loyalty, $physicalcard_id, $cardposition) = $sth->fetchrow_array() and $sth->finish();
 	};
 	if ($@) {
 		die("Unable to fetch card \"" . $card->{name} . "\": " . $@);
 	}
+
+	my $pos = 'F';
+	if ($card->{layout} eq 'double-faced') {
+		if ($card->{number} =~ /b$/) {
+			$pos = 'B';
+		}
+	} elsif ($card->{layout} eq 'split') {
+		if ($card->{number} =~ /b$/) {
+			$pos = 'R';
+		} else {
+			$pos = 'L';
+		}
+	} elsif ($card->{layout} eq 'flip') {
+		if ($card->{number} =~ /a$/) {
+			$pos = 'U';
+		} else {
+			$pos = 'D';
+		}
+	}
+
 	if (! defined $id) {
 		# basecard doesn't exist - let's add it
 		if ($fix) {
 			# we need a physical card
 			my $physicalcard_id = undef;
 			eval {
-				my $insertSQL = 'INSERT INTO physicalcards () VALUES ()';
+				my $insertSQL = 'INSERT INTO physicalcards (layout) VALUES (?)';
 				my $sth = $dbh->prepare($insertSQL);
-				$sth->execute();
+				$sth->execute($card->{layout} || 'normal');
 			};
 			if ($@) {
 				print "\n";
@@ -168,7 +195,7 @@ sub doBasecard {
 							  $card->{power},
 							  $card->{toughness},
 							  $card->{loyalty},
-							  'F', #hack it till we make it - REVISIT
+							  $pos
 						  );
 				$id = $dbh->{mysql_insertid};
 			};
@@ -182,9 +209,56 @@ sub doBasecard {
 		} else {
 			print "     missing and ignored!\n";
 		}
-	} elsif (0) {
-		## REVISIT - we might want to update it!!
 	} else {
+		if ($fix) {
+			eval {
+				my $updateSQL = 'UPDATE physicalcards SET layout = ? WHERE id = ?';
+				my $sth = $dbh->prepare($updateSQL);
+				$sth->execute($card->{layout} || 'normal', $physicalcard_id);
+				print " Updated physical card. ";
+			};
+			if ($@) {
+				print "!!!!!! Database Error on physicalcards update! Card follows...\n";
+				print Dumper($card);
+				die("physicalcards database error: " . $@);
+			}
+
+			if ($card->{name} ne $name
+				|| $card->{text} ne $rules_text
+				|| lc($card->{manaCost}) ne lc($cmc)
+				|| $card->{power} != $power
+				|| $card->{toughness} ne $toughness
+				|| $card->{loyalty} ne $loyalty
+				|| $pos ne $cardposition) {
+				print " updating basecard... ";
+				eval {
+					# Fix for planeswalkers with the wrong minus sign:
+					$card->{text} =~ s/\x{2212}(\d)/-$1/g;
+					
+					my $updateSQL = 'UPDATE basecards SET name = ?, filing_name = ?, rules_text = ?, mana_cost = ?, cmc = ?, power = ?, toughness = ?, loyalty = ?, updated_at = NOW(), cardposition = ? WHERE id = ?';
+					my $sth = $dbh->prepare($updateSQL);
+					$sth->execute($card->{name}, 
+								  makeFilingName($card->{name}),
+								  $card->{text} || '',
+								  lc($card->{manaCost}),
+								  $card->{cmc} || 0,
+								  $card->{power},
+								  $card->{toughness},
+								  $card->{loyalty},
+								  $pos,
+								  $id,
+							  );
+					print " ok.\n";
+				};
+				if ($@) {
+					print "\n";
+					print "!!!!!! Database Error updating basecard! Card follows...\n";
+					print Dumper($card);
+					die("basecard update database error: " . $@);
+				}
+			}
+
+		}
 		print "     ok, basecard_id=$id\n";
 	}
 	return $id;
@@ -313,6 +387,7 @@ sub doCardSubtypes {
 	my $card_subtype_string = '';
 	if (defined $card->{subtypes}) {
 		$card_subtype_string = join(' ', @{$card->{subtypes}});
+		$card_subtype_string =~ s/’/'/gi;
 	}
 	print "     subtypes:";
 	if ($subtype_string eq $card_subtype_string) {
@@ -340,6 +415,7 @@ sub doCardSubtypes {
 		if ($fix) {
 			my $pos = 0;
 			foreach my $jsubtype (@{$card->{subtypes}}) {
+				$jsubtype =~ s/’/'/gi; # fixes issue with this unicode apostrophe in the mtgjson data
 				# do we know about this subtype?
 				if (! defined $subtypes_hash->{$jsubtype}) {
 					$subtypes_hash = addSubtype($jsubtype);
@@ -457,6 +533,54 @@ sub doCard {
 	}
 }
 
+sub doRulings {
+	my $card = shift;
+	my $basecard_id = shift;
+
+	print "    Rulings: ";
+	my @rulings_db = ();
+	my $jsonC = 0;
+	if (defined $card->{rulings} && scalar @{$card->{rulings}} > 0) {
+		$jsonC = scalar @{$card->{rulings}};
+		foreach my $ruling (@{$card->{rulings}}) {
+			# no updates in here...
+			# REVISIT - we need to do deletes too!
+			my ($ruling_id, $ruling_date, $ruling_text);
+			eval {
+				my $selectSQL = 'SELECT id, ruling_date, ruling_text FROM mtgdbapp_ruling WHERE basecard_id = ? and ruling_text = ?';
+				my $sth = $dbh->prepare($selectSQL);
+				$sth->execute($basecard_id, $ruling->{text});
+				($ruling_id, $ruling_date, $ruling_text) = $sth->fetchrow_array() and $sth->finish();
+				push @rulings_db, $ruling_id;
+			};
+			if ($@) {
+				print "!!!!!! Database Error! Card follows...\n";
+				print Dumper($card);
+				die("select rulings database error: " . $@);
+			}
+			if (! defined $ruling_id) {
+				if (! $fix) {
+					print " Missing \"" . substr($ruling->{text}, 15) . "\"... ";
+				} else {
+					print " Adding \"" . substr($ruling->{text}, 15) . "\"... ";
+					eval {
+						my $insertSQL = 'INSERT INTO mtgdbapp_ruling (basecard_id, ruling_date, ruling_text) VALUES (?, ?, ?)';
+						my $sth = $dbh->prepare($insertSQL);
+						$sth->execute($basecard_id, $ruling->{date}, $ruling->{text});
+						push @rulings_db, $dbh->{mysql_insertid};
+					};
+					if ($@) {
+						print "!!!!!! Database Error! Card follows...\n";
+						print Dumper($card);
+						die("card mtgdbapp_ruling table insert error: " . $@);
+					}
+				}
+			}
+		}
+	}
+	print " [db has " . @rulings_db . ", json has " . $jsonC . "]\n";
+}
+
 
 sub loadTypes {
 	my $result = {};
@@ -548,7 +672,7 @@ sub addMark {
 sub addType {
 	my $type = shift;
 	eval {
-		my $insertSQL = 'INSERT INTO types (type) VALUES ?';
+		my $insertSQL = 'INSERT INTO types (type) VALUES (?)';
 		my $sth = $dbh->prepare($insertSQL);
 		$sth->execute($type);
 		print "{added type \"$type\"}";
@@ -562,8 +686,9 @@ sub addType {
 
 sub addSubtype {
 	my $subtype = shift;
+	$subtype =~ s/’/'/gi; # fixes issue with this unicode apostrophe in the mtgjson data
 	eval {
-		my $insertSQL = 'INSERT INTO subtypes (subtype) VALUES ?';
+		my $insertSQL = 'INSERT INTO subtypes (subtype) VALUES (?)';
 		my $sth = $dbh->prepare($insertSQL);
 		$sth->execute($subtype);
 		print "{added subtype \"$subtype\"}";
