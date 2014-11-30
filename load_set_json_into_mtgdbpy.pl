@@ -108,13 +108,13 @@ foreach my $set (keys %$sets_hash) {
 
 				my $basecard_id = doBasecard($card);
 
-				#doCardColors($card, $basecard_id);
+				doCardColors($card, $basecard_id);
 
-				#doCardTypes($card, $basecard_id);
+				doCardTypes($card, $basecard_id);
 
-				#doCardSubtypes($card, $basecard_id);
+				doCardSubtypes($card, $basecard_id);
 
-				#doCard($card, $basecard_id, $set);
+				doCard($card, $basecard_id, $set);
 
 				doRulings($card, $basecard_id);
 
